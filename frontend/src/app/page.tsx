@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import {
   Camera,
@@ -8,6 +9,7 @@ import {
   Languages,
   Leaf,
 } from "lucide-react";
+import BottomNav from "@/components/BottomNav";
 
 export default function Home() {
   return (
@@ -27,7 +29,7 @@ export default function Home() {
           className="absolute inset-0 bg-forest-deep/55"
         />
 
-        <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-6 text-center sm:min-h-[844px]">
+        <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-6 pb-28 pt-8 text-center sm:min-h-[844px]">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 text-leaf backdrop-blur-sm">
             <Leaf size={34} strokeWidth={2.2} />
           </div>
@@ -61,10 +63,13 @@ export default function Home() {
   <span>28°C · Pune</span>
 </div>
 
-          <button className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-leaf px-6 py-4 text-lg font-bold text-forest-deep transition hover:brightness-95">
-            <Camera size={24} strokeWidth={2.2} />
-            <span>Scan Crop</span>
-          </button>
+          <Link
+  href="/scan"
+  className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-leaf px-6 py-4 text-lg font-bold text-forest-deep transition hover:brightness-95"
+>
+  <Camera size={24} strokeWidth={2.2} />
+  <span>Scan Crop</span>
+</Link>
 
           <div className="mt-3 grid w-full grid-cols-2 gap-3">
             <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition hover:bg-white/15">
@@ -90,6 +95,7 @@ export default function Home() {
   </button>
 </div>
 </div>
+    <BottomNav />
       </section>
     </main>
   );
