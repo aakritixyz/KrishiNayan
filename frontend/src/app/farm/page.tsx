@@ -1,0 +1,156 @@
+"use client";
+
+import BottomNav from "@/components/BottomNav";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  CalendarDays,
+  CloudRain,
+  Droplets,
+  MapPin,
+  ScanLine,
+  Sprout,
+} from "lucide-react";
+
+export default function FarmPage() {
+  const router = useRouter();
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-forest-deep pb-32 sm:min-h-[844px] sm:rounded-[36px]">
+        <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 pt-6 text-white">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-black/30 backdrop-blur"
+            aria-label="Go back"
+          >
+            <ArrowLeft size={21} />
+          </button>
+
+          <h1 className="text-lg font-bold">My Farm Map</h1>
+
+          <button
+            type="button"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-black/30 backdrop-blur"
+            aria-label="Farm location"
+          >
+            <MapPin size={21} />
+          </button>
+        </header>
+
+        <div className="relative h-[560px]">
+          <Image
+            src="/images/tomato-field.png"
+            alt="Farm plots"
+            fill
+            priority
+            className="object-cover"
+          />
+
+          <div className="absolute inset-0 bg-forest-deep/35" />
+
+          <div className="absolute left-5 right-5 top-24 z-10 grid grid-cols-2 gap-2">
+            <div className="rounded-2xl bg-forest-deep/75 p-3 text-white backdrop-blur">
+              <p className="text-xs text-white/65">Plant age</p>
+              <p className="mt-1 font-bold">44 Days</p>
+            </div>
+
+            <div className="rounded-2xl bg-forest-deep/75 p-3 text-white backdrop-blur">
+              <p className="text-xs text-white/65">Total area</p>
+              <p className="mt-1 font-bold">1.8 Acres</p>
+            </div>
+          </div>
+
+          <div className="absolute left-8 right-8 top-48 z-10 h-[105px] rotate-[-3deg] rounded-[28px] border-2 border-dashed border-white/80 bg-leaf/15">
+            <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-full bg-forest-deep/85 px-4 py-2 text-sm font-bold text-white">
+              <Sprout size={17} className="text-leaf" />
+              Paddy
+            </span>
+          </div>
+
+          <div className="absolute left-8 right-8 top-[320px] z-10 h-[125px] rotate-[2deg] rounded-[28px] border-2 border-warning bg-warning/20">
+            <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-forest-deep/90 px-4 py-2 text-sm font-bold text-white">
+              🍅 Tomato Plot
+            </span>
+
+            <span className="absolute right-7 top-7 h-5 w-5 rounded-full bg-danger shadow-[0_0_0_12px_rgba(216,58,50,0.25)]" />
+          </div>
+
+          <div className="absolute inset-x-5 bottom-4 z-10 rounded-[26px] bg-forest-deep/90 p-3 text-white backdrop-blur">
+            <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="rounded-2xl bg-white/10 p-2">
+                <Droplets className="mx-auto text-sky-300" size={20} />
+                <p className="mt-2 text-[10px] text-white/65">
+                  Soil Moisture
+                </p>
+                <p className="mt-1 font-bold">70%</p>
+              </div>
+
+              <div className="rounded-2xl bg-white/10 p-2">
+                <CloudRain className="mx-auto text-sky-200" size={20} />
+                <p className="mt-2 text-[10px] text-white/65">
+                  Humidity
+                </p>
+                <p className="mt-1 font-bold">80%</p>
+              </div>
+
+              <div className="rounded-2xl bg-white/10 p-2">
+                <AlertTriangle className="mx-auto text-warning" size={20} />
+                <p className="mt-2 text-[10px] text-white/65">
+                  Disease Risk
+                </p>
+                <p className="mt-1 font-bold text-warning">High</p>
+              </div>
+
+              <div className="rounded-2xl bg-white/10 p-2">
+                <CalendarDays className="mx-auto text-leaf" size={20} />
+                <p className="mt-2 text-[10px] text-white/65">
+                  Last Scan
+                </p>
+                <p className="mt-1 font-bold">Today</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-5 pt-5">
+          <div className="rounded-[24px] border border-white/10 bg-white/10 p-4 text-white">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-white/60">
+                  Selected field
+                </p>
+
+                <h2 className="mt-1 text-xl font-bold">
+                  Tomato Plot
+                </h2>
+
+                <p className="mt-1 text-sm text-white/65">
+                  Early blight risk detected nearby
+                </p>
+              </div>
+
+              <span className="rounded-full bg-danger/20 px-3 py-2 text-xs font-bold text-red-300">
+                High Risk
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => router.push("/scan")}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-5 py-4 font-bold text-forest-deep"
+          >
+            <ScanLine size={22} />
+            Scan This Plot
+          </button>
+        </div>
+
+        <BottomNav />
+      </section>
+    </main>
+  );
+}
