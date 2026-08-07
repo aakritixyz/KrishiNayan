@@ -13,11 +13,14 @@ import { useRouter } from "next/navigation";
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
     if (!file) return;
+
+    setSelectedFile(file);
 
     const reader = new FileReader();
 
@@ -30,11 +33,52 @@ export default function ScanPage() {
 
   const router = useRouter();
 
-function handleAnalyse() {
-  if (!preview) return;
+async function handleAnalyse() {
+  if (!preview || !selectedFile || isAnalyzing) return;
 
-  sessionStorage.setItem("krishiNayanScanImage", preview);
-  router.push("/result");
+  setIsAnalyzing(true);
+
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+
+  try {
+    const response = await fetch(
+      "http://127.0.0.1:8001/predict",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.detail || "Unable to analyse this image."
+      );
+    }
+
+    sessionStorage.setItem(
+      "krishiNayanScanImage",
+      preview
+    );
+
+    sessionStorage.setItem(
+      "krishiNayanPrediction",
+      JSON.stringify(result)
+    );
+
+    router.push("/result");
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Backend connection failed.";
+
+    window.alert(message);
+  } finally {
+    setIsAnalyzing(false);
+  }
 }
 
   return (

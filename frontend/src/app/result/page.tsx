@@ -14,20 +14,53 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+type PredictionResult = {
+  detected_issue: string;
+  confidence: number;
+  prediction_status: string;
+  severity: string;
+  weather_risk: string;
+  recommended_action: string;
+  farmer_message: string;
+  weather: {
+    temperature: number;
+    humidity: number;
+    wind_speed: number;
+    rain_expected: boolean;
+    source: string;
+  };
+};
+
+
 export default function ResultPage() {
   const router = useRouter();
   const [scanImage, setScanImage] = useState(
     "/images/tomato-field.png"
   );
 
-  useEffect(() => {
+  const [prediction, setPrediction] =
+  useState<PredictionResult | null>(null);
+
+ useEffect(() => {
   const timer = window.setTimeout(() => {
     const savedImage = sessionStorage.getItem(
       "krishiNayanScanImage"
     );
 
+    const savedPrediction = sessionStorage.getItem(
+      "krishiNayanPrediction"
+    );
+
     if (savedImage) {
       setScanImage(savedImage);
+    }
+
+    if (savedPrediction) {
+      try {
+        setPrediction(JSON.parse(savedPrediction));
+      } catch {
+        setPrediction(null);
+      }
     }
   }, 0);
 
@@ -69,7 +102,9 @@ export default function ResultPage() {
             }}
           >
             <div className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-cream">
-              <strong className="text-2xl text-forest">87%</strong>
+              <strong className="text-2xl text-forest">
+                {prediction ? `${prediction.confidence}%` : "--"}
+              </strong>
               <span className="text-[11px] text-muted">
                 Confidence
               </span>
@@ -79,15 +114,18 @@ export default function ResultPage() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-warning px-3 py-2 text-xs font-bold text-forest-deep">
               <AlertTriangle size={15} />
-              Moderate Risk
+              {prediction
+  ? `${prediction.severity} Risk`
+  : "Risk unavailable"}
             </span>
 
             <h2 className="mt-3 text-2xl font-bold text-forest">
-              Early Blight
+              {prediction?.detected_issue ?? "No prediction"}
             </h2>
 
             <p className="mt-1 text-sm italic text-muted">
-              Alternaria solani
+            Prediction status:{" "}
+{prediction?.prediction_status ?? "--"}
             </p>
           </div>
         </div>
@@ -106,7 +144,7 @@ export default function ResultPage() {
           <span className="absolute right-[20%] top-[48%] h-9 w-9 rounded-full border-2 border-danger bg-danger/30 shadow-[0_0_0_8px_rgba(216,58,50,0.18)]" />
 
           <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-forest-deep/85 px-4 py-3 text-sm font-semibold text-white backdrop-blur">
-            AI detected visible disease spots
+            AI prediction generated from uploaded leaf image
           </div>
         </div>
 
@@ -114,11 +152,16 @@ export default function ResultPage() {
           <CloudRain size={34} className="shrink-0" />
 
           <div>
-            <p className="font-bold">Rain expected tonight</p>
+            <p className="font-bold">
+  {prediction?.weather_risk ?? "Weather unavailable"}
+</p>
             <p className="mt-1 text-sm">
-              High humidity • 90%
-            </p>
-            <p className="text-sm">19°C – 27°C</p>
+  Humidity • {prediction?.weather.humidity ?? "--"}%
+</p>
+            <p className="text-sm">
+  Temperature •{" "}
+  {prediction?.weather.temperature ?? "--"}°C
+</p>
           </div>
         </div>
 
@@ -130,13 +173,13 @@ export default function ResultPage() {
 
             <div>
               <h3 className="font-bold text-forest">
-                Wait before spraying
+               Recommended action
               </h3>
 
               <p className="mt-1 text-sm leading-5 text-muted">
-                Rain may reduce treatment effectiveness. Apply
-                treatment when the leaf surface is dry.
-              </p>
+  {prediction?.recommended_action ??
+    "Complete a scan to receive treatment advice."}
+</p>
             </div>
           </div>
 
@@ -144,10 +187,11 @@ export default function ResultPage() {
             <CalendarClock size={20} className="text-forest" />
 
             <div>
-              <p className="text-xs text-muted">Best time</p>
-              <p className="font-bold text-forest">
-                Tomorrow • 7–9 AM
-              </p>
+      
+              <p className="text-xs text-muted">Weather source</p>
+<p className="font-bold text-forest">
+  {prediction?.weather.source ?? "--"}
+</p>
             </div>
           </div>
         </div>
