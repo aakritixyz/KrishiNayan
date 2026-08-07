@@ -1,8 +1,18 @@
+from app.services.advisory_service import get_farmer_message
 from fastapi import (
     APIRouter,
     File,
+    Form,
     HTTPException,
     UploadFile
+)
+
+from app.services.advisory_service import (
+    get_farmer_message
+)
+
+from app.services.weather_service import (
+    get_weather_data
 )
 
 from app.core.config import (
@@ -25,7 +35,9 @@ ALLOWED_CONTENT_TYPES = {
 
 @router.post("/predict")
 async def predict_image(
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    latitude: float | None = Form(None),
+    longitude: float | None = Form(None)
 ):
     """
     Receive a tomato-leaf image and return
@@ -59,6 +71,19 @@ async def predict_image(
         prediction = predict_disease(
             image_bytes
         )
+        
+        weather = get_weather_data(
+            latitude=latitude,
+            longitude=longitude
+        )
+
+        advisory = get_farmer_message(
+            disease=prediction["disease"],
+            confidence=prediction["confidence"],
+            rain_expected=weather["rain_expected"],
+            wind_speed=weather["wind_speed"],
+            humidity=weather["humidity"]
+        )
 
     except FileNotFoundError as error:
         raise HTTPException(
@@ -73,9 +98,14 @@ async def predict_image(
         ) from error
 
     return {
-        "crop": "Tomato",
-        "filename": file.filename,
-        "detected_issue": prediction["disease"],
-        "confidence": prediction["confidence"],
-        "prediction_status": prediction["status"]
+    "crop": "Tomato",
+    "filename": file.filename,
+    "detected_issue": prediction["disease"],
+    "confidence": prediction["confidence"],
+    "prediction_status": prediction["status"],
+    "weather": weather,
+    "severity": advisory["severity"],
+    "weather_risk": advisory["weather_risk"],
+    "recommended_action": advisory["recommended_action"],
+    "farmer_message": advisory["farmer_message"]
 }
