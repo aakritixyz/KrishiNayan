@@ -1,0 +1,20 @@
+{
+    "image_size": [
+        224,
+        224
+    ],
+    "folder_class_names": [
+        "Early Blight",
+        "Healthy",
+        "Late Blight",
+        "Leaf Mold",
+        "Septoria Leaf Spot"
+    ],
+    "display_class_names": [
+        "Early Blight",
+        "Healthy",
+        "Late Blight",
+        "Leaf Mold",
+        "Septoria Leaf Spot"
+    ]
+}
