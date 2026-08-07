@@ -23,6 +23,7 @@ from app.services.ml_service import (
     predict_disease
 )
 
+from app.services.storage_service import save_uploaded_image
 
 router = APIRouter()
 
@@ -67,6 +68,13 @@ async def predict_image(
             detail="Image must be smaller than 10 MB."
         )
 
+    saved_image_path = save_uploaded_image(
+    file.filename,
+    image_bytes
+    )
+
+
+
     try:
         prediction = predict_disease(
             image_bytes
@@ -101,6 +109,7 @@ async def predict_image(
     "crop": "Tomato",
     "filename": file.filename,
     "detected_issue": prediction["disease"],
+    "saved_image_path": saved_image_path,
     "confidence": prediction["confidence"],
     "prediction_status": prediction["status"],
     "weather": weather,

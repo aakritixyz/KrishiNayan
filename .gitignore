@@ -11,3 +11,15 @@ __pycache__/
 # Trained ML models
 backend/models/*.keras
 .DS_Store
+
+# Virtual environments
+.venv/
+backend/.venv/
+
+# Locally saved test images
+uploads/
+backend/uploads/
+
+# Large trained models
+*.keras
+backend/models/*.keras
