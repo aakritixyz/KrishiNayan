@@ -30,21 +30,21 @@ export default function Home() {
         />
 
         <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-6 pb-28 pt-8 text-center sm:min-h-[844px]">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 text-leaf backdrop-blur-sm">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 text-leaf backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white/15">
             <Leaf size={34} strokeWidth={2.2} />
           </div>
 
           <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
-            <button className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
-                <Languages size={16} />
-                <span>हिंदी</span>
+            <button className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg active:scale-95">
+              <Languages size={16} />
+              <span>हिंदी</span>
             </button>
 
-           <div className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
-               <CloudOff size={16} />
-               <span>Offline Ready</span>
-           </div>
-           </div>
+            <div className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg">
+              <CloudOff size={16} />
+              <span>Offline Ready</span>
+            </div>
+          </div>
 
           <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
             AI Farming Copilot
@@ -58,21 +58,21 @@ export default function Home() {
             From crop photo to clear action
           </p>
 
-          <div className="mt-6 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 font-semibold text-forest-deep shadow-lg">
-  <CloudSun size={20} className="text-warning" />
-  <span>28°C · Pune</span>
-</div>
+          <div className="mt-6 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 font-semibold text-forest-deep shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white hover:shadow-xl">
+            <CloudSun size={20} className="text-warning" />
+            <span>28°C · Pune</span>
+          </div>
 
           <Link
-  href="/scan"
-  className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-leaf px-6 py-4 text-lg font-bold text-forest-deep transition hover:brightness-95"
->
-  <Camera size={24} strokeWidth={2.2} />
-  <span>Scan Crop</span>
-</Link>
+            href="/scan"
+            className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-leaf px-6 py-4 text-lg font-bold text-forest-deep shadow-lg transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:brightness-105 hover:shadow-2xl active:scale-95"
+          >
+            <Camera size={24} strokeWidth={2.2} />
+            <span>Scan Crop</span>
+          </Link>
 
           <div className="mt-3 grid w-full grid-cols-2 gap-3">
-            <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition hover:bg-white/15">
+            <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95">
               <MapPinned size={24} className="shrink-0 text-leaf" />
 
               <span>
@@ -80,22 +80,23 @@ export default function Home() {
                 <span className="mt-1 block text-xs text-white/65">
                   View your plots
                 </span>
-               </span>
+              </span>
             </button>
 
-  <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition hover:bg-white/15">
-    <Headphones size={24} className="shrink-0 text-leaf" />
+            <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95">
+              <Headphones size={24} className="shrink-0 text-leaf" />
 
-    <span>
-      <span className="block font-semibold">Ask Expert</span>
-      <span className="mt-1 block text-xs text-white/65">
-        Get KVK support
-      </span>
-    </span>
-  </button>
-</div>
-</div>
-    <BottomNav />
+              <span>
+                <span className="block font-semibold">Ask Expert</span>
+                <span className="mt-1 block text-xs text-white/65">
+                  Get KVK support
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <BottomNav />
       </section>
     </main>
   );
