@@ -10,6 +10,7 @@ import {
   CloudRain,
   Headphones,
   ShieldCheck,
+  Sprout,
   UserRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -29,6 +30,21 @@ type PredictionResult = {
     rain_expected: boolean;
     source: string;
   };
+  soil_context: {
+    state: string;
+    district: string;
+    soil_type: string;
+    ph: number;
+    nitrogen: string;
+    phosphorus: string;
+    potassium: string;
+    organic_carbon: string;
+    moisture_retention: string;
+    soil_risk_level: string;
+    soil_risk_factors: string[];
+    soil_recommendations: string[];
+    summary: string;
+  } | null;
 };
 
 
@@ -195,6 +211,118 @@ export default function ResultPage() {
             </div>
           </div>
         </div>
+
+        {prediction?.soil_context && (
+          <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+            <div className="flex gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest text-leaf">
+                <Sprout size={23} />
+              </span>
+
+              <div>
+                <h3 className="font-bold text-forest">
+                  Soil context —{" "}
+                  {prediction.soil_context.district},{" "}
+                  {prediction.soil_context.state}
+                </h3>
+
+                <span
+                  className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                    prediction.soil_context.soil_risk_level === "High"
+                      ? "bg-danger/15 text-danger"
+                      : prediction.soil_context.soil_risk_level ===
+                        "Medium"
+                      ? "bg-warning/40 text-forest-deep"
+                      : "bg-leaf/30 text-forest"
+                  }`}
+                >
+                  {prediction.soil_context.soil_risk_level} soil risk
+                </span>
+
+                <p className="mt-2 text-sm leading-5 text-muted">
+                  {prediction.soil_context.summary}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-2 border-t border-forest/10 pt-3 text-center text-xs">
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.soil_type}
+                </p>
+                <p className="text-muted">Soil type</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.ph}
+                </p>
+                <p className="text-muted">pH</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.moisture_retention}
+                </p>
+                <p className="text-muted">Moisture</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.nitrogen}
+                </p>
+                <p className="text-muted">Nitrogen</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.phosphorus}
+                </p>
+                <p className="text-muted">Phosphorus</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.potassium}
+                </p>
+                <p className="text-muted">Potassium</p>
+              </div>
+            </div>
+
+            {prediction.soil_context.soil_risk_factors.length > 0 && (
+              <div className="mt-3 border-t border-forest/10 pt-3">
+                <p className="text-xs font-bold text-forest">
+                  Why soil is adding risk
+                </p>
+
+                <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted">
+                  {prediction.soil_context.soil_risk_factors.map(
+                    (factor) => (
+                      <li key={factor}>{factor}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+
+            {prediction.soil_context.soil_recommendations.length >
+              0 && (
+              <div className="mt-3 border-t border-forest/10 pt-3">
+                <p className="text-xs font-bold text-forest">
+                  Soil-based recommendations
+                </p>
+
+                <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted">
+                  {prediction.soil_context.soil_recommendations.map(
+                    (rec) => (
+                      <li key={rec}>{rec}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="mt-4 grid grid-cols-2 gap-3">
           <button

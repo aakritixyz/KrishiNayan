@@ -8,13 +8,66 @@ import {
   MapPin,
   ScanLine,
 } from "lucide-react";
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+
+const API_BASE_URL = "http://127.0.0.1:8001";
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [states, setStates] = useState<string[]>([]);
+  const [districts, setDistricts] = useState<string[]>([]);
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
+
+  useEffect(() => {
+    async function loadStates() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/soil/states`);
+        const data = await response.json();
+        setStates(data.states ?? []);
+      } catch {
+        // Soil data is optional context — scanning still works without it.
+        setStates([]);
+      }
+    }
+
+    loadStates();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedState) {
+      setDistricts([]);
+      setSelectedDistrict("");
+      return;
+    }
+
+    async function loadDistricts() {
+      setIsLoadingDistricts(true);
+      setSelectedDistrict("");
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/soil/districts?state=${encodeURIComponent(
+            selectedState
+          )}`
+        );
+        const data = await response.json();
+        setDistricts(data.districts ?? []);
+      } catch {
+        setDistricts([]);
+      } finally {
+        setIsLoadingDistricts(false);
+      }
+    }
+
+    loadDistricts();
+  }, [selectedState]);
+
   function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
@@ -41,9 +94,17 @@ async function handleAnalyse() {
   const formData = new FormData();
   formData.append("file", selectedFile);
 
+  if (selectedState) {
+    formData.append("state", selectedState);
+  }
+
+  if (selectedDistrict) {
+    formData.append("district", selectedDistrict);
+  }
+
   try {
     const response = await fetch(
-      "http://127.0.0.1:8001/predict",
+      `${API_BASE_URL}/predict`,
       {
         method: "POST",
         body: formData,
@@ -155,9 +216,57 @@ async function handleAnalyse() {
           ))}
         </div>
 
-        <div className="mt-4 flex items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-medium text-forest">
-          <MapPin size={18} className="text-leaf" />
-          Pune, Maharashtra
+        <div className="mt-4 rounded-2xl bg-white p-4">
+          <p className="flex items-center gap-2 text-sm font-bold text-forest">
+            <MapPin size={18} className="text-leaf" />
+            Soil context (optional)
+          </p>
+
+          <p className="mt-1 text-xs leading-5 text-muted">
+            Choose your state and district to see how local soil
+            conditions may be affecting your crop, alongside the
+            leaf diagnosis.
+          </p>
+
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <select
+              value={selectedState}
+              onChange={(event) => setSelectedState(event.target.value)}
+              className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
+            >
+              <option value="">State</option>
+              {states.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={selectedDistrict}
+              onChange={(event) =>
+                setSelectedDistrict(event.target.value)
+              }
+              disabled={!selectedState || isLoadingDistricts}
+              className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest disabled:opacity-50"
+            >
+              <option value="">
+                {isLoadingDistricts ? "Loading..." : "District"}
+              </option>
+              {districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {states.length === 0 && (
+            <p className="mt-2 text-xs text-muted">
+              Soil data is currently unavailable — diagnosis will
+              still work without it.
+            </p>
+          )}
         </div>
 
         <div className="mt-5 rounded-[24px] border border-forest/10 bg-white p-4">

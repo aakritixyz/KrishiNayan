@@ -25,6 +25,11 @@ from app.services.ml_service import (
 
 from app.services.storage_service import save_uploaded_image
 
+from app.services.soil_service import (
+    get_soil_context,
+    get_soil_profile
+)
+
 router = APIRouter()
 
 ALLOWED_CONTENT_TYPES = {
@@ -38,7 +43,9 @@ ALLOWED_CONTENT_TYPES = {
 async def predict_image(
     file: UploadFile = File(...),
     latitude: float | None = Form(None),
-    longitude: float | None = Form(None)
+    longitude: float | None = Form(None),
+    state: str | None = Form(None),
+    district: str | None = Form(None)
 ):
     """
     Receive a tomato-leaf image and return
@@ -93,6 +100,19 @@ async def predict_image(
             humidity=weather["humidity"]
         )
 
+        soil_context = None
+
+        if state and district:
+            soil_profile = get_soil_profile(state, district)
+
+            soil_context = get_soil_context(
+                disease=prediction["disease"],
+                confidence=prediction["confidence"],
+                soil_profile=soil_profile,
+                rain_expected=weather["rain_expected"],
+                humidity=weather["humidity"]
+            )
+
     except FileNotFoundError as error:
         raise HTTPException(
             status_code=503,
@@ -116,5 +136,6 @@ async def predict_image(
     "severity": advisory["severity"],
     "weather_risk": advisory["weather_risk"],
     "recommended_action": advisory["recommended_action"],
-    "farmer_message": advisory["farmer_message"]
+    "farmer_message": advisory["farmer_message"],
+    "soil_context": soil_context
 }
