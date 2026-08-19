@@ -1,0 +1,11 @@
+crop,clean_class_name,source_class_name,dataset_source,available_status,train_count,validation_count,test_count,total_count,notes
+Rice,Rice___Healthy,healthy,Rice Leaf Disease Dataset,available,0,0,0,0,Rice class processed from full dataset
+Rice,Rice___Brown_Spot,brown_spot,Rice Leaf Disease Dataset,available,0,0,0,0,Rice class processed from full dataset
+Rice,Rice___Leaf_Blast,leaf_blast,Rice Leaf Disease Dataset,available,0,0,0,0,Rice class processed from full dataset
+Rice,Rice___Bacterial_Leaf_Blight,bacterial_leaf_blight,Rice Leaf Disease Dataset,available,0,0,0,0,Rice class processed from full dataset
+Rice,Rice___Hispa,rice_hispa,Rice Leaf Disease Dataset,available,0,0,0,0,Rice class processed from full dataset
+Wheat,Wheat___Healthy,Healthy,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Leaf_Rust,Brown Rust,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Yellow_Rust,Yellow Rust,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Powdery_Mildew,Mildew,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Septoria_Leaf_Blotch,Septoria,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found

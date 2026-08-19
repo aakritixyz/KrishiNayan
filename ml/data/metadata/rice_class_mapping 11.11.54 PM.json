@@ -1,0 +1,18 @@
+{
+    "crop": "Rice",
+    "num_classes": 5,
+    "classes": [
+        "Rice___Healthy",
+        "Rice___Brown_Spot",
+        "Rice___Leaf_Blast",
+        "Rice___Bacterial_Leaf_Blight",
+        "Rice___Hispa"
+    ],
+    "source_to_clean_mapping": {
+        "healthy": "Rice___Healthy",
+        "brown_spot": "Rice___Brown_Spot",
+        "leaf_blast": "Rice___Leaf_Blast",
+        "bacterial_leaf_blight": "Rice___Bacterial_Leaf_Blight",
+        "rice_hispa": "Rice___Hispa"
+    }
+}

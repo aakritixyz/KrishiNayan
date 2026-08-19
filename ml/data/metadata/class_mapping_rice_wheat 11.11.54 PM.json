@@ -1,0 +1,52 @@
+{
+    "scope": "Team A - Aakriti Rice and Wheat",
+    "total_classes": 10,
+    "crops": {
+        "Rice": {
+            "num_classes": 5,
+            "classes": [
+                "Rice___Healthy",
+                "Rice___Brown_Spot",
+                "Rice___Leaf_Blast",
+                "Rice___Bacterial_Leaf_Blight",
+                "Rice___Hispa"
+            ],
+            "source_to_clean_mapping": {
+                "healthy": "Rice___Healthy",
+                "brown_spot": "Rice___Brown_Spot",
+                "leaf_blast": "Rice___Leaf_Blast",
+                "bacterial_leaf_blight": "Rice___Bacterial_Leaf_Blight",
+                "rice_hispa": "Rice___Hispa"
+            }
+        },
+        "Wheat": {
+            "num_classes": 5,
+            "classes": [
+                "Wheat___Healthy",
+                "Wheat___Leaf_Rust",
+                "Wheat___Yellow_Rust",
+                "Wheat___Powdery_Mildew",
+                "Wheat___Septoria_Leaf_Blotch"
+            ],
+            "source_to_clean_mapping": {
+                "Healthy": "Wheat___Healthy",
+                "Brown Rust": "Wheat___Leaf_Rust",
+                "Yellow Rust": "Wheat___Yellow_Rust",
+                "Mildew": "Wheat___Powdery_Mildew",
+                "Septoria": "Wheat___Septoria_Leaf_Blotch"
+            }
+        }
+    },
+    "all_classes": [
+        "Rice___Healthy",
+        "Rice___Brown_Spot",
+        "Rice___Leaf_Blast",
+        "Rice___Bacterial_Leaf_Blight",
+        "Rice___Hispa",
+        "Wheat___Healthy",
+        "Wheat___Leaf_Rust",
+        "Wheat___Yellow_Rust",
+        "Wheat___Powdery_Mildew",
+        "Wheat___Septoria_Leaf_Blotch"
+    ]
+}

@@ -1,0 +1,6 @@
+crop,clean_class_name,source_class_name,dataset_source,available_status,train_count,validation_count,test_count,total_count,notes
+Wheat,Wheat___Healthy,Healthy,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Leaf_Rust,Brown Rust,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Yellow_Rust,Yellow Rust,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Powdery_Mildew,Mildew,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found
+Wheat,Wheat___Septoria_Leaf_Blotch,Septoria,Wheat Disease Dataset Small,dataset_needed,0,0,0,0,Class folder not found

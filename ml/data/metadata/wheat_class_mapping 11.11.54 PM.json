@@ -1,0 +1,18 @@
+{
+    "crop": "Wheat",
+    "num_classes": 5,
+    "classes": [
+        "Wheat___Healthy",
+        "Wheat___Leaf_Rust",
+        "Wheat___Yellow_Rust",
+        "Wheat___Powdery_Mildew",
+        "Wheat___Septoria_Leaf_Blotch"
+    ],
+    "source_to_clean_mapping": {
+        "Healthy": "Wheat___Healthy",
+        "Brown Rust": "Wheat___Leaf_Rust",
+        "Yellow Rust": "Wheat___Yellow_Rust",
+        "Mildew": "Wheat___Powdery_Mildew",
+        "Septoria": "Wheat___Septoria_Leaf_Blotch"
+    }
+}
