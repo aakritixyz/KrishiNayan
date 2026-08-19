@@ -20,6 +20,7 @@ from app.core.config import (
 )
 
 from app.services.ml_service import (
+    generate_gradcam_overlay,
     predict_disease
 )
 
@@ -113,6 +114,8 @@ async def predict_image(
                 humidity=weather["humidity"]
             )
 
+        gradcam_result = generate_gradcam_overlay(image_bytes)
+
     except FileNotFoundError as error:
         raise HTTPException(
             status_code=503,
@@ -137,5 +140,8 @@ async def predict_image(
     "weather_risk": advisory["weather_risk"],
     "recommended_action": advisory["recommended_action"],
     "farmer_message": advisory["farmer_message"],
-    "soil_context": soil_context
+    "soil_context": soil_context,
+    "gradcam_image": (
+        gradcam_result["heatmap_image"] if gradcam_result else None
+    )
 }

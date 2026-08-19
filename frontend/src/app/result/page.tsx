@@ -45,6 +45,7 @@ type PredictionResult = {
     soil_recommendations: string[];
     summary: string;
   } | null;
+  gradcam_image: string | null;
 };
 
 
@@ -163,6 +164,29 @@ export default function ResultPage() {
             AI prediction generated from uploaded leaf image
           </div>
         </div>
+
+        {prediction?.gradcam_image && (
+          <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+            <h3 className="font-bold text-forest">
+              Why the AI thinks this
+            </h3>
+
+            <p className="mt-1 text-sm leading-5 text-muted">
+              The highlighted region shows which part of the leaf
+              most influenced this diagnosis.
+            </p>
+
+            <div className="relative mt-3 h-[220px] overflow-hidden rounded-[18px] bg-forest/10">
+              <Image
+                src={prediction.gradcam_image}
+                alt="Grad-CAM heatmap showing the diagnosed region"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            </div>
+          </div>
+        )}
 
         <div className="mt-4 flex items-center gap-4 rounded-[22px] bg-warning p-4 text-forest-deep">
           <CloudRain size={34} className="shrink-0" />
