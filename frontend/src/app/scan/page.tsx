@@ -11,7 +11,7 @@ import {
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "http://127.0.0.1:8001";
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -23,6 +23,30 @@ export default function ScanPage() {
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
+
+  type Crop = { id: string; label: string; available: boolean };
+
+  const [crops, setCrops] = useState<Crop[]>([
+    { id: "tomato", label: "Tomato", available: true },
+  ]);
+  const [selectedCrop, setSelectedCrop] = useState<string>("tomato");
+
+  useEffect(() => {
+    async function loadCrops() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/crops`);
+        const data = await response.json();
+
+        if (data.crops?.length) {
+          setCrops(data.crops);
+        }
+      } catch {
+        // Fall back to Tomato-only if the crops list can't be fetched.
+      }
+    }
+
+    loadCrops();
+  }, []);
 
   useEffect(() => {
     async function loadStates() {
@@ -93,6 +117,7 @@ async function handleAnalyse() {
 
   const formData = new FormData();
   formData.append("file", selectedFile);
+  formData.append("crop", selectedCrop);
 
   if (selectedState) {
     formData.append("state", selectedState);
@@ -154,7 +179,7 @@ async function handleAnalyse() {
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          Upload a clear tomato-leaf photo for disease analysis.
+          Upload a clear leaf photo for disease analysis.
         </p>
 
         <label
@@ -205,15 +230,36 @@ async function handleAnalyse() {
           )}
         </label>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {["🍅 Tomato", "🌼 Flowering", "🌐 English"].map((item) => (
-            <span
-              key={item}
-              className="rounded-full border border-forest/10 bg-white px-4 py-2 text-sm font-semibold text-forest"
-            >
-              {item}
-            </span>
-          ))}
+        <div className="mt-5 rounded-2xl bg-white p-4">
+          <p className="text-sm font-bold text-forest">Crop</p>
+
+          <select
+            value={selectedCrop}
+            onChange={(event) => setSelectedCrop(event.target.value)}
+            className="mt-2 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
+          >
+            {crops.map((crop) => (
+              <option
+                key={crop.id}
+                value={crop.id}
+                disabled={!crop.available}
+              >
+                {crop.label}
+                {!crop.available ? " (coming soon)" : ""}
+              </option>
+            ))}
+          </select>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["🌼 Flowering", "🌐 English"].map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mt-4 rounded-2xl bg-white p-4">

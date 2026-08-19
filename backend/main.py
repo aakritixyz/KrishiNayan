@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.routes.predict import router as predict_router
 from app.routes.soil import router as soil_router
+from app.routes.crops import router as crops_router
 
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
@@ -24,6 +25,7 @@ app.add_middleware(
 
 app.include_router(predict_router)
 app.include_router(soil_router)
+app.include_router(crops_router)
 
 
 @app.get("/")

@@ -16,6 +16,7 @@ from app.services.weather_service import (
 )
 
 from app.core.config import (
+    CROP_CONFIG,
     MAX_IMAGE_SIZE_BYTES
 )
 
@@ -46,7 +47,8 @@ async def predict_image(
     latitude: float | None = Form(None),
     longitude: float | None = Form(None),
     state: str | None = Form(None),
-    district: str | None = Form(None)
+    district: str | None = Form(None),
+    crop: str | None = Form("tomato")
 ):
     """
     Receive a tomato-leaf image and return
@@ -85,7 +87,8 @@ async def predict_image(
 
     try:
         prediction = predict_disease(
-            image_bytes
+            image_bytes,
+            crop=crop
         )
         
         weather = get_weather_data(
@@ -114,12 +117,18 @@ async def predict_image(
                 humidity=weather["humidity"]
             )
 
-        gradcam_result = generate_gradcam_overlay(image_bytes)
+        gradcam_result = generate_gradcam_overlay(
+            image_bytes,
+            crop=crop
+        )
 
     except FileNotFoundError as error:
         raise HTTPException(
             status_code=503,
-            detail=str(error)
+            detail=(
+                f"{error} This crop is not available yet — "
+                "please try Tomato for now."
+            )
         ) from error
 
     except ValueError as error:
@@ -129,7 +138,9 @@ async def predict_image(
         ) from error
 
     return {
-    "crop": "Tomato",
+    "crop": CROP_CONFIG.get(
+        prediction["crop"], {}
+    ).get("label", prediction["crop"].title()),
     "filename": file.filename,
     "detected_issue": prediction["disease"],
     "saved_image_path": saved_image_path,
