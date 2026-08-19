@@ -9,6 +9,8 @@ import {
   CalendarClock,
   CloudRain,
   Headphones,
+  Landmark,
+  MessageCircle,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
@@ -213,6 +215,30 @@ export default function ResultPage() {
           >
             <UserRound size={19} />
             Recovery Plan
+          </button>
+        </div>
+
+        <h3 className="mt-5 text-sm font-bold uppercase tracking-widest text-muted">
+          Need more help?
+        </h3>
+
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => router.push("/chatbot")}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
+          >
+            <MessageCircle size={19} className="text-leaf" />
+            Ask AI Chatbot
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push("/policies")}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
+          >
+            <Landmark size={19} className="text-leaf" />
+            Govt. Schemes
           </button>
         </div>
 
