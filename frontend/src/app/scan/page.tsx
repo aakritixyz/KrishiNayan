@@ -10,13 +10,30 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
 
-const API_BASE_URL = "http://127.0.0.1:8001";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [language, setLanguage] = useState<Language>("en");
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+    if (stored === "en" || stored === "hi") {
+      setLanguage(stored);
+    }
+  }, []);
+
+  function toggleLanguage() {
+    const next: Language = language === "en" ? "hi" : "en";
+    setLanguage(next);
+    sessionStorage.setItem(LANGUAGE_STORAGE_KEY, next);
+  }
 
   const [states, setStates] = useState<string[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
@@ -251,14 +268,17 @@ async function handleAnalyse() {
           </select>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            {["🌼 Flowering", "🌐 English"].map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest"
-              >
-                {item}
-              </span>
-            ))}
+            <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">
+              🌼 Flowering
+            </span>
+
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest transition hover:border-leaf"
+            >
+              🌐 {language === "en" ? "English" : "हिंदी"}
+            </button>
           </div>
         </div>
 

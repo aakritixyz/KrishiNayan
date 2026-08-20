@@ -312,6 +312,85 @@ def test_predict_gradcam_failure_returns_null_image(monkeypatch):
     assert response.json()["gradcam_image"] is None
 
 
+def test_crops_endpoint_lists_all_crops():
+    response = client.get("/crops")
+
+    assert response.status_code == 200
+
+    crop_ids = [c["id"] for c in response.json()["crops"]]
+
+    assert "tomato" in crop_ids
+    assert "maize" in crop_ids
+    assert "rice" in crop_ids
+    assert "wheat" in crop_ids
+    assert "potato" in crop_ids
+
+
+def test_predict_defaults_to_tomato_crop(monkeypatch):
+    monkeypatch.setattr(
+        predict_route,
+        "predict_disease",
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
+            "disease": "Healthy",
+            "confidence": 95.0,
+            "status": "supported",
+        },
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "get_weather_data",
+        lambda latitude=None, longitude=None: {
+            "latitude": latitude,
+            "longitude": longitude,
+            "temperature": 27.0,
+            "humidity": 50,
+            "wind_speed": 5,
+            "rain": 0,
+            "rain_expected": False,
+            "source": "Open-Meteo",
+        },
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "get_farmer_message",
+        lambda **kwargs: {
+            "severity": "Low",
+            "weather_risk": "Low weather risk",
+            "recommended_action": "Continue monitoring.",
+            "farmer_message": "Crop looks healthy.",
+        },
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "save_uploaded_image",
+        lambda filename, image_bytes: "backend/uploads/test_leaf.jpg",
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "generate_gradcam_overlay",
+        lambda image_bytes, crop="tomato": None,
+    )
+
+    response = client.post(
+        "/predict",
+        files={
+            "file": (
+                "test_leaf.jpg",
+                b"fake-image-bytes",
+                "image/jpeg",
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["crop"] == "Tomato"
+
+
 def test_soil_states_endpoint():
     response = client.get("/soil/states")
 

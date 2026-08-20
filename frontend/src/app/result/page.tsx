@@ -9,11 +9,18 @@ import {
   CalendarClock,
   CloudRain,
   Headphones,
+  Landmark,
+  MessageCircle,
   ShieldCheck,
   Sprout,
   UserRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  getDiseaseHindi,
+  LANGUAGE_STORAGE_KEY,
+  type Language,
+} from "@/lib/hindiTranslations";
 
 type PredictionResult = {
   detected_issue: string;
@@ -58,6 +65,8 @@ export default function ResultPage() {
   const [prediction, setPrediction] =
   useState<PredictionResult | null>(null);
 
+  const [language, setLanguage] = useState<Language>("en");
+
  useEffect(() => {
   const timer = window.setTimeout(() => {
     const savedImage = sessionStorage.getItem(
@@ -67,6 +76,14 @@ export default function ResultPage() {
     const savedPrediction = sessionStorage.getItem(
       "krishiNayanPrediction"
     );
+
+    const savedLanguage = sessionStorage.getItem(
+      LANGUAGE_STORAGE_KEY
+    );
+
+    if (savedLanguage === "en" || savedLanguage === "hi") {
+      setLanguage(savedLanguage);
+    }
 
     if (savedImage) {
       setScanImage(savedImage);
@@ -137,7 +154,11 @@ export default function ResultPage() {
             </span>
 
             <h2 className="mt-3 text-2xl font-bold text-forest">
-              {prediction?.detected_issue ?? "No prediction"}
+              {prediction
+                ? language === "hi"
+                  ? getDiseaseHindi(prediction.detected_issue).name_hi
+                  : prediction.detected_issue
+                : "No prediction"}
             </h2>
 
             <p className="mt-1 text-sm italic text-muted">
@@ -213,12 +234,17 @@ export default function ResultPage() {
 
             <div>
               <h3 className="font-bold text-forest">
-               Recommended action
+                {language === "hi" ? "अनुशंसित कार्रवाई" : "Recommended action"}
               </h3>
 
               <p className="mt-1 text-sm leading-5 text-muted">
-  {prediction?.recommended_action ??
-    "Complete a scan to receive treatment advice."}
+  {prediction
+    ? language === "hi"
+      ? getDiseaseHindi(prediction.detected_issue).advisory_hi
+      : prediction.recommended_action
+    : language === "hi"
+    ? "सलाह पाने के लिए स्कैन पूरा करें।"
+    : "Complete a scan to receive treatment advice."}
 </p>
             </div>
           </div>
@@ -351,7 +377,31 @@ export default function ResultPage() {
         <div className="mt-4 grid grid-cols-2 gap-3">
           <button
             type="button"
-            className="flex items-center justify-center gap-2 rounded-2xl bg-forest px-3 py-4 text-sm font-bold text-white"
+            onClick={() => {
+              if (!prediction) return;
+
+              const hindiText = getDiseaseHindi(
+                prediction.detected_issue
+              ).advisory_hi;
+
+              if (!("speechSynthesis" in window)) {
+                window.alert(
+                  "Voice playback isn't supported in this browser."
+                );
+                return;
+              }
+
+              window.speechSynthesis.cancel();
+
+              const utterance = new SpeechSynthesisUtterance(
+                hindiText
+              );
+              utterance.lang = "hi-IN";
+
+              window.speechSynthesis.speak(utterance);
+            }}
+            disabled={!prediction}
+            className="flex items-center justify-center gap-2 rounded-2xl bg-forest px-3 py-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Headphones size={19} />
             Listen in Hindi
@@ -365,6 +415,30 @@ export default function ResultPage() {
           >
             <UserRound size={19} />
             Recovery Plan
+          </button>
+        </div>
+
+        <h3 className="mt-5 text-sm font-bold uppercase tracking-widest text-muted">
+          Need more help?
+        </h3>
+
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => router.push("/chatbot")}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
+          >
+            <MessageCircle size={19} className="text-leaf" />
+            Ask AI Chatbot
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push("/policies")}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
+          >
+            <Landmark size={19} className="text-leaf" />
+            Govt. Schemes
           </button>
         </div>
 
