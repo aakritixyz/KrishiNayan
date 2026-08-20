@@ -1,0 +1,44 @@
+[
+    {
+        "rule_id": "SOIL_001",
+        "condition": "nitrogen_status is low or deficient",
+        "risk": "weak crop growth or yellowing risk",
+        "recommendation": "Use soil-test-based nitrogen planning. Do not overuse fertilizer blindly."
+    },
+    {
+        "rule_id": "SOIL_002",
+        "condition": "potassium_status is low and disease is detected",
+        "risk": "weaker disease recovery and lower stress tolerance",
+        "recommendation": "Add potassium-related advisory note and suggest expert confirmation."
+    },
+    {
+        "rule_id": "SOIL_003",
+        "condition": "organic_carbon_status is low",
+        "risk": "poor long-term soil health",
+        "recommendation": "Suggest FYM, compost or organic matter improvement."
+    },
+    {
+        "rule_id": "SOIL_004",
+        "condition": "zinc_status is low or deficient",
+        "risk": "micronutrient stress risk",
+        "recommendation": "Suggest soil-test-based zinc management."
+    },
+    {
+        "rule_id": "SOIL_005",
+        "condition": "boron_status is low or deficient",
+        "risk": "crop development and yield risk",
+        "recommendation": "Suggest local expert advice before micronutrient application."
+    },
+    {
+        "rule_id": "SOIL_006",
+        "condition": "salinity risk plus crop stress",
+        "risk": "reduced crop performance",
+        "recommendation": "Suggest salinity-aware irrigation and local expert consultation."
+    },
+    {
+        "rule_id": "SOIL_007",
+        "condition": "high soil moisture or poor drainage plus fungal disease plus high humidity",
+        "risk": "high disease spread risk",
+        "recommendation": "Improve drainage, avoid overhead irrigation, and avoid spraying before rain."
+    }
+]

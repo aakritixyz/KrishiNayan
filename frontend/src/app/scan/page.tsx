@@ -8,13 +8,107 @@ import {
   MapPin,
   ScanLine,
 } from "lucide-react";
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
+
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [language, setLanguage] = useState<Language>("en");
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+    if (stored === "en" || stored === "hi") {
+      setLanguage(stored);
+    }
+  }, []);
+
+  function toggleLanguage() {
+    const next: Language = language === "en" ? "hi" : "en";
+    setLanguage(next);
+    sessionStorage.setItem(LANGUAGE_STORAGE_KEY, next);
+  }
+
+  const [states, setStates] = useState<string[]>([]);
+  const [districts, setDistricts] = useState<string[]>([]);
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
+
+  type Crop = { id: string; label: string; available: boolean };
+
+  const [crops, setCrops] = useState<Crop[]>([
+    { id: "tomato", label: "Tomato", available: true },
+  ]);
+  const [selectedCrop, setSelectedCrop] = useState<string>("tomato");
+
+  useEffect(() => {
+    async function loadCrops() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/crops`);
+        const data = await response.json();
+
+        if (data.crops?.length) {
+          setCrops(data.crops);
+        }
+      } catch {
+        // Fall back to Tomato-only if the crops list can't be fetched.
+      }
+    }
+
+    loadCrops();
+  }, []);
+
+  useEffect(() => {
+    async function loadStates() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/soil/states`);
+        const data = await response.json();
+        setStates(data.states ?? []);
+      } catch {
+        // Soil data is optional context — scanning still works without it.
+        setStates([]);
+      }
+    }
+
+    loadStates();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedState) {
+      setDistricts([]);
+      setSelectedDistrict("");
+      return;
+    }
+
+    async function loadDistricts() {
+      setIsLoadingDistricts(true);
+      setSelectedDistrict("");
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/soil/districts?state=${encodeURIComponent(
+            selectedState
+          )}`
+        );
+        const data = await response.json();
+        setDistricts(data.districts ?? []);
+      } catch {
+        setDistricts([]);
+      } finally {
+        setIsLoadingDistricts(false);
+      }
+    }
+
+    loadDistricts();
+  }, [selectedState]);
+
   function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
@@ -40,10 +134,19 @@ async function handleAnalyse() {
 
   const formData = new FormData();
   formData.append("file", selectedFile);
+  formData.append("crop", selectedCrop);
+
+  if (selectedState) {
+    formData.append("state", selectedState);
+  }
+
+  if (selectedDistrict) {
+    formData.append("district", selectedDistrict);
+  }
 
   try {
     const response = await fetch(
-      "http://127.0.0.1:8001/predict",
+      `${API_BASE_URL}/predict`,
       {
         method: "POST",
         body: formData,
@@ -93,7 +196,7 @@ async function handleAnalyse() {
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          Upload a clear tomato-leaf photo for disease analysis.
+          Upload a clear leaf photo for disease analysis.
         </p>
 
         <label
@@ -144,20 +247,92 @@ async function handleAnalyse() {
           )}
         </label>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {["🍅 Tomato", "🌼 Flowering", "🌐 English"].map((item) => (
-            <span
-              key={item}
-              className="rounded-full border border-forest/10 bg-white px-4 py-2 text-sm font-semibold text-forest"
-            >
-              {item}
+        <div className="mt-5 rounded-2xl bg-white p-4">
+          <p className="text-sm font-bold text-forest">Crop</p>
+
+          <select
+            value={selectedCrop}
+            onChange={(event) => setSelectedCrop(event.target.value)}
+            className="mt-2 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
+          >
+            {crops.map((crop) => (
+              <option
+                key={crop.id}
+                value={crop.id}
+                disabled={!crop.available}
+              >
+                {crop.label}
+                {!crop.available ? " (coming soon)" : ""}
+              </option>
+            ))}
+          </select>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">
+              🌼 Flowering
             </span>
-          ))}
+
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest transition hover:border-leaf"
+            >
+              🌐 {language === "en" ? "English" : "हिंदी"}
+            </button>
+          </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-medium text-forest">
-          <MapPin size={18} className="text-leaf" />
-          Pune, Maharashtra
+        <div className="mt-4 rounded-2xl bg-white p-4">
+          <p className="flex items-center gap-2 text-sm font-bold text-forest">
+            <MapPin size={18} className="text-leaf" />
+            Soil context (optional)
+          </p>
+
+          <p className="mt-1 text-xs leading-5 text-muted">
+            Choose your state and district to see how local soil
+            conditions may be affecting your crop, alongside the
+            leaf diagnosis.
+          </p>
+
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <select
+              value={selectedState}
+              onChange={(event) => setSelectedState(event.target.value)}
+              className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
+            >
+              <option value="">State</option>
+              {states.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={selectedDistrict}
+              onChange={(event) =>
+                setSelectedDistrict(event.target.value)
+              }
+              disabled={!selectedState || isLoadingDistricts}
+              className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest disabled:opacity-50"
+            >
+              <option value="">
+                {isLoadingDistricts ? "Loading..." : "District"}
+              </option>
+              {districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {states.length === 0 && (
+            <p className="mt-2 text-xs text-muted">
+              Soil data is currently unavailable — diagnosis will
+              still work without it.
+            </p>
+          )}
         </div>
 
         <div className="mt-5 rounded-[24px] border border-forest/10 bg-white p-4">

@@ -16,14 +16,21 @@ from app.services.weather_service import (
 )
 
 from app.core.config import (
+    CROP_CONFIG,
     MAX_IMAGE_SIZE_BYTES
 )
 
 from app.services.ml_service import (
+    generate_gradcam_overlay,
     predict_disease
 )
 
 from app.services.storage_service import save_uploaded_image
+
+from app.services.soil_service import (
+    get_soil_context,
+    get_soil_profile
+)
 
 router = APIRouter()
 
@@ -38,7 +45,10 @@ ALLOWED_CONTENT_TYPES = {
 async def predict_image(
     file: UploadFile = File(...),
     latitude: float | None = Form(None),
-    longitude: float | None = Form(None)
+    longitude: float | None = Form(None),
+    state: str | None = Form(None),
+    district: str | None = Form(None),
+    crop: str | None = Form("tomato")
 ):
     """
     Receive a tomato-leaf image and return
@@ -77,7 +87,8 @@ async def predict_image(
 
     try:
         prediction = predict_disease(
-            image_bytes
+            image_bytes,
+            crop=crop
         )
         
         weather = get_weather_data(
@@ -93,10 +104,31 @@ async def predict_image(
             humidity=weather["humidity"]
         )
 
+        soil_context = None
+
+        if state and district:
+            soil_profile = get_soil_profile(state, district)
+
+            soil_context = get_soil_context(
+                disease=prediction["disease"],
+                confidence=prediction["confidence"],
+                soil_profile=soil_profile,
+                rain_expected=weather["rain_expected"],
+                humidity=weather["humidity"]
+            )
+
+        gradcam_result = generate_gradcam_overlay(
+            image_bytes,
+            crop=crop
+        )
+
     except FileNotFoundError as error:
         raise HTTPException(
             status_code=503,
-            detail=str(error)
+            detail=(
+                f"{error} This crop is not available yet — "
+                "please try Tomato for now."
+            )
         ) from error
 
     except ValueError as error:
@@ -106,7 +138,9 @@ async def predict_image(
         ) from error
 
     return {
-    "crop": "Tomato",
+    "crop": CROP_CONFIG.get(
+        prediction["crop"], {}
+    ).get("label", prediction["crop"].title()),
     "filename": file.filename,
     "detected_issue": prediction["disease"],
     "saved_image_path": saved_image_path,
@@ -116,5 +150,9 @@ async def predict_image(
     "severity": advisory["severity"],
     "weather_risk": advisory["weather_risk"],
     "recommended_action": advisory["recommended_action"],
-    "farmer_message": advisory["farmer_message"]
+    "farmer_message": advisory["farmer_message"],
+    "soil_context": soil_context,
+    "gradcam_image": (
+        gradcam_result["heatmap_image"] if gradcam_result else None
+    )
 }

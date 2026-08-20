@@ -1,0 +1,225 @@
+{
+  "note": "Representative district-level soil profiles for MVP demo, based on typical agro-climatic characteristics of each region (general Soil Health Card patterns). For production, replace with actual Soil Health Card district-wise data.",
+  "profiles": [
+    {
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "soil_type": "Alluvial",
+      "ph": 7.4,
+      "nitrogen": "Medium",
+      "phosphorus": "High",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Punjab",
+      "district": "Amritsar",
+      "soil_type": "Alluvial",
+      "ph": 7.6,
+      "nitrogen": "Medium",
+      "phosphorus": "Medium",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Punjab",
+      "district": "Bathinda",
+      "soil_type": "Sandy Loam",
+      "ph": 7.9,
+      "nitrogen": "Low",
+      "phosphorus": "Medium",
+      "potassium": "Low",
+      "organic_carbon": "Low",
+      "moisture_retention": "Low"
+    },
+    {
+      "state": "Punjab",
+      "district": "Jalandhar",
+      "soil_type": "Alluvial",
+      "ph": 7.3,
+      "nitrogen": "Medium",
+      "phosphorus": "High",
+      "potassium": "Medium",
+      "organic_carbon": "Medium",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Haryana",
+      "district": "Karnal",
+      "soil_type": "Alluvial",
+      "ph": 7.5,
+      "nitrogen": "Medium",
+      "phosphorus": "Medium",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Haryana",
+      "district": "Hisar",
+      "soil_type": "Sandy Loam",
+      "ph": 8.0,
+      "nitrogen": "Low",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "Low"
+    },
+    {
+      "state": "Haryana",
+      "district": "Kurukshetra",
+      "soil_type": "Alluvial",
+      "ph": 7.4,
+      "nitrogen": "Medium",
+      "phosphorus": "Medium",
+      "potassium": "Medium",
+      "organic_carbon": "Medium",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Haryana",
+      "district": "Sirsa",
+      "soil_type": "Sandy Loam",
+      "ph": 8.1,
+      "nitrogen": "Low",
+      "phosphorus": "Low",
+      "potassium": "Low",
+      "organic_carbon": "Low",
+      "moisture_retention": "Low"
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Meerut",
+      "soil_type": "Alluvial",
+      "ph": 7.6,
+      "nitrogen": "Medium",
+      "phosphorus": "Medium",
+      "potassium": "Medium",
+      "organic_carbon": "Medium",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Lucknow",
+      "soil_type": "Alluvial",
+      "ph": 7.8,
+      "nitrogen": "Medium",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Varanasi",
+      "soil_type": "Alluvial",
+      "ph": 7.9,
+      "nitrogen": "Low",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "High"
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Agra",
+      "soil_type": "Sandy Loam",
+      "ph": 8.0,
+      "nitrogen": "Low",
+      "phosphorus": "Low",
+      "potassium": "Low",
+      "organic_carbon": "Low",
+      "moisture_retention": "Low"
+    },
+    {
+      "state": "Bihar",
+      "district": "Patna",
+      "soil_type": "Alluvial",
+      "ph": 7.7,
+      "nitrogen": "Medium",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Medium",
+      "moisture_retention": "High"
+    },
+    {
+      "state": "Bihar",
+      "district": "Muzaffarpur",
+      "soil_type": "Alluvial",
+      "ph": 7.5,
+      "nitrogen": "Medium",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Medium",
+      "moisture_retention": "High"
+    },
+    {
+      "state": "Bihar",
+      "district": "Bhagalpur",
+      "soil_type": "Alluvial",
+      "ph": 7.6,
+      "nitrogen": "Low",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Low",
+      "moisture_retention": "High"
+    },
+    {
+      "state": "Bihar",
+      "district": "Gaya",
+      "soil_type": "Red and Yellow",
+      "ph": 6.8,
+      "nitrogen": "Low",
+      "phosphorus": "Low",
+      "potassium": "Low",
+      "organic_carbon": "Low",
+      "moisture_retention": "Low"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Nashik",
+      "soil_type": "Black Cotton (Regur)",
+      "ph": 7.2,
+      "nitrogen": "Medium",
+      "phosphorus": "Medium",
+      "potassium": "High",
+      "organic_carbon": "Medium",
+      "moisture_retention": "High"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Pune",
+      "soil_type": "Black Cotton (Regur)",
+      "ph": 7.0,
+      "nitrogen": "Medium",
+      "phosphorus": "Medium",
+      "potassium": "High",
+      "organic_carbon": "Medium",
+      "moisture_retention": "Medium"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Nagpur",
+      "soil_type": "Black Cotton (Regur)",
+      "ph": 7.4,
+      "nitrogen": "Low",
+      "phosphorus": "Medium",
+      "potassium": "High",
+      "organic_carbon": "Low",
+      "moisture_retention": "High"
+    },
+    {
+      "state": "Maharashtra",
+      "district": "Kolhapur",
+      "soil_type": "Laterite",
+      "ph": 6.5,
+      "nitrogen": "Medium",
+      "phosphorus": "Low",
+      "potassium": "Medium",
+      "organic_carbon": "Medium",
+      "moisture_retention": "High"
+    }
+  ]
+}

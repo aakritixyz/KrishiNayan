@@ -9,10 +9,18 @@ import {
   CalendarClock,
   CloudRain,
   Headphones,
+  Landmark,
+  MessageCircle,
   ShieldCheck,
+  Sprout,
   UserRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  getDiseaseHindi,
+  LANGUAGE_STORAGE_KEY,
+  type Language,
+} from "@/lib/hindiTranslations";
 
 type PredictionResult = {
   detected_issue: string;
@@ -29,6 +37,22 @@ type PredictionResult = {
     rain_expected: boolean;
     source: string;
   };
+  soil_context: {
+    state: string;
+    district: string;
+    soil_type: string;
+    ph: number;
+    nitrogen: string;
+    phosphorus: string;
+    potassium: string;
+    organic_carbon: string;
+    moisture_retention: string;
+    soil_risk_level: string;
+    soil_risk_factors: string[];
+    soil_recommendations: string[];
+    summary: string;
+  } | null;
+  gradcam_image: string | null;
 };
 
 
@@ -41,6 +65,8 @@ export default function ResultPage() {
   const [prediction, setPrediction] =
   useState<PredictionResult | null>(null);
 
+  const [language, setLanguage] = useState<Language>("en");
+
  useEffect(() => {
   const timer = window.setTimeout(() => {
     const savedImage = sessionStorage.getItem(
@@ -50,6 +76,14 @@ export default function ResultPage() {
     const savedPrediction = sessionStorage.getItem(
       "krishiNayanPrediction"
     );
+
+    const savedLanguage = sessionStorage.getItem(
+      LANGUAGE_STORAGE_KEY
+    );
+
+    if (savedLanguage === "en" || savedLanguage === "hi") {
+      setLanguage(savedLanguage);
+    }
 
     if (savedImage) {
       setScanImage(savedImage);
@@ -120,7 +154,11 @@ export default function ResultPage() {
             </span>
 
             <h2 className="mt-3 text-2xl font-bold text-forest">
-              {prediction?.detected_issue ?? "No prediction"}
+              {prediction
+                ? language === "hi"
+                  ? getDiseaseHindi(prediction.detected_issue).name_hi
+                  : prediction.detected_issue
+                : "No prediction"}
             </h2>
 
             <p className="mt-1 text-sm italic text-muted">
@@ -148,6 +186,29 @@ export default function ResultPage() {
           </div>
         </div>
 
+        {prediction?.gradcam_image && (
+          <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+            <h3 className="font-bold text-forest">
+              Why the AI thinks this
+            </h3>
+
+            <p className="mt-1 text-sm leading-5 text-muted">
+              The highlighted region shows which part of the leaf
+              most influenced this diagnosis.
+            </p>
+
+            <div className="relative mt-3 h-[220px] overflow-hidden rounded-[18px] bg-forest/10">
+              <Image
+                src={prediction.gradcam_image}
+                alt="Grad-CAM heatmap showing the diagnosed region"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            </div>
+          </div>
+        )}
+
         <div className="mt-4 flex items-center gap-4 rounded-[22px] bg-warning p-4 text-forest-deep">
           <CloudRain size={34} className="shrink-0" />
 
@@ -173,12 +234,17 @@ export default function ResultPage() {
 
             <div>
               <h3 className="font-bold text-forest">
-               Recommended action
+                {language === "hi" ? "अनुशंसित कार्रवाई" : "Recommended action"}
               </h3>
 
               <p className="mt-1 text-sm leading-5 text-muted">
-  {prediction?.recommended_action ??
-    "Complete a scan to receive treatment advice."}
+  {prediction
+    ? language === "hi"
+      ? getDiseaseHindi(prediction.detected_issue).advisory_hi
+      : prediction.recommended_action
+    : language === "hi"
+    ? "सलाह पाने के लिए स्कैन पूरा करें।"
+    : "Complete a scan to receive treatment advice."}
 </p>
             </div>
           </div>
@@ -196,10 +262,146 @@ export default function ResultPage() {
           </div>
         </div>
 
+        {prediction?.soil_context && (
+          <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+            <div className="flex gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest text-leaf">
+                <Sprout size={23} />
+              </span>
+
+              <div>
+                <h3 className="font-bold text-forest">
+                  Soil context —{" "}
+                  {prediction.soil_context.district},{" "}
+                  {prediction.soil_context.state}
+                </h3>
+
+                <span
+                  className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                    prediction.soil_context.soil_risk_level === "High"
+                      ? "bg-danger/15 text-danger"
+                      : prediction.soil_context.soil_risk_level ===
+                        "Medium"
+                      ? "bg-warning/40 text-forest-deep"
+                      : "bg-leaf/30 text-forest"
+                  }`}
+                >
+                  {prediction.soil_context.soil_risk_level} soil risk
+                </span>
+
+                <p className="mt-2 text-sm leading-5 text-muted">
+                  {prediction.soil_context.summary}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-2 border-t border-forest/10 pt-3 text-center text-xs">
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.soil_type}
+                </p>
+                <p className="text-muted">Soil type</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.ph}
+                </p>
+                <p className="text-muted">pH</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.moisture_retention}
+                </p>
+                <p className="text-muted">Moisture</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.nitrogen}
+                </p>
+                <p className="text-muted">Nitrogen</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.phosphorus}
+                </p>
+                <p className="text-muted">Phosphorus</p>
+              </div>
+
+              <div>
+                <p className="font-bold text-forest">
+                  {prediction.soil_context.potassium}
+                </p>
+                <p className="text-muted">Potassium</p>
+              </div>
+            </div>
+
+            {prediction.soil_context.soil_risk_factors.length > 0 && (
+              <div className="mt-3 border-t border-forest/10 pt-3">
+                <p className="text-xs font-bold text-forest">
+                  Why soil is adding risk
+                </p>
+
+                <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted">
+                  {prediction.soil_context.soil_risk_factors.map(
+                    (factor) => (
+                      <li key={factor}>{factor}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+
+            {prediction.soil_context.soil_recommendations.length >
+              0 && (
+              <div className="mt-3 border-t border-forest/10 pt-3">
+                <p className="text-xs font-bold text-forest">
+                  Soil-based recommendations
+                </p>
+
+                <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted">
+                  {prediction.soil_context.soil_recommendations.map(
+                    (rec) => (
+                      <li key={rec}>{rec}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="mt-4 grid grid-cols-2 gap-3">
           <button
             type="button"
-            className="flex items-center justify-center gap-2 rounded-2xl bg-forest px-3 py-4 text-sm font-bold text-white"
+            onClick={() => {
+              if (!prediction) return;
+
+              const hindiText = getDiseaseHindi(
+                prediction.detected_issue
+              ).advisory_hi;
+
+              if (!("speechSynthesis" in window)) {
+                window.alert(
+                  "Voice playback isn't supported in this browser."
+                );
+                return;
+              }
+
+              window.speechSynthesis.cancel();
+
+              const utterance = new SpeechSynthesisUtterance(
+                hindiText
+              );
+              utterance.lang = "hi-IN";
+
+              window.speechSynthesis.speak(utterance);
+            }}
+            disabled={!prediction}
+            className="flex items-center justify-center gap-2 rounded-2xl bg-forest px-3 py-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Headphones size={19} />
             Listen in Hindi
@@ -213,6 +415,30 @@ export default function ResultPage() {
           >
             <UserRound size={19} />
             Recovery Plan
+          </button>
+        </div>
+
+        <h3 className="mt-5 text-sm font-bold uppercase tracking-widest text-muted">
+          Need more help?
+        </h3>
+
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => router.push("/chatbot")}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
+          >
+            <MessageCircle size={19} className="text-leaf" />
+            Ask AI Chatbot
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push("/policies")}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
+          >
+            <Landmark size={19} className="text-leaf" />
+            Govt. Schemes
           </button>
         </div>
 

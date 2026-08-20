@@ -5,6 +5,7 @@ import {
   CloudOff,
   CloudSun,
   Headphones,
+  Landmark,
   MapPinned,
   Languages,
   Leaf,
@@ -83,17 +84,38 @@ export default function Home() {
               </span>
             </button>
 
-            <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95">
+            <Link
+              href="/chatbot"
+              className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95"
+            >
               <Headphones size={24} className="shrink-0 text-leaf" />
 
               <span>
                 <span className="block font-semibold">Ask Expert</span>
                 <span className="mt-1 block text-xs text-white/65">
-                  Get KVK support
+                  AI chat + KVK support
                 </span>
               </span>
-            </button>
+            </Link>
           </div>
+
+          <Link
+            href="/policies"
+            className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-leaf/20 text-leaf">
+              <Landmark size={22} />
+            </span>
+
+            <span>
+              <span className="block font-semibold">
+                Government Schemes
+              </span>
+              <span className="mt-1 block text-xs text-white/65">
+                Check what you&apos;re eligible for
+              </span>
+            </span>
+          </Link>
         </div>
 
         <BottomNav />
