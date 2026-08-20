@@ -1,0 +1,602 @@
+[
+    {
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "crop": "Wheat",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Medium",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "High",
+            "potassium_status": "Low",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Deficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 5941
+            },
+            "organic_carbon": {
+                "status": "Medium",
+                "value": 3870
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 1
+            },
+            "phosphorus": {
+                "status": "High",
+                "value": 2888
+            },
+            "potassium": {
+                "status": "Low",
+                "value": 4446
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 5584
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 5724
+            },
+            "boron": {
+                "status": "Deficient",
+                "value": 513
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; boron deficiency may affect crop development; salinity risk may affect crop performance",
+        "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance confirm boron requirement before application avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Punjab",
+        "district": "Patiala",
+        "crop": "Wheat",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Low",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "Low",
+            "potassium_status": "Low",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Sufficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 11233
+            },
+            "organic_carbon": {
+                "status": "Low",
+                "value": 6688
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 28
+            },
+            "phosphorus": {
+                "status": "Low",
+                "value": 4915
+            },
+            "potassium": {
+                "status": "Low",
+                "value": 8682
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 5208
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 8398
+            },
+            "boron": {
+                "status": "Sufficient",
+                "value": 6
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; low organic carbon may weaken long-term soil health; salinity risk may affect crop performance",
+        "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance improve organic matter using FYM or compost avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Punjab",
+        "district": "Bathinda",
+        "crop": "Wheat",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Low",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "Medium",
+            "potassium_status": "Low",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Deficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 20061
+            },
+            "organic_carbon": {
+                "status": "Low",
+                "value": 10716
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 11004
+            },
+            "phosphorus": {
+                "status": "Medium",
+                "value": 8935
+            },
+            "potassium": {
+                "status": "Low",
+                "value": 18784
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 17604
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 19875
+            },
+            "boron": {
+                "status": "Deficient",
+                "value": 3542
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; low organic carbon may weaken long-term soil health; boron deficiency may affect crop development; salinity risk may affect crop performance",
+        "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance improve organic matter using FYM or compost confirm boron requirement before application avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Punjab",
+        "district": "Amritsar",
+        "crop": "Wheat",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Medium",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "Low",
+            "potassium_status": "Low",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Sufficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 23636
+            },
+            "organic_carbon": {
+                "status": "Medium",
+                "value": 14005
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 34
+            },
+            "phosphorus": {
+                "status": "Low",
+                "value": 1776
+            },
+            "potassium": {
+                "status": "Low",
+                "value": 1643
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 2565
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 2191
+            },
+            "boron": {
+                "status": "Sufficient",
+                "value": 5
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; salinity risk may affect crop performance",
+        "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Punjab",
+        "district": "Sangrur",
+        "crop": "Wheat",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Medium",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "Medium",
+            "potassium_status": "Low",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Sufficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 25665
+            },
+            "organic_carbon": {
+                "status": "Medium",
+                "value": 18586
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 65
+            },
+            "phosphorus": {
+                "status": "Medium",
+                "value": 13214
+            },
+            "potassium": {
+                "status": "Low",
+                "value": 16210
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 22550
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 23590
+            },
+            "boron": {
+                "status": "Sufficient",
+                "value": 89
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; salinity risk may affect crop performance",
+        "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Telangana",
+        "district": "Karimnagar",
+        "crop": "Rice",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Medium",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "High",
+            "potassium_status": "High",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Sufficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 5811
+            },
+            "organic_carbon": {
+                "status": "Medium",
+                "value": 2850
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 5854
+            },
+            "phosphorus": {
+                "status": "High",
+                "value": 5796
+            },
+            "potassium": {
+                "status": "High",
+                "value": 3958
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 5855
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 1
+            },
+            "boron": {
+                "status": "Sufficient",
+                "value": 5663
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; salinity risk may affect crop performance",
+        "recommendation": "Rice in Telangana needs moisture-retaining soil, but poor drainage, excess nitrogen and humid conditions can increase disease risk. use soil-test-based nitrogen planning avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Telangana",
+        "district": "Nizamabad",
+        "crop": "Rice",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Low",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "High",
+            "potassium_status": "Medium",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Sufficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 2115
+            },
+            "organic_carbon": {
+                "status": "Low",
+                "value": 1283
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 1999
+            },
+            "phosphorus": {
+                "status": "High",
+                "value": 2035
+            },
+            "potassium": {
+                "status": "Medium",
+                "value": 972
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 1469
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 1755
+            },
+            "boron": {
+                "status": "Sufficient",
+                "value": 1854
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low organic carbon may weaken long-term soil health; salinity risk may affect crop performance",
+        "recommendation": "Rice in Telangana needs moisture-retaining soil, but poor drainage, excess nitrogen and humid conditions can increase disease risk. use soil-test-based nitrogen planning improve organic matter using FYM or compost avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Telangana",
+        "district": "Warangal",
+        "crop": "Rice",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Low",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "High",
+            "potassium_status": "High",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Sufficient",
+            "boron_status": "Sufficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 4729
+            },
+            "organic_carbon": {
+                "status": "Low",
+                "value": 3212
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 4095
+            },
+            "phosphorus": {
+                "status": "High",
+                "value": 4264
+            },
+            "potassium": {
+                "status": "High",
+                "value": 3478
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 4727
+            },
+            "zinc": {
+                "status": "Sufficient",
+                "value": 2
+            },
+            "boron": {
+                "status": "Sufficient",
+                "value": 1
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low organic carbon may weaken long-term soil health; salinity risk may affect crop performance",
+        "recommendation": "Rice in Telangana needs moisture-retaining soil, but poor drainage, excess nitrogen and humid conditions can increase disease risk. use soil-test-based nitrogen planning improve organic matter using FYM or compost avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Telangana",
+        "district": "Nalgonda",
+        "crop": "Rice",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Low",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "High",
+            "potassium_status": "Medium",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Deficient",
+            "boron_status": "Deficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 2946
+            },
+            "organic_carbon": {
+                "status": "Low",
+                "value": 2090
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 2133
+            },
+            "phosphorus": {
+                "status": "High",
+                "value": 2689
+            },
+            "potassium": {
+                "status": "Medium",
+                "value": 1229
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 2466
+            },
+            "zinc": {
+                "status": "Deficient",
+                "value": 1734
+            },
+            "boron": {
+                "status": "Deficient",
+                "value": 1814
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low organic carbon may weaken long-term soil health; zinc deficiency may affect crop growth; boron deficiency may affect crop development; salinity risk may affect crop performance",
+        "recommendation": "Rice in Telangana needs moisture-retaining soil, but poor drainage, excess nitrogen and humid conditions can increase disease risk. use soil-test-based nitrogen planning improve organic matter using FYM or compost check zinc requirement through local advisory confirm boron requirement before application avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    },
+    {
+        "state": "Telangana",
+        "district": "Khammam",
+        "crop": "Rice",
+        "soil_profile": {
+            "ph_status": "unknown",
+            "ec_status": "Non Saline",
+            "organic_carbon_status": "Low",
+            "nitrogen_status": "Low",
+            "phosphorus_status": "High",
+            "potassium_status": "High",
+            "sulphur_status": "Sufficient",
+            "zinc_status": "Deficient",
+            "boron_status": "Deficient"
+        },
+        "dominant_value_counts": {
+            "ph": {
+                "status": "unknown",
+                "value": null
+            },
+            "ec": {
+                "status": "Non Saline",
+                "value": 7609
+            },
+            "organic_carbon": {
+                "status": "Low",
+                "value": 6016
+            },
+            "nitrogen": {
+                "status": "Low",
+                "value": 6890
+            },
+            "phosphorus": {
+                "status": "High",
+                "value": 7215
+            },
+            "potassium": {
+                "status": "High",
+                "value": 5915
+            },
+            "sulphur": {
+                "status": "Sufficient",
+                "value": 7498
+            },
+            "zinc": {
+                "status": "Deficient",
+                "value": 6015
+            },
+            "boron": {
+                "status": "Deficient",
+                "value": 5952
+            }
+        },
+        "soil_risk_summary": "low nitrogen may reduce crop growth; low organic carbon may weaken long-term soil health; zinc deficiency may affect crop growth; boron deficiency may affect crop development; salinity risk may affect crop performance",
+        "recommendation": "Rice in Telangana needs moisture-retaining soil, but poor drainage, excess nitrogen and humid conditions can increase disease risk. use soil-test-based nitrogen planning improve organic matter using FYM or compost check zinc requirement through local advisory confirm boron requirement before application avoid poor-quality irrigation and consult local expert for salinity management.",
+        "source": [
+            "Soil Health Card Dataset",
+            "ICAR / regional agronomy references"
+        ]
+    }
+]

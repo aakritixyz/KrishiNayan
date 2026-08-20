@@ -1,0 +1,11 @@
+crop,class_name,train,validation,test,total
+Rice,Rice___Healthy,0,0,0,0
+Rice,Rice___Brown_Spot,0,0,0,0
+Rice,Rice___Leaf_Blast,0,0,0,0
+Rice,Rice___Bacterial_Leaf_Blight,0,0,0,0
+Rice,Rice___Hispa,0,0,0,0
+Wheat,Wheat___Healthy,0,0,0,0
+Wheat,Wheat___Leaf_Rust,0,0,0,0
+Wheat,Wheat___Yellow_Rust,0,0,0,0
+Wheat,Wheat___Powdery_Mildew,0,0,0,0
+Wheat,Wheat___Septoria_Leaf_Blotch,0,0,0,0
