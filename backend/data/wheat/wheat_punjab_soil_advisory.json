@@ -1,0 +1,302 @@
+[
+  {
+    "state": "Punjab",
+    "district": "Ludhiana",
+    "crop": "Wheat",
+    "soil_profile": {
+      "ph_status": "unknown",
+      "ec_status": "Non Saline",
+      "organic_carbon_status": "Medium",
+      "nitrogen_status": "Low",
+      "phosphorus_status": "High",
+      "potassium_status": "Low",
+      "sulphur_status": "Sufficient",
+      "zinc_status": "Sufficient",
+      "boron_status": "Deficient"
+    },
+    "dominant_value_counts": {
+      "ph": {
+        "status": "unknown",
+        "value": null
+      },
+      "ec": {
+        "status": "Non Saline",
+        "value": 5941
+      },
+      "organic_carbon": {
+        "status": "Medium",
+        "value": 3870
+      },
+      "nitrogen": {
+        "status": "Low",
+        "value": 1
+      },
+      "phosphorus": {
+        "status": "High",
+        "value": 2888
+      },
+      "potassium": {
+        "status": "Low",
+        "value": 4446
+      },
+      "sulphur": {
+        "status": "Sufficient",
+        "value": 5584
+      },
+      "zinc": {
+        "status": "Sufficient",
+        "value": 5724
+      },
+      "boron": {
+        "status": "Deficient",
+        "value": 513
+      }
+    },
+    "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; boron deficiency may affect crop development; salinity risk may affect crop performance",
+    "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance confirm boron requirement before application avoid poor-quality irrigation and consult local expert for salinity management.",
+    "source": [
+      "Soil Health Card Dataset",
+      "ICAR / regional agronomy references"
+    ]
+  },
+  {
+    "state": "Punjab",
+    "district": "Patiala",
+    "crop": "Wheat",
+    "soil_profile": {
+      "ph_status": "unknown",
+      "ec_status": "Non Saline",
+      "organic_carbon_status": "Low",
+      "nitrogen_status": "Low",
+      "phosphorus_status": "Low",
+      "potassium_status": "Low",
+      "sulphur_status": "Sufficient",
+      "zinc_status": "Sufficient",
+      "boron_status": "Sufficient"
+    },
+    "dominant_value_counts": {
+      "ph": {
+        "status": "unknown",
+        "value": null
+      },
+      "ec": {
+        "status": "Non Saline",
+        "value": 11233
+      },
+      "organic_carbon": {
+        "status": "Low",
+        "value": 6688
+      },
+      "nitrogen": {
+        "status": "Low",
+        "value": 28
+      },
+      "phosphorus": {
+        "status": "Low",
+        "value": 4915
+      },
+      "potassium": {
+        "status": "Low",
+        "value": 8682
+      },
+      "sulphur": {
+        "status": "Sufficient",
+        "value": 5208
+      },
+      "zinc": {
+        "status": "Sufficient",
+        "value": 8398
+      },
+      "boron": {
+        "status": "Sufficient",
+        "value": 6
+      }
+    },
+    "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; low organic carbon may weaken long-term soil health; salinity risk may affect crop performance",
+    "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance improve organic matter using FYM or compost avoid poor-quality irrigation and consult local expert for salinity management.",
+    "source": [
+      "Soil Health Card Dataset",
+      "ICAR / regional agronomy references"
+    ]
+  },
+  {
+    "state": "Punjab",
+    "district": "Bathinda",
+    "crop": "Wheat",
+    "soil_profile": {
+      "ph_status": "unknown",
+      "ec_status": "Non Saline",
+      "organic_carbon_status": "Low",
+      "nitrogen_status": "Low",
+      "phosphorus_status": "Medium",
+      "potassium_status": "Low",
+      "sulphur_status": "Sufficient",
+      "zinc_status": "Sufficient",
+      "boron_status": "Deficient"
+    },
+    "dominant_value_counts": {
+      "ph": {
+        "status": "unknown",
+        "value": null
+      },
+      "ec": {
+        "status": "Non Saline",
+        "value": 20061
+      },
+      "organic_carbon": {
+        "status": "Low",
+        "value": 10716
+      },
+      "nitrogen": {
+        "status": "Low",
+        "value": 11004
+      },
+      "phosphorus": {
+        "status": "Medium",
+        "value": 8935
+      },
+      "potassium": {
+        "status": "Low",
+        "value": 18784
+      },
+      "sulphur": {
+        "status": "Sufficient",
+        "value": 17604
+      },
+      "zinc": {
+        "status": "Sufficient",
+        "value": 19875
+      },
+      "boron": {
+        "status": "Deficient",
+        "value": 3542
+      }
+    },
+    "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; low organic carbon may weaken long-term soil health; boron deficiency may affect crop development; salinity risk may affect crop performance",
+    "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance improve organic matter using FYM or compost confirm boron requirement before application avoid poor-quality irrigation and consult local expert for salinity management.",
+    "source": [
+      "Soil Health Card Dataset",
+      "ICAR / regional agronomy references"
+    ]
+  },
+  {
+    "state": "Punjab",
+    "district": "Amritsar",
+    "crop": "Wheat",
+    "soil_profile": {
+      "ph_status": "unknown",
+      "ec_status": "Non Saline",
+      "organic_carbon_status": "Medium",
+      "nitrogen_status": "Low",
+      "phosphorus_status": "Low",
+      "potassium_status": "Low",
+      "sulphur_status": "Sufficient",
+      "zinc_status": "Sufficient",
+      "boron_status": "Sufficient"
+    },
+    "dominant_value_counts": {
+      "ph": {
+        "status": "unknown",
+        "value": null
+      },
+      "ec": {
+        "status": "Non Saline",
+        "value": 23636
+      },
+      "organic_carbon": {
+        "status": "Medium",
+        "value": 14005
+      },
+      "nitrogen": {
+        "status": "Low",
+        "value": 34
+      },
+      "phosphorus": {
+        "status": "Low",
+        "value": 1776
+      },
+      "potassium": {
+        "status": "Low",
+        "value": 1643
+      },
+      "sulphur": {
+        "status": "Sufficient",
+        "value": 2565
+      },
+      "zinc": {
+        "status": "Sufficient",
+        "value": 2191
+      },
+      "boron": {
+        "status": "Sufficient",
+        "value": 5
+      }
+    },
+    "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; salinity risk may affect crop performance",
+    "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance avoid poor-quality irrigation and consult local expert for salinity management.",
+    "source": [
+      "Soil Health Card Dataset",
+      "ICAR / regional agronomy references"
+    ]
+  },
+  {
+    "state": "Punjab",
+    "district": "Sangrur",
+    "crop": "Wheat",
+    "soil_profile": {
+      "ph_status": "unknown",
+      "ec_status": "Non Saline",
+      "organic_carbon_status": "Medium",
+      "nitrogen_status": "Low",
+      "phosphorus_status": "Medium",
+      "potassium_status": "Low",
+      "sulphur_status": "Sufficient",
+      "zinc_status": "Sufficient",
+      "boron_status": "Sufficient"
+    },
+    "dominant_value_counts": {
+      "ph": {
+        "status": "unknown",
+        "value": null
+      },
+      "ec": {
+        "status": "Non Saline",
+        "value": 25665
+      },
+      "organic_carbon": {
+        "status": "Medium",
+        "value": 18586
+      },
+      "nitrogen": {
+        "status": "Low",
+        "value": 65
+      },
+      "phosphorus": {
+        "status": "Medium",
+        "value": 13214
+      },
+      "potassium": {
+        "status": "Low",
+        "value": 16210
+      },
+      "sulphur": {
+        "status": "Sufficient",
+        "value": 22550
+      },
+      "zinc": {
+        "status": "Sufficient",
+        "value": 23590
+      },
+      "boron": {
+        "status": "Sufficient",
+        "value": 89
+      }
+    },
+    "soil_risk_summary": "low nitrogen may reduce crop growth; low potassium may reduce stress tolerance and disease recovery; salinity risk may affect crop performance",
+    "recommendation": "Wheat in Punjab needs well-drained soil and balanced nutrition. Avoid waterlogging and excess irrigation. use soil-test-based nitrogen planning monitor potassium requirement with expert guidance avoid poor-quality irrigation and consult local expert for salinity management.",
+    "source": [
+      "Soil Health Card Dataset",
+      "ICAR / regional agronomy references"
+    ]
+  }
+]

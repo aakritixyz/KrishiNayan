@@ -1,0 +1,101 @@
+{
+  "schema_note": "General tomato cultivation and disease-management guidance, written to align with standard ICAR / State Agricultural University / Krishi Vigyan Kendra (KVK) extension advisories. This is general agronomic guidance, not a specific government document, and the chatbot always tells farmers to confirm locally-specific dosages and product names with their nearest KVK or agriculture officer before applying chemicals.",
+  "documents": [
+    {
+      "id": "early_blight",
+      "title": "Early Blight in Tomato",
+      "tags": ["early blight", "disease", "tomato", "leaf spot", "fungal", "alternaria"],
+      "source_label": "General ICAR / KVK tomato disease-management advisory",
+      "content_en": "Early blight (caused by Alternaria solani) shows as dark brown spots with concentric rings, mostly on older/lower leaves first, which then yellow and drop. It spreads faster in warm, humid weather with wet foliage. Cultural control: remove and destroy infected leaves, avoid overhead irrigation, keep good plant spacing for airflow, and rotate tomato out of the same plot for 2-3 seasons. Chemical control: a protectant fungicide (e.g. mancozeb-based) applied at the first sign of spotting, repeated every 7-10 days as needed, works well; always follow the label dose and pre-harvest interval, and confirm the exact product with your local Krishi Vigyan Kendra (KVK). Avoid spraying just before rain or in high wind.",
+      "content_hi": "अर्ली ब्लाइट (Alternaria solani) में पत्तियों पर गोल-गोल रिंग वाले भूरे धब्बे बनते हैं, पहले पुरानी निचली पत्तियों पर। संक्रमित पत्तियों को हटाकर नष्ट करें, ऊपर से सिंचाई (overhead irrigation) से बचें, पौधों के बीच उचित दूरी रखें। फफूंदनाशक (जैसे मैंकोज़ेब आधारित) पहले लक्षण दिखते ही छिड़कें और 7-10 दिन में दोहराएं। सही मात्रा के लिए नज़दीकी कृषि विज्ञान केंद्र (KVK) से सलाह लें। बारिश या तेज़ हवा से पहले स्प्रे न करें।"
+    },
+    {
+      "id": "late_blight",
+      "title": "Late Blight in Tomato",
+      "tags": ["late blight", "disease", "tomato", "phytophthora", "fungal", "cool wet weather"],
+      "source_label": "General ICAR / KVK tomato disease-management advisory",
+      "content_en": "Late blight (Phytophthora infestans) causes large, irregular water-soaked patches on leaves that turn brown-black, with a white fungal growth sometimes visible on the underside in humid conditions; it can destroy a crop within days in cool, wet weather. Act fast: remove and bury/burn severely infected plants, avoid overhead watering, and improve drainage. A protectant or systemic fungicide labelled for late blight, applied preventively before or at first symptoms and repeated per label instructions, is the standard response - confirm the product and dose with your local KVK or agriculture extension officer. Do not spray if rain is expected within a few hours, since it washes off the treatment.",
+      "content_hi": "लेट ब्लाइट (Phytophthora infestans) में पत्तियों पर बड़े, पानी से भीगे जैसे धब्बे बनते हैं जो भूरे-काले हो जाते हैं; ठंडे और नम मौसम में यह कुछ ही दिनों में फसल को नुकसान पहुंचा सकता है। गंभीर रूप से संक्रमित पौधों को हटाकर नष्ट करें, ऊपर से सिंचाई न करें, जल निकासी सुधारें। लेट ब्लाइट के लिए अनुशंसित फफूंदनाशक का उपयोग करें और सही मात्रा के लिए स्थानीय KVK से सलाह लें। बारिश की संभावना हो तो स्प्रे न करें।"
+    },
+    {
+      "id": "leaf_mold",
+      "title": "Leaf Mold in Tomato",
+      "tags": ["leaf mold", "disease", "tomato", "fulvia fulva", "humidity", "greenhouse"],
+      "source_label": "General ICAR / KVK tomato disease-management advisory",
+      "content_en": "Leaf mold (Fulvia fulva / Passalora fulva) appears as pale yellow patches on the upper leaf surface with an olive-green to grayish velvety mold underneath; it thrives in high humidity (above 85%) and poor air circulation, common in polyhouses and dense plantings. Management centers on lowering humidity: increase plant spacing, prune lower leaves, ventilate greenhouses/polyhouses, and avoid wetting foliage when watering. A fungicide labelled for leaf mold can be used if cultural steps aren't enough, following your local KVK's dose recommendation. Choosing leaf-mold-resistant tomato varieties for future seasons also helps.",
+      "content_hi": "लीफ मोल्ड में ऊपरी सतह पर हल्के पीले धब्बे और नीचे की तरफ जैतूनी-हरे रंग की मखमली फफूंद दिखाई देती है। यह अधिक नमी (85% से ऊपर) और कम हवा के संचार में तेज़ी से फैलता है, खासकर पॉलीहाउस में। पौधों के बीच दूरी बढ़ाएं, निचली पत्तियां हटाएं, हवा का आवागमन सुधारें, और सिंचाई करते समय पत्तियों को गीला करने से बचें। ज़रूरत पड़ने पर स्थानीय KVK की सलाह से अनुशंसित फफूंदनाशक का प्रयोग करें।"
+    },
+    {
+      "id": "septoria_leaf_spot",
+      "title": "Septoria Leaf Spot in Tomato",
+      "tags": ["septoria", "leaf spot", "disease", "tomato", "fungal"],
+      "source_label": "General ICAR / KVK tomato disease-management advisory",
+      "content_en": "Septoria leaf spot shows as small, circular spots with dark margins and grayish centers, usually starting on lower leaves and moving upward, causing heavy leaf drop if untreated. It spreads through water splash, so mulching the soil, avoiding overhead irrigation, and staking plants to keep foliage off the ground all help. Remove infected lower leaves promptly and destroy them (don't compost). A protectant fungicide, applied at first sign and repeated per label directions, is typically recommended - check the exact product and interval with your local KVK. Crop rotation away from tomato/potato for at least a year reduces carryover of the fungus in soil debris.",
+      "content_hi": "सेप्टोरिया लीफ स्पॉट में छोटे, गोल धब्बे बनते हैं जिनका किनारा गहरा और बीच हल्के भूरे रंग का होता है, आमतौर पर पहले निचली पत्तियों पर। यह पानी के छींटों से फैलता है, इसलिए मल्चिंग करें, ऊपर से सिंचाई से बचें, और पौधों को सहारा देकर पत्तियों को ज़मीन से दूर रखें। संक्रमित पत्तियों को तुरंत हटाकर नष्ट करें। सही फफूंदनाशक और मात्रा के लिए नज़दीकी KVK से संपर्क करें।"
+    },
+    {
+      "id": "healthy_monitoring",
+      "title": "Monitoring a Healthy Tomato Crop",
+      "tags": ["healthy", "monitoring", "prevention", "tomato", "scouting"],
+      "source_label": "General ICAR / KVK tomato disease-management advisory",
+      "content_en": "Even when a scan shows no disease, regular scouting matters: walk the field every 2-3 days, check both upper and lower leaf surfaces, and look at plants near field edges and low-lying wet spots first, since disease usually appears there before spreading. Keep recording what you see (a simple notebook or this app's scan history works) so you can spot a trend early. Continue balanced fertilization based on your Soil Health Card recommendation, water at the base of the plant rather than overhead, and remove any weeds that can host pests or fungal spores.",
+      "content_hi": "फसल स्वस्थ दिखने पर भी हर 2-3 दिन में खेत का निरीक्षण करते रहें, पत्तियों की ऊपरी और निचली दोनों सतह जांचें, और खेत के किनारों व नमी वाले निचले हिस्सों की पहले जांच करें क्योंकि बीमारी अक्सर वहीं से शुरू होती है। सॉइल हेल्थ कार्ड की सिफारिश के अनुसार संतुलित उर्वरक दें, पौधे की जड़ में सिंचाई करें (ऊपर से नहीं), और खरपतवार हटाते रहें।"
+    },
+    {
+      "id": "irrigation_tomato",
+      "title": "Irrigation Guidance for Tomato",
+      "tags": ["irrigation", "watering", "tomato", "drip", "soil moisture"],
+      "source_label": "General ICAR / KVK tomato cultivation advisory",
+      "content_en": "Tomato needs consistent soil moisture, especially during flowering and fruit-set - irregular watering (dry spells followed by heavy watering) causes fruit cracking and blossom-end rot. Drip irrigation is preferred over flood or overhead sprinkler irrigation because it keeps foliage dry (reducing fungal disease risk) and uses water more efficiently. As a general guide, water when the top 3-5 cm of soil feels dry, and reduce frequency (not the amount per session) as plants mature. Avoid watering late in the evening in humid weather, since wet foliage overnight favours fungal disease.",
+      "content_hi": "टमाटर को लगातार नमी की ज़रूरत होती है, खासकर फूल और फल बनने के समय। असमान सिंचाई से फल फटने और ब्लॉसम-एंड-रॉट जैसी समस्याएं होती हैं। ड्रिप सिंचाई बेहतर है क्योंकि इससे पत्तियां सूखी रहती हैं और फफूंद रोग का खतरा कम होता है। मिट्टी की ऊपरी 3-5 सेमी परत सूखने पर सिंचाई करें। नम मौसम में शाम को देर से सिंचाई करने से बचें।"
+    },
+    {
+      "id": "fertilizer_tomato",
+      "title": "Fertilizer and Soil Nutrition for Tomato",
+      "tags": ["fertilizer", "nutrition", "npk", "tomato", "soil health card"],
+      "source_label": "General ICAR / KVK tomato cultivation advisory",
+      "content_en": "Tomato responds well to balanced NPK with adequate potassium during fruiting, plus calcium to prevent blossom-end rot. Rather than guessing doses, get your free Soil Health Card (see the Policy Dashboard) - it tells you the exact nutrient gaps in your field and the recommended fertilizer quantity, which avoids both under-fertilizing (poor yield) and over-fertilizing (wasted cost and, for nitrogen, more lush foliage that is more disease-prone). Split nitrogen doses across the growing season rather than applying it all at transplanting.",
+      "content_hi": "टमाटर के लिए संतुलित NPK और फल बनते समय पर्याप्त पोटैशियम ज़रूरी है, साथ ही कैल्शियम जो ब्लॉसम-एंड-रॉट रोकता है। अंदाज़े से खाद डालने की बजाय अपना मुफ्त सॉइल हेल्थ कार्ड बनवाएं (पॉलिसी डैशबोर्ड देखें) - इससे आपके खेत की सही कमी और सही मात्रा पता चलेगी। नाइट्रोजन की खुराक को पूरे सीज़न में बांटकर दें, रोपाई के समय ही पूरी न डालें।"
+    },
+    {
+      "id": "spraying_weather",
+      "title": "Weather Conditions for Spraying",
+      "tags": ["spraying", "weather", "rain", "wind", "humidity", "pesticide", "fungicide"],
+      "source_label": "General ICAR / KVK pesticide application advisory",
+      "content_en": "Weather strongly affects spray effectiveness and safety. Avoid spraying if rain is expected within 4-6 hours, since it washes the treatment off before it can work. Avoid spraying in wind above roughly 15 km/h, since spray drifts unevenly and can miss the target or drift onto other crops/people. Early morning or early evening, when temperatures are moderate and wind is calm, is usually the best spray window. High humidity favours fungal disease spread, so if humidity stays above 80% for several days, scout more frequently even if you haven't sprayed yet.",
+      "content_hi": "मौसम स्प्रे की प्रभावशीलता को बहुत प्रभावित करता है। अगर 4-6 घंटे में बारिश की संभावना हो तो स्प्रे न करें, क्योंकि यह दवा को धो देगी। तेज़ हवा (लगभग 15 किमी/घंटा से अधिक) में स्प्रे से बचें क्योंकि दवा असमान रूप से फैलती है। सुबह जल्दी या शाम को हल्की ठंडक और शांत हवा में स्प्रे करना सबसे अच्छा है। अधिक नमी (80% से ऊपर) फफूंद रोग बढ़ाती है, इसलिए ऐसे मौसम में खेत की जांच अधिक बार करें।"
+    },
+    {
+      "id": "transplanting_spacing",
+      "title": "Transplanting and Spacing for Tomato",
+      "tags": ["transplanting", "spacing", "nursery", "tomato", "plant stage"],
+      "source_label": "General ICAR / KVK tomato cultivation advisory",
+      "content_en": "Tomato seedlings are typically ready to transplant 25-30 days after sowing, once they have 4-5 true leaves. Good spacing (commonly around 60 cm between rows and 45-60 cm between plants, depending on variety and staking method) matters more than it seems: crowded plants trap humidity around the foliage, which raises fungal disease risk, and compete more for nutrients and light. Staking or caging keeps fruit and lower leaves off the soil, reducing soil-borne disease contact.",
+      "content_hi": "टमाटर की पौध आमतौर पर बुवाई के 25-30 दिन बाद, जब 4-5 सच्ची पत्तियां आ जाएं, रोपाई के लिए तैयार होती है। उचित दूरी (आमतौर पर पंक्तियों के बीच लगभग 60 सेमी और पौधों के बीच 45-60 सेमी) ज़रूरी है क्योंकि पास-पास पौधों में नमी रुकती है जिससे फफूंद रोग बढ़ता है। सहारा देने (staking) से फल और निचली पत्तियां ज़मीन से दूर रहती हैं।"
+    },
+    {
+      "id": "pest_general",
+      "title": "Common Tomato Pests",
+      "tags": ["pest", "aphid", "whitefly", "fruit borer", "insect", "tomato"],
+      "source_label": "General ICAR / KVK integrated pest management advisory",
+      "content_en": "Common tomato pests include aphids and whiteflies (which cluster under leaves, weaken plants and spread viral disease) and fruit borer caterpillars (which bore into fruit, causing direct crop loss). Yellow sticky traps help monitor and reduce flying pests like whiteflies. Encourage natural predators (ladybird beetles for aphids) by minimizing unnecessary broad-spectrum spraying. If pest pressure is high, use a pesticide labelled for the specific pest and tomato crop, following your local KVK's recommended dose and pre-harvest interval - never mix products without label guidance.",
+      "content_hi": "टमाटर के आम कीटों में एफिड और सफेद मक्खी (पत्तियों के नीचे इकट्ठा होकर पौधे कमज़ोर करते हैं और वायरस फैलाते हैं) और फल छेदक इल्ली (फल में छेद कर सीधा नुकसान करती है) शामिल हैं। पीले चिपचिपे ट्रैप से सफेद मक्खी जैसे कीटों की निगरानी करें। अनावश्यक व्यापक-स्पेक्ट्रम स्प्रे कम करके प्राकृतिक शिकारी कीटों (जैसे लेडीबर्ड बीटल) को बढ़ावा दें। ज़्यादा प्रकोप होने पर स्थानीय KVK की सलाह से उचित कीटनाशक का प्रयोग करें।"
+    },
+    {
+      "id": "organic_ipm",
+      "title": "Integrated Pest Management (IPM) Basics",
+      "tags": ["ipm", "organic", "biopesticide", "tomato", "sustainable"],
+      "source_label": "General ICAR / KVK integrated pest management advisory",
+      "content_en": "Integrated Pest Management (IPM) combines cultural, biological and chemical methods rather than relying on chemicals alone: crop rotation, resistant varieties, field sanitation (removing crop debris), neem-based biopesticides, and encouraging natural predators, with chemical sprays used only when monitoring shows pest/disease levels crossing an economic threshold. This approach reduces input costs over time, slows pesticide resistance, and is friendlier to pollinators and soil health. Your local KVK can advise on region-specific IPM packages for tomato.",
+      "content_hi": "एकीकृत कीट प्रबंधन (IPM) में केवल रसायनों पर निर्भर रहने की बजाय फसल चक्र, प्रतिरोधी किस्में, खेत की सफाई, नीम आधारित जैव-कीटनाशक और प्राकृतिक शिकारी कीटों को बढ़ावा देना शामिल है; रासायनिक स्प्रे तभी करें जब निगरानी से पता चले कि नुकसान आर्थिक सीमा से अधिक है। इससे लागत घटती है और मिट्टी व परागणकों (pollinators) के लिए बेहतर है। क्षेत्र-विशिष्ट IPM पैकेज के लिए स्थानीय KVK से सलाह लें।"
+    },
+    {
+      "id": "post_harvest",
+      "title": "Post-Harvest Handling of Tomato",
+      "tags": ["post-harvest", "storage", "handling", "tomato", "market"],
+      "source_label": "General ICAR / KVK post-harvest management advisory",
+      "content_en": "Harvest tomato at the right maturity stage for its intended market (mature-green for distant transport, breaker/pink for nearby/quick sale) to reduce transit damage and spoilage. Handle fruit gently to avoid bruising, which speeds rot; use shallow crates rather than deep sacks. Store in a cool, shaded, well-ventilated place away from direct sun before sale - avoid stacking too high. For better price realization, check current mandi prices and consider e-NAM-linked markets (see the Policy Dashboard) instead of selling only to the nearest trader.",
+      "content_hi": "टमाटर को उसकी मंडी के हिसाब से सही पकने की अवस्था पर तोड़ें (दूर भेजने के लिए हल्का हरा, नज़दीकी/जल्दी बिक्री के लिए ब्रेकर/गुलाबी अवस्था) ताकि रास्ते में नुकसान कम हो। फल को सावधानी से संभालें, गहरे बोरों की बजाय उथली टोकरियों का प्रयोग करें। बिक्री से पहले ठंडी, छायादार और हवादार जगह पर रखें। बेहतर दाम के लिए मंडी भाव जांचें और केवल नज़दीकी व्यापारी की बजाय e-NAM से जुड़ी मंडियों पर भी विचार करें (पॉलिसी डैशबोर्ड देखें)।"
+    }
+  ]
+}
