@@ -1,0 +1,240 @@
+{
+  "schema_note": "Curated from official/government-linked sources. Each scheme carries its own source_urls and last_verified date. Detailed rules change over time and vary by state, so the app always tells farmers to confirm final eligibility on the official portal before applying.",
+  "schemes": [
+    {
+      "id": "pm-kisan",
+      "name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+      "category": "Income Support",
+      "administering_body": "Ministry of Agriculture & Farmers Welfare, Government of India",
+      "short_description": "Direct income support of Rs 6,000 per year paid to landholding farmer families in three equal installments of Rs 2,000 every four months, transferred straight to the farmer's Aadhaar-linked bank account.",
+      "benefits": "Rs 6,000 per year per farmer family, paid as three installments of Rs 2,000 (April-July, August-November, December-March) via Direct Benefit Transfer.",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["any"],
+        "excluded_categories": [
+          "institutional_landholders",
+          "income_tax_payees",
+          "constitutional_post_holders",
+          "government_employees_gazetted",
+          "high_pension_retirees",
+          "practicing_professionals"
+        ],
+        "requires_bank_account": true,
+        "requires_aadhaar": true,
+        "notes": "Land must be recorded in the applicant's own name (or family member's) in state land records. e-KYC is mandatory to receive installments."
+      },
+      "required_documents": [
+        "Aadhaar card",
+        "Land ownership / land record documents",
+        "Bank account passbook (Aadhaar-seeded)"
+      ],
+      "official_link": "https://pmkisan.gov.in/",
+      "application_mode": "Online self-registration at pmkisan.gov.in, or through the local Common Service Centre (CSC) / Patwari / Revenue Officer.",
+      "helpline": "PM-KISAN helpline 155261 / 011-24300606",
+      "source_urls": [
+        "https://pmkisan.gov.in/",
+        "https://cleartax.in/s/pradhan-mantri-kisan-samman-nidhi-scheme",
+        "https://www.bajajfinserv.in/pm-kisan-beneficiary-list"
+      ],
+      "last_verified": "2026-08-18"
+    },
+    {
+      "id": "pmfby",
+      "name": "PMFBY (Pradhan Mantri Fasal Bima Yojana)",
+      "category": "Crop Insurance",
+      "administering_body": "Ministry of Agriculture & Farmers Welfare, Government of India",
+      "short_description": "Crop insurance scheme that pays farmers for crop loss or damage from natural calamities, pests and diseases, at a low, fixed premium share while the government subsidizes the rest.",
+      "benefits": "Farmer pays only a small share of the premium - 2% of sum insured for Kharif crops, 1.5% for Rabi crops, and 5% for commercial/horticultural crops (which includes tomato); the balance premium is shared by the central and state governments. Claim payouts cover losses from drought, flood, hailstorm, pests/disease and post-harvest damage in a 14-day window.",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general", "tenant", "sharecropper"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["notified crops in notified areas, including horticultural crops such as tomato where notified by the state"],
+        "excluded_categories": [],
+        "requires_bank_account": true,
+        "requires_aadhaar": true,
+        "notes": "Voluntary for all farmers since 2020. Loanee farmers with a Kisan Credit Card / crop loan may be enrolled automatically unless they opt out; non-loanee farmers must apply. Only crops notified by the state for that season/district are covered, so tomato coverage depends on the state's notification."
+      },
+      "required_documents": [
+        "Aadhaar card",
+        "Land records / tenancy agreement",
+        "Bank account details",
+        "Sowing declaration"
+      ],
+      "official_link": "https://pmfby.gov.in/",
+      "application_mode": "Online at pmfby.gov.in, or through your bank, Common Service Centre (CSC), or insurance company agent, within the notified enrolment window for the season.",
+      "helpline": "Crop insurance helpline 14447",
+      "source_urls": [
+        "https://pmfby.gov.in/",
+        "https://agriculture.hp.gov.in/en/our-scheme/pradhanmantri-fasal-bima-yojna-pmfby/",
+        "https://www.bankbazaar.com/government-schemes/pradhan-mantri-fasal-bima-yojana.html"
+      ],
+      "last_verified": "2026-08-18"
+    },
+    {
+      "id": "kcc",
+      "name": "Kisan Credit Card (KCC)",
+      "category": "Credit / Loan",
+      "administering_body": "Department of Financial Services, Ministry of Finance, with NABARD and participating banks",
+      "short_description": "A revolving credit line for farmers to fund crop cultivation, inputs and allied activities, at a concessional interest rate, with flexible withdrawal and repayment tied to the cropping cycle.",
+      "benefits": "Short-term crop loans up to Rs 3 lakh (being raised to Rs 5 lakh under the Modified Interest Subvention Scheme) at an effective interest rate as low as 4% p.a. after a 2% interest subvention plus a 3% prompt-repayment incentive from the government. Collateral-free for loans up to Rs 1.6 lakh. Also carries personal accident insurance and crop-damage insurance cover.",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general", "tenant", "sharecropper", "oral_lessee"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["any"],
+        "excluded_categories": [],
+        "requires_bank_account": true,
+        "requires_aadhaar": true,
+        "notes": "Individual owner-cultivators, tenant farmers, oral lessees, sharecroppers, and SHGs/Joint Liability Groups of farmers are all eligible. Card validity is 5 years, with the limit reviewed annually."
+      },
+      "required_documents": [
+        "Filled KCC application form",
+        "Aadhaar card (mandatory for interest subvention)",
+        "Proof of land holding / cultivation, certified by revenue authorities",
+        "Passport-size photographs",
+        "Cropping pattern / area under cultivation details"
+      ],
+      "official_link": "https://www.pmkisan.gov.in/Documents/KCC.pdf",
+      "application_mode": "Apply at any nationalised bank, regional rural bank, cooperative bank, or small finance bank branch; also available via bank net-banking/YONO-style apps.",
+      "helpline": "Kisan Call Centre 1800-180-1551",
+      "source_urls": [
+        "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2106230&reg=3&lang=2",
+        "https://sbi.bank.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card",
+        "https://cleartax.in/s/kisan-credit-card-scheme"
+      ],
+      "last_verified": "2026-08-18"
+    },
+    {
+      "id": "soil-health-card",
+      "name": "Soil Health Card (SHC) Scheme",
+      "category": "Advisory / Soil Testing",
+      "administering_body": "Department of Agriculture & Farmers Welfare, Government of India",
+      "short_description": "Free soil testing for every land-holding farmer, with a card that reports nutrient status and recommends the right fertilizer dose and crop choices for that specific field.",
+      "benefits": "Free soil sample testing and a printed/digital Soil Health Card every 3 years, showing nutrient levels (N, P, K and micronutrients) and tailored fertilizer/crop recommendations to cut input costs and improve yield.",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general", "tenant"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["any"],
+        "excluded_categories": [],
+        "requires_bank_account": false,
+        "requires_aadhaar": true,
+        "notes": "Open to all land-holding farmers with no defined eligibility ceiling; tenants and sharecroppers can also apply where permitted locally."
+      },
+      "required_documents": [
+        "Aadhaar card",
+        "Land record / khasra-khatauni details"
+      ],
+      "official_link": "https://soilhealth.dac.gov.in/",
+      "application_mode": "Register online at soilhealth.dac.gov.in ('Farmer Corner') or through your local agriculture office / Krishi Vigyan Kendra, which will schedule soil sample collection.",
+      "helpline": "Kisan Call Centre 1800-180-1551",
+      "source_urls": [
+        "https://soilhealth.dac.gov.in/",
+        "https://www.hdfcergo.com/blogs/health-insurance/soil-health-card-scheme",
+        "https://agribegri.com/blog/soil-health-card-scheme"
+      ],
+      "last_verified": "2026-08-18"
+    },
+    {
+      "id": "pm-kusum",
+      "name": "PM-KUSUM (Pradhan Mantri Kisan Urja Suraksha evam Utthaan Mahabhiyan)",
+      "category": "Irrigation / Solar Energy",
+      "administering_body": "Ministry of New and Renewable Energy (MNRE), Government of India",
+      "short_description": "Helps farmers move off diesel pumps to solar power - subsidised standalone solar irrigation pumps, solarisation of existing grid-connected pumps, and support to set up small solar power plants on farmland.",
+      "benefits": "Central Financial Assistance of 30% of the solar pump/plant cost (Component B/C), with states typically adding their own top-up subsidy on top - total subsidy commonly ranges from 30% to 90% of project cost depending on the state, cutting diesel/electricity costs for irrigation. Component A lets farmers earn income by selling surplus solar power to the grid.",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["any"],
+        "excluded_categories": [],
+        "requires_bank_account": true,
+        "requires_aadhaar": true,
+        "notes": "Individual farmers, groups of farmers (SHGs/JLGs), cooperatives, panchayats, FPOs and Water User Associations are all eligible. Exact subsidy share and application windows vary by state - check your state's renewable energy nodal agency."
+      },
+      "required_documents": [
+        "Aadhaar card",
+        "Land ownership document",
+        "Bank account details",
+        "Existing electricity connection details (for pump solarisation)"
+      ],
+      "official_link": "https://pmkusum.mnre.gov.in/",
+      "application_mode": "Apply through your state's renewable energy development agency portal (linked from pmkusum.mnre.gov.in) during the state's open application window.",
+      "helpline": "State renewable energy agency helpdesk (varies by state)",
+      "source_urls": [
+        "https://pmkusum.mnre.gov.in/",
+        "https://mnre.gov.in/en/pradhan-mantri-kisan-urja-suraksha-evam-utthaan-mahabhiyaan-pm-kusum/",
+        "https://www.unionbankofindia.bank.in/en/details/pm-kusum-scheme-pradhan-mantri-kisan-urja-suraksha-evam-utthan-mahabhiyan"
+      ],
+      "last_verified": "2026-08-18"
+    },
+    {
+      "id": "e-nam",
+      "name": "e-NAM (National Agriculture Market)",
+      "category": "Market Access",
+      "administering_body": "Small Farmers' Agribusiness Consortium (SFAC), Ministry of Agriculture & Farmers Welfare",
+      "short_description": "A pan-India online trading portal that links mandis (APMC markets) so farmers can get transparent, real-time price discovery and sell produce to buyers beyond their local mandi.",
+      "benefits": "Access to competitive bidding across linked mandis, real-time commodity prices via app/SMS, quality assaying, and direct online payment settlement to the farmer's bank account - reducing dependence on local middlemen.",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["any produce traded at a linked mandi, including vegetables such as tomato where the local mandi is e-NAM enabled"],
+        "excluded_categories": [],
+        "requires_bank_account": true,
+        "requires_aadhaar": true,
+        "notes": "Any farmer can register for free; benefit depends on whether your nearest APMC mandi is integrated with e-NAM."
+      },
+      "required_documents": [
+        "Aadhaar card",
+        "Bank account details",
+        "Mobile number for OTP registration"
+      ],
+      "official_link": "https://enam.gov.in/",
+      "application_mode": "Free registration on the e-NAM portal or mobile app, or through your local APMC mandi office if it is e-NAM linked.",
+      "helpline": "SFAC / local APMC mandi office",
+      "source_urls": [
+        "https://enam.gov.in/",
+        "https://dmshahdara.delhi.gov.in/scheme/e-national-agriculture-market-e-nam-scheme/",
+        "https://sfacindia.com/Nam.aspx"
+      ],
+      "last_verified": "2026-08-18"
+    },
+    {
+      "id": "midh",
+      "name": "MIDH (Mission for Integrated Development of Horticulture)",
+      "category": "Horticulture / Infrastructure Subsidy",
+      "administering_body": "Department of Agriculture & Farmers Welfare, Government of India (State Horticulture Missions)",
+      "short_description": "Centrally sponsored scheme supporting vegetable and fruit growers - including tomato - with subsidies for quality planting material, protected cultivation (polyhouse/shadenet), micro-irrigation, and post-harvest/cold-chain infrastructure.",
+      "benefits": "Project-linked subsidies - for example up to 50% of project cost (capped) for commercial horticulture infrastructure such as polyhouses, and back-ended credit-linked subsidies for quality vegetable seed and planting material; exact percentages vary by component and state, with GOI typically funding 60% and the state 40% of the overall outlay (higher central share for NE/Himalayan states).",
+      "eligibility": {
+        "farmer_types": ["small", "marginal", "general"],
+        "max_land_holding_acres": null,
+        "min_land_holding_acres": 0,
+        "applicable_crops": ["vegetables (including tomato)", "fruits", "spices", "flowers", "plantation crops"],
+        "excluded_categories": [],
+        "requires_bank_account": true,
+        "requires_aadhaar": true,
+        "notes": "Open to individual farmers, FPOs and agri-entrepreneurs with agricultural land; specific component eligibility (e.g. polyhouse subsidy) depends on project proposal and state guidelines."
+      },
+      "required_documents": [
+        "Aadhaar card",
+        "Land ownership document",
+        "Detailed project report (for infrastructure components)",
+        "Bank account details"
+      ],
+      "official_link": "https://midh.gov.in/",
+      "application_mode": "Apply through your District Horticulture Office or the State Horticulture Mission; some components are routed via the National Horticulture Board (nhb.gov.in) for project-based subsidy.",
+      "helpline": "District Horticulture Office / State Horticulture Mission",
+      "source_urls": [
+        "https://midh.gov.in/",
+        "https://shm.kerala.gov.in/scheme-details/",
+        "https://nhb.gov.in/writereaddata/082825102800MIDH%20Guideline%202025.pdf"
+      ],
+      "last_verified": "2026-08-18"
+    }
+  ]
+}
