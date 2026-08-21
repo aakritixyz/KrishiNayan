@@ -1,6 +1,7 @@
 from app.services.advisory_service import get_farmer_message
 from fastapi import (
     APIRouter,
+    Depends,
     File,
     Form,
     HTTPException,
@@ -19,6 +20,9 @@ from app.core.config import (
     CROP_CONFIG,
     MAX_IMAGE_SIZE_BYTES
 )
+
+from app.core.deps import get_current_user_optional
+from app.models.user import User
 
 from app.services.ml_service import (
     generate_gradcam_overlay,
@@ -48,11 +52,17 @@ async def predict_image(
     longitude: float | None = Form(None),
     state: str | None = Form(None),
     district: str | None = Form(None),
-    crop: str | None = Form("tomato")
+    crop: str | None = Form("tomato"),
+    current_user: User | None = Depends(get_current_user_optional)
 ):
     """
     Receive a tomato-leaf image and return
     the predicted disease and confidence.
+
+    Works with or without login. If state/district weren't
+    supplied and the request comes from a logged-in farmer with
+    those saved on their profile, the soil-context lookup falls
+    back to the farmer's saved location instead of skipping it.
     """
 
     if file.content_type not in ALLOWED_CONTENT_TYPES:
@@ -83,7 +93,9 @@ async def predict_image(
     image_bytes
     )
 
-
+    if current_user:
+        state = state or current_user.state
+        district = district or current_user.district
 
     try:
         prediction = predict_disease(

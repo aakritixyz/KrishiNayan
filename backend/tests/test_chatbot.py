@@ -75,3 +75,54 @@ def test_chatbot_supports_hindi_language():
     result = response.json()
 
     assert result["language"] == "hi"
+
+
+def test_chatbot_personalizes_using_logged_in_profile():
+    register_response = client.post(
+        "/auth/register",
+        json={
+            "full_name": "Chat Test Farmer",
+            "email": "chatbot.profile@example.com",
+            "password": "Farmer@123"
+        }
+    )
+
+    token = register_response.json()["access_token"]
+
+    client.put(
+        "/profile",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "state": "Maharashtra",
+            "district": "Pune",
+            "village": "Wagholi",
+            "farm_size_acres": 2,
+            "crops": ["Tomato"],
+            "irrigation_type": "drip",
+            "language": "hi"
+        }
+    )
+
+    response = client.post(
+        "/chatbot/ask",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"message": "irrigation watering schedule"}
+    )
+
+    assert response.status_code == 200
+
+    result = response.json()
+
+    # No language was sent in the request - it should fall back to
+    # the farmer's saved profile language ("hi").
+    assert result["language"] == "hi"
+
+
+def test_chatbot_still_works_without_login():
+    response = client.post(
+        "/chatbot/ask",
+        json={"message": "irrigation watering schedule"}
+    )
+
+    assert response.status_code == 200
+    assert response.json()["language"] == "en"

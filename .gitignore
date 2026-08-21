@@ -20,6 +20,11 @@ backend/.venv/
 uploads/
 backend/uploads/
 
+# Local user database (SQLite) - never commit real user data
+backend/storage/
+*.db
+*.db-journal
+
 # Large trained models
 *.keras
 backend/models/*.keras

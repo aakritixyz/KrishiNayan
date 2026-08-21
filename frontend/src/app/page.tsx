@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -9,10 +11,15 @@ import {
   MapPinned,
   Languages,
   Leaf,
+  LogIn,
+  UserRound,
 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
+import { useAuth } from "@/lib/auth-context";
 
 export default function Home() {
+  const { user, isLoading } = useAuth();
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
       <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-forest-deep sm:min-h-[844px] sm:rounded-[32px]">
@@ -45,7 +52,35 @@ export default function Home() {
               <CloudOff size={16} />
               <span>Offline Ready</span>
             </div>
+
+            {!isLoading &&
+              (user ? (
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 rounded-full border border-leaf/50 bg-leaf/15 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-leaf/25 hover:shadow-lg"
+                >
+                  <UserRound size={16} className="text-leaf" />
+                  <span>{user.full_name.split(" ")[0]}</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg"
+                >
+                  <LogIn size={16} />
+                  <span>Log in</span>
+                </Link>
+              ))}
           </div>
+
+          {user && !user.profile_completed && (
+            <Link
+              href="/onboarding"
+              className="mb-4 flex items-center gap-2 rounded-full bg-leaf px-4 py-2 text-xs font-bold text-forest-deep shadow-lg"
+            >
+              Finish setting up your farm profile →
+            </Link>
+          )}
 
           <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
             AI Farming Copilot

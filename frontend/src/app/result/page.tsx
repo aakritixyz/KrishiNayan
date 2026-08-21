@@ -384,7 +384,7 @@ export default function ResultPage() {
                 prediction.detected_issue
               ).advisory_hi;
 
-              if (!("speechSynthesis" in window)) {
+              if (!window.speechSynthesis) {
                 window.alert(
                   "Voice playback isn't supported in this browser."
                 );

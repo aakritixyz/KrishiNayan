@@ -1,0 +1,34 @@
+"use client";
+
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { useEffect, type ReactNode } from "react";
+
+export default function ProtectedRoute({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace("/login");
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading || !user) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-forest-deep">
+        <div className="flex items-center gap-2 text-sm font-semibold text-white/70">
+          <Loader2 size={18} className="animate-spin" />
+          Loading...
+        </div>
+      </main>
+    );
+  }
+
+  return <>{children}</>;
+}

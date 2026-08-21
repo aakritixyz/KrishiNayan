@@ -75,3 +75,47 @@ def test_eligible_policies_excludes_disqualified_category():
 
     assert pm_kisan["eligible"] is False
     assert pm_kisan["relevance_score"] == 0
+
+
+def test_eligible_policies_for_me_requires_login():
+    response = client.get("/policies/eligible/me")
+
+    assert response.status_code == 401
+
+
+def test_eligible_policies_for_me_uses_saved_profile():
+    register_response = client.post(
+        "/auth/register",
+        json={
+            "full_name": "Policy Test Farmer",
+            "email": "policy.profile@example.com",
+            "password": "Farmer@123"
+        }
+    )
+
+    token = register_response.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    client.put(
+        "/profile",
+        headers=headers,
+        json={
+            "state": "Maharashtra",
+            "district": "Pune",
+            "village": "Wagholi",
+            "farm_size_acres": 2,
+            "crops": ["Tomato"],
+            "irrigation_type": "drip",
+            "farmer_category": "small",
+            "language": "en"
+        }
+    )
+
+    response = client.get("/policies/eligible/me", headers=headers)
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert body["profile_used"]["state"] == "Maharashtra"
+    assert len(body["results"]) > 0

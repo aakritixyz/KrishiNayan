@@ -6,3 +6,7 @@ numpy
 Pillow
 pytest
 httpx
+sqlalchemy
+bcrypt
+pyjwt
+email-validator

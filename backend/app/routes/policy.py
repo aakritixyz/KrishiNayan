@@ -1,6 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+from app.core.deps import get_current_user
+from app.models.user import User
 
 from app.services.policy_service import (
     get_eligible_schemes,
@@ -42,3 +47,44 @@ def eligible_policies(profile: FarmerProfile):
     )
 
     return {"results": results}
+
+
+@router.get("/policies/eligible/me")
+def eligible_policies_for_me(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Same ranking as /policies/eligible, but built automatically
+    from the logged-in farmer's saved profile - no form to fill in.
+    Requires login.
+    """
+    crops = current_user.crops_list()
+
+    identity_verified = (
+        current_user.identity_verification_status == "verified"
+    )
+
+    profile = {
+        "state": current_user.state,
+        "land_holding_acres": current_user.farm_size_acres,
+        "crop": crops[0] if crops else "Tomato",
+        "category": current_user.farmer_category,
+        # We only positively know Aadhaar possession once the
+        # (mock) identity check has passed - otherwise we simply
+        # don't know, so we leave it unset rather than assume "no".
+        "has_aadhaar": True if identity_verified else None
+    }
+
+    profile = {
+        key: value
+        for key, value in profile.items()
+        if value is not None
+    }
+
+    results = get_eligible_schemes(profile)
+
+    return {
+        "results": results,
+        "profile_used": profile
+    }

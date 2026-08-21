@@ -1,7 +1,8 @@
 "use client";
 
 import BottomNav from "@/components/BottomNav";
-import { API_BASE_URL } from "@/lib/api";
+import { apiJson, ApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -12,9 +13,10 @@ import {
   FileCheck2,
   Landmark,
   Loader2,
+  Pencil,
   SlidersHorizontal,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Scheme = {
   id: string;
@@ -58,6 +60,7 @@ const DEFAULT_PROFILE: FarmerProfileForm = {
 
 export default function PoliciesPage() {
   const router = useRouter();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const [profile, setProfile] =
     useState<FarmerProfileForm>(DEFAULT_PROFILE);
@@ -69,47 +72,73 @@ export default function PoliciesPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(
     null
   );
+  const [usingSavedProfile, setUsingSavedProfile] = useState(false);
 
-  async function fetchEligibleSchemes(
-    currentProfile: FarmerProfileForm
-  ) {
+  const fetchEligibleSchemes = useCallback(
+    async (currentProfile: FarmerProfileForm) => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const data = await apiJson<{ results: EligibilityResult[] }>(
+          "/policies/eligible",
+          {
+            method: "POST",
+            body: JSON.stringify(currentProfile),
+          }
+        );
+        setResults(data.results);
+        setUsingSavedProfile(false);
+      } catch (error) {
+        setErrorMessage(
+          error instanceof ApiError
+            ? error.message
+            : "Backend connection failed."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  const fetchEligibleSchemesForMe = useCallback(async () => {
     setIsLoading(true);
     setErrorMessage(null);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/policies/eligible`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentProfile),
-        }
-      );
+      const data = await apiJson<{
+        results: EligibilityResult[];
+        profile_used: Partial<FarmerProfileForm>;
+      }>("/policies/eligible/me");
 
-      if (!response.ok) {
-        throw new Error("Unable to load schemes right now.");
-      }
-
-      const data = await response.json();
-      setResults(data.results as EligibilityResult[]);
+      setResults(data.results);
+      setProfile((current) => ({ ...current, ...data.profile_used }));
+      setUsingSavedProfile(true);
     } catch (error) {
-      const message =
-        error instanceof Error
+      setErrorMessage(
+        error instanceof ApiError
           ? error.message
-          : "Backend connection failed.";
-      setErrorMessage(message);
+          : "Backend connection failed."
+      );
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
+    if (isAuthLoading) return;
+
     const timer = window.setTimeout(() => {
-      fetchEligibleSchemes(DEFAULT_PROFILE);
+      if (user) {
+        fetchEligibleSchemesForMe();
+      } else {
+        fetchEligibleSchemes(DEFAULT_PROFILE);
+      }
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [isAuthLoading, user, fetchEligibleSchemesForMe, fetchEligibleSchemes]);
 
   const eligibleCount =
     results?.filter((result) => result.eligible).length ?? 0;
@@ -133,17 +162,28 @@ export default function PoliciesPage() {
 
           <button
             type="button"
-            onClick={() => setShowFilters((value) => !value)}
+            onClick={() =>
+              user
+                ? router.push("/profile")
+                : setShowFilters((value) => !value)
+            }
             className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-forest"
-            aria-label="Edit farmer profile"
+            aria-label={
+              user ? "Edit farm profile" : "Edit filter profile"
+            }
           >
-            <SlidersHorizontal size={19} />
+            {user ? (
+              <Pencil size={18} />
+            ) : (
+              <SlidersHorizontal size={19} />
+            )}
           </button>
         </header>
 
         <p className="mt-4 text-sm leading-6 text-muted">
-          Schemes ranked for your profile, with eligibility,
-          benefits, documents and the official link to apply.
+          {usingSavedProfile
+            ? "Ranked using your saved farm profile."
+            : "Schemes ranked for your profile, with eligibility, benefits, documents and the official link to apply."}
         </p>
 
         <div className="mt-4 flex items-center gap-3 rounded-[22px] bg-forest p-4 text-white">
@@ -164,7 +204,21 @@ export default function PoliciesPage() {
           </div>
         </div>
 
-        {showFilters && (
+        {!user && !isAuthLoading && (
+          <div className="mt-3 rounded-[18px] border border-forest/10 bg-white/70 p-3 text-xs leading-5 text-muted">
+            <button
+              type="button"
+              onClick={() => router.push("/login")}
+              className="font-bold text-forest underline"
+            >
+              Log in
+            </button>{" "}
+            to rank schemes from your saved farm profile instead of
+            filling this in each time.
+          </div>
+        )}
+
+        {showFilters && !user && (
           <div className="mt-4 rounded-[24px] border border-forest/10 bg-white p-4">
             <p className="font-bold text-forest">Your profile</p>
             <p className="mt-1 text-xs text-muted">

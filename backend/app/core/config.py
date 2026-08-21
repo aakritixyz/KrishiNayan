@@ -117,3 +117,57 @@ ANTHROPIC_MODEL = os.getenv(
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 
 SUPPORTED_CHAT_LANGUAGES = ("en", "hi")
+
+# --- Authentication / Database ---
+
+STORAGE_DIR = BACKEND_DIR / "storage"
+STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+DATABASE_URL = os.getenv(
+    "KRISHINAYAN_DATABASE_URL",
+    f"sqlite:///{STORAGE_DIR / 'krishinayan.db'}"
+)
+
+# IMPORTANT: this default is for local development only. Always set
+# KRISHINAYAN_JWT_SECRET to a long random value before deploying
+# anywhere reachable outside your own machine.
+JWT_SECRET_KEY = os.getenv(
+    "KRISHINAYAN_JWT_SECRET",
+    "dev-only-insecure-secret-change-me-before-any-real-deployment"
+)
+
+JWT_ALGORITHM = "HS256"
+
+# 7 days - persistent login without a refresh-token flow, matching
+# the prototype's needs. Revisit before production use.
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
+
+MIN_PASSWORD_LENGTH = 8
+
+SUPPORTED_PROFILE_LANGUAGES = ("en", "hi")
+
+FARMER_CATEGORIES = ("marginal", "small", "general")
+
+IRRIGATION_TYPES = (
+    "drip",
+    "sprinkler",
+    "flood",
+    "rain-fed",
+    "borewell",
+    "canal",
+    "other"
+)
+
+# Fields that must be filled in for a profile to count as
+# "complete" - drives the profile-completion status shown to the
+# user and used to gate onboarding.
+REQUIRED_PROFILE_FIELDS = (
+    "full_name",
+    "state",
+    "district",
+    "village",
+    "farm_size_acres",
+    "crops",
+    "irrigation_type",
+    "language"
+)

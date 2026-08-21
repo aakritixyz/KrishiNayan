@@ -1,6 +1,7 @@
 "use client";
 
 import BottomNav from "@/components/BottomNav";
+import { getStoredToken } from "@/lib/api";
 import Image from "next/image";
 import {
   CheckCircle2,
@@ -22,11 +23,15 @@ export default function ScanPage() {
   const [language, setLanguage] = useState<Language>("en");
 
   useEffect(() => {
-    const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
+    const timer = window.setTimeout(() => {
+      const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
 
-    if (stored === "en" || stored === "hi") {
-      setLanguage(stored);
-    }
+      if (stored === "en" || stored === "hi") {
+        setLanguage(stored);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   function toggleLanguage() {
@@ -82,9 +87,12 @@ export default function ScanPage() {
 
   useEffect(() => {
     if (!selectedState) {
-      setDistricts([]);
-      setSelectedDistrict("");
-      return;
+      const timer = window.setTimeout(() => {
+        setDistricts([]);
+        setSelectedDistrict("");
+      }, 0);
+
+      return () => window.clearTimeout(timer);
     }
 
     async function loadDistricts() {
@@ -145,10 +153,17 @@ async function handleAnalyse() {
   }
 
   try {
+    // Attach the auth token (if logged in) so the backend can fall
+    // back to the farmer's saved state/district for the soil-context
+    // lookup when they haven't picked one on this form. Anonymous
+    // scans work exactly as before - this header is simply absent.
+    const token = getStoredToken();
+
     const response = await fetch(
       `${API_BASE_URL}/predict`,
       {
         method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         body: formData,
       }
     );

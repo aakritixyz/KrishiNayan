@@ -27,7 +27,8 @@ def test_predict_route(monkeypatch):
     monkeypatch.setattr(
         predict_route,
         "predict_disease",
-        lambda image_bytes: {
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
             "disease": "Early Blight",
             "confidence": 99.81,
             "status": "supported",
@@ -124,7 +125,8 @@ def test_predict_without_soil_fields_returns_none_soil_context(
     monkeypatch.setattr(
         predict_route,
         "predict_disease",
-        lambda image_bytes: {
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
             "disease": "Healthy",
             "confidence": 95.0,
             "status": "supported",
@@ -182,7 +184,8 @@ def test_predict_includes_gradcam_image_when_available(monkeypatch):
     monkeypatch.setattr(
         predict_route,
         "predict_disease",
-        lambda image_bytes: {
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
             "disease": "Early Blight",
             "confidence": 91.2,
             "status": "supported",
@@ -224,7 +227,7 @@ def test_predict_includes_gradcam_image_when_available(monkeypatch):
     monkeypatch.setattr(
         predict_route,
         "generate_gradcam_overlay",
-        lambda image_bytes: {
+        lambda image_bytes, crop="tomato": {
             "disease": "Early Blight",
             "confidence": 91.2,
             "heatmap_image": "data:image/png;base64,FAKE",
@@ -252,7 +255,8 @@ def test_predict_gradcam_failure_returns_null_image(monkeypatch):
     monkeypatch.setattr(
         predict_route,
         "predict_disease",
-        lambda image_bytes: {
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
             "disease": "Healthy",
             "confidence": 98.0,
             "status": "supported",
@@ -294,7 +298,7 @@ def test_predict_gradcam_failure_returns_null_image(monkeypatch):
     monkeypatch.setattr(
         predict_route,
         "generate_gradcam_overlay",
-        lambda image_bytes: None,
+        lambda image_bytes, crop="tomato": None,
     )
 
     response = client.post(
@@ -426,3 +430,96 @@ def test_soil_profile_endpoint():
 
     assert response.status_code == 200
     assert response.json()["soil_type"] == "Alluvial"
+
+
+def test_predict_uses_logged_in_profile_state_when_not_supplied(
+    monkeypatch,
+):
+    """
+    When a logged-in farmer doesn't pick a state/district on the
+    scan form, /predict should fall back to what's saved on their
+    profile instead of skipping the soil-context lookup.
+    """
+    register_response = client.post(
+        "/auth/register",
+        json={
+            "full_name": "Predict Test Farmer",
+            "email": "predict.profile@example.com",
+            "password": "Farmer@123",
+        },
+    )
+    token = register_response.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    client.put(
+        "/profile",
+        headers=headers,
+        json={"state": "Punjab", "district": "Ludhiana"},
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "predict_disease",
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
+            "disease": "Healthy",
+            "confidence": 95.0,
+            "status": "supported",
+        },
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "generate_gradcam_overlay",
+        lambda image_bytes, crop="tomato": None,
+    )
+
+    response = client.post(
+        "/predict",
+        headers=headers,
+        files={
+            "file": (
+                "test_leaf.jpg",
+                b"fake-image-bytes",
+                "image/jpeg",
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    # Punjab/Ludhiana is real soil-profile data (see test_soil_profile_endpoint
+    # above), so a non-null soil_context proves the profile's saved
+    # state/district reached the soil lookup without being typed in.
+    assert response.json()["soil_context"] is not None
+
+
+def test_predict_still_works_without_login(monkeypatch):
+    monkeypatch.setattr(
+        predict_route,
+        "predict_disease",
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
+            "disease": "Healthy",
+            "confidence": 95.0,
+            "status": "supported",
+        },
+    )
+
+    monkeypatch.setattr(
+        predict_route,
+        "generate_gradcam_overlay",
+        lambda image_bytes, crop="tomato": None,
+    )
+
+    response = client.post(
+        "/predict",
+        files={
+            "file": (
+                "test_leaf.jpg",
+                b"fake-image-bytes",
+                "image/jpeg",
+            )
+        },
+    )
+
+    assert response.status_code == 200

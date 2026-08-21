@@ -1,7 +1,8 @@
 "use client";
 
 import BottomNav from "@/components/BottomNav";
-import { API_BASE_URL } from "@/lib/api";
+import { apiJson, ApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -49,8 +50,11 @@ const GREETING: Record<Language, string> = {
 
 export default function ChatbotPage() {
   const router = useRouter();
+  const { user } = useAuth();
 
   const [language, setLanguage] = useState<Language>("en");
+  const [hasManuallyToggledLanguage, setHasManuallyToggledLanguage] =
+    useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: GREETING.en },
   ]);
@@ -79,6 +83,20 @@ export default function ChatbotPage() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  // Default to the farmer's saved language preference once they're
+  // loaded - but never override a language they've already picked
+  // by hand in this session.
+  useEffect(() => {
+    if (!user || hasManuallyToggledLanguage) return;
+
+    const timer = window.setTimeout(() => {
+      const savedLanguage = user.language === "hi" ? "hi" : "en";
+      setLanguage(savedLanguage);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [user, hasManuallyToggledLanguage]);
+
   useEffect(() => {
     scrollAnchorRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -86,6 +104,7 @@ export default function ChatbotPage() {
   }, [messages, isSending]);
 
   function toggleLanguage() {
+    setHasManuallyToggledLanguage(true);
     setLanguage((current) => (current === "en" ? "hi" : "en"));
   }
 
@@ -106,54 +125,46 @@ export default function ChatbotPage() {
     setIsSending(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/chatbot/ask`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: trimmed,
-            language,
-            context: {
-              crop: "Tomato",
-              location: "Pune, Maharashtra",
-              diagnosis: scanContext
-                ? {
-                    disease: scanContext.detected_issue,
-                    confidence: scanContext.confidence,
-                  }
-                : undefined,
-              weather: scanContext?.weather
-                ? {
-                    temperature: scanContext.weather.temperature,
-                    humidity: scanContext.weather.humidity,
-                    wind_speed: scanContext.weather.wind_speed,
-                    rain_expected:
-                      scanContext.weather.rain_expected,
-                  }
-                : undefined,
-            },
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("The chatbot is unavailable right now.");
-      }
-
-      const data = await response.json();
+      const data = await apiJson<{
+        answer: string;
+        sources: ChatSource[];
+      }>("/chatbot/ask", {
+        method: "POST",
+        body: JSON.stringify({
+          message: trimmed,
+          language,
+          context: {
+            crop: "Tomato",
+            diagnosis: scanContext
+              ? {
+                  disease: scanContext.detected_issue,
+                  confidence: scanContext.confidence,
+                }
+              : undefined,
+            weather: scanContext?.weather
+              ? {
+                  temperature: scanContext.weather.temperature,
+                  humidity: scanContext.weather.humidity,
+                  wind_speed: scanContext.weather.wind_speed,
+                  rain_expected:
+                    scanContext.weather.rain_expected,
+                }
+              : undefined,
+          },
+        }),
+      });
 
       setMessages((current) => [
         ...current,
         {
           role: "assistant",
-          content: data.answer as string,
-          sources: data.sources as ChatSource[],
+          content: data.answer,
+          sources: data.sources,
         },
       ]);
     } catch (error) {
       const message =
-        error instanceof Error
+        error instanceof ApiError
           ? error.message
           : "Backend connection failed.";
 
