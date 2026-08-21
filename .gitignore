@@ -10,11 +10,13 @@ __pycache__/
 
 # Trained ML models
 backend/models/*.keras
+*.keras
+
+# macOS
 .DS_Store
 
 # Virtual environments
 .venv/
-backend/.venv/
 
 # Locally saved test images
 uploads/
@@ -25,6 +27,5 @@ backend/storage/
 *.db
 *.db-journal
 
-# Large trained models
-*.keras
-backend/models/*.keras
+# Rice field dataset - local only
+ml/data/rice_field/
