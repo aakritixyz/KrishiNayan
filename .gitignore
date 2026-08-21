@@ -22,10 +22,11 @@ backend/models/*.keras
 uploads/
 backend/uploads/
 
-# Local user database (SQLite) - never commit real user data
+# Local user database
 backend/storage/
 *.db
 *.db-journal
 
 # Rice field dataset - local only
 ml/data/rice_field/
+backend/data/Rice leaf disease/
