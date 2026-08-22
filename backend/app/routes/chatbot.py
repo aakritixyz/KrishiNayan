@@ -13,6 +13,8 @@ router = APIRouter()
 class DiagnosisContext(BaseModel):
     disease: str | None = None
     confidence: float | None = None
+    severity: str | None = None
+    prediction_status: str | None = None
 
 
 class WeatherContext(BaseModel):
@@ -28,6 +30,7 @@ class FarmerContext(BaseModel):
     location: str | None = None
     diagnosis: DiagnosisContext | None = None
     weather: WeatherContext | None = None
+    soil_summary: str | None = None
     plot_history: list[str] | None = None
 
 

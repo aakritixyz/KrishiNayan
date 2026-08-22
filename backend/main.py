@@ -9,6 +9,7 @@ from app.routes.policy import router as policy_router
 from app.routes.crop_soil_advisory import router as crop_soil_advisory_router
 from app.routes.auth import router as auth_router
 from app.routes.profile import router as profile_router
+from app.routes.crop_health import router as crop_health_router
 
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
@@ -43,6 +44,7 @@ app.include_router(policy_router)
 app.include_router(crop_soil_advisory_router)
 app.include_router(auth_router)
 app.include_router(profile_router)
+app.include_router(crop_health_router)
 
 
 @app.get("/")

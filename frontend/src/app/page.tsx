@@ -13,6 +13,7 @@ import {
   Leaf,
   LogIn,
   UserRound,
+  ActivitySquare,
 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import { useAuth } from "@/lib/auth-context";
@@ -108,7 +109,10 @@ export default function Home() {
           </Link>
 
           <div className="mt-3 grid w-full grid-cols-2 gap-3">
-            <button className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95">
+            <Link
+              href="/farm"
+              className="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95"
+            >
               <MapPinned size={24} className="shrink-0 text-leaf" />
 
               <span>
@@ -117,7 +121,7 @@ export default function Home() {
                   View your plots
                 </span>
               </span>
-            </button>
+            </Link>
 
             <Link
               href="/chatbot"
@@ -133,6 +137,24 @@ export default function Home() {
               </span>
             </Link>
           </div>
+
+          <Link
+            href="/health"
+            className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-4 text-left text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-leaf/60 hover:bg-white/20 hover:shadow-xl active:scale-95"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-leaf/20 text-leaf">
+              <ActivitySquare size={22} />
+            </span>
+
+            <span>
+              <span className="block font-semibold">
+                Crop Health Memory
+              </span>
+              <span className="mt-1 block text-xs text-white/65">
+                Track health scores and trends over time
+              </span>
+            </span>
+          </Link>
 
           <Link
             href="/policies"

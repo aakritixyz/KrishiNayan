@@ -23,6 +23,7 @@ import {
 } from "@/lib/hindiTranslations";
 
 type PredictionResult = {
+  crop: string;
   detected_issue: string;
   confidence: number;
   prediction_status: string;
@@ -51,6 +52,14 @@ type PredictionResult = {
     soil_risk_factors: string[];
     soil_recommendations: string[];
     summary: string;
+  } | null;
+  health: {
+    field_label: string;
+    health_score: number;
+    previous_health_score: number | null;
+    point_change: number | null;
+    percent_change: number | null;
+    trend: string;
   } | null;
   gradcam_image: string | null;
 };
@@ -374,6 +383,71 @@ export default function ResultPage() {
           </div>
         )}
 
+        {prediction?.health && (
+          <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-forest">
+                Crop Health Memory
+              </h3>
+
+              <button
+                type="button"
+                onClick={() => router.push("/health")}
+                className="text-xs font-bold text-forest underline"
+              >
+                View full history
+              </button>
+            </div>
+
+            <div className="mt-3 flex items-center gap-4">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-forest/5">
+                <span className="text-xl font-bold text-forest">
+                  {Math.round(prediction.health.health_score)}
+                </span>
+              </div>
+
+              <div>
+                <p className="text-xs text-muted">
+                  Health score for {prediction.health.field_label}
+                </p>
+
+                {prediction.health.previous_health_score === null ? (
+                  <p className="mt-1 text-sm font-semibold text-forest">
+                    First scan recorded — history starts now.
+                  </p>
+                ) : (
+                  <p className="mt-1 text-sm font-semibold">
+                    <span
+                      className={
+                        prediction.health.trend === "improving"
+                          ? "text-forest"
+                          : prediction.health.trend === "deteriorating"
+                          ? "text-danger"
+                          : "text-muted"
+                      }
+                    >
+                      {prediction.health.point_change! > 0 ? "+" : ""}
+                      {prediction.health.point_change} pts
+                      {prediction.health.percent_change !== null &&
+                        ` (${prediction.health.percent_change! > 0 ? "+" : ""}${
+                          prediction.health.percent_change
+                        }%)`}
+                    </span>{" "}
+                    <span className="text-muted">
+                      vs last scan ·{" "}
+                      {prediction.health.trend === "improving"
+                        ? "Improving"
+                        : prediction.health.trend === "deteriorating"
+                        ? "Deteriorating"
+                        : "Stable"}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="mt-4 grid grid-cols-2 gap-3">
           <button
             type="button"
@@ -425,11 +499,11 @@ export default function ResultPage() {
         <div className="mt-3 grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => router.push("/chatbot")}
+            onClick={() => router.push("/chatbot?fromAnalysis=1")}
             className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
           >
             <MessageCircle size={19} className="text-leaf" />
-            Ask AI Chatbot
+            Get Help from Bot
           </button>
 
           <button

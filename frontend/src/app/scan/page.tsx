@@ -52,6 +52,7 @@ export default function ScanPage() {
     { id: "tomato", label: "Tomato", available: true },
   ]);
   const [selectedCrop, setSelectedCrop] = useState<string>("tomato");
+  const [fieldLabel, setFieldLabel] = useState<string>("");
 
   useEffect(() => {
     async function loadCrops() {
@@ -143,6 +144,10 @@ async function handleAnalyse() {
   const formData = new FormData();
   formData.append("file", selectedFile);
   formData.append("crop", selectedCrop);
+
+  if (fieldLabel.trim()) {
+    formData.append("field_label", fieldLabel.trim());
+  }
 
   if (selectedState) {
     formData.append("state", selectedState);
@@ -281,6 +286,20 @@ async function handleAnalyse() {
               </option>
             ))}
           </select>
+
+          <label className="mt-3 block text-xs font-semibold text-muted">
+            Field name (optional)
+            <input
+              value={fieldLabel}
+              onChange={(event) => setFieldLabel(event.target.value)}
+              placeholder="e.g. North Plot"
+              className="mt-1 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
+            />
+          </label>
+          <p className="mt-1 text-xs text-muted">
+            Name your field if you track more than one plot of the
+            same crop - your Crop Health history is grouped by this.
+          </p>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">

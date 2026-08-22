@@ -42,5 +42,6 @@ def init_db():
     startup - existing tables and data are left untouched.
     """
     from app.models import user  # noqa: F401  (registers the model)
+    from app.models import scan_record  # noqa: F401
 
     Base.metadata.create_all(bind=engine)

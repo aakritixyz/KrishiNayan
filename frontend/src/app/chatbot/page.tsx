@@ -3,7 +3,7 @@
 import BottomNav from "@/components/BottomNav";
 import { apiJson, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   Bot,
@@ -13,6 +13,7 @@ import {
   Sprout,
 } from "lucide-react";
 import {
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -20,14 +21,20 @@ import {
 } from "react";
 
 type PredictionResult = {
+  crop: string;
   detected_issue: string;
   confidence: number;
+  severity: string;
+  prediction_status: string;
   weather: {
     temperature: number;
     humidity: number;
     wind_speed: number;
     rain_expected: boolean;
   };
+  soil_context: {
+    summary: string;
+  } | null;
 };
 
 type ChatSource = {
@@ -48,8 +55,65 @@ const GREETING: Record<Language, string> = {
   hi: "नमस्ते! टमाटर की बीमारियों, सिंचाई, खाद, स्प्रे के मौसम, कीट, या आपके पिछले स्कैन के बारे में पूछें।",
 };
 
+// How close to the bottom (in px) still counts as "at the bottom"
+// for auto-scroll purposes - a little slack for sub-pixel rounding
+// and momentum scrolling on mobile.
+const AUTO_SCROLL_THRESHOLD_PX = 80;
+
+function buildAnalysisGreeting(
+  language: Language,
+  scan: PredictionResult
+): string {
+  const isHealthy = scan.detected_issue.trim().toLowerCase() === "healthy";
+
+  if (language === "hi") {
+    if (isHealthy) {
+      return (
+        `मैंने आपका पिछला स्कैन देखा - आपकी ${scan.crop} फसल स्वस्थ दिख रही है ` +
+        `(${scan.confidence}% भरोसा)। कोई भी सवाल पूछें - निगरानी, खाद, या ` +
+        `अगली स्कैन कब करें।`
+      );
+    }
+
+    return (
+      `मैंने आपका पिछला स्कैन देखा - आपकी ${scan.crop} फसल में ${scan.detected_issue} ` +
+      `मिला (${scan.confidence}% भरोसा, ${scan.severity} जोखिम)। इलाज, बचाव, ` +
+      `या किसी और चीज़ के बारे में पूछें।`
+    );
+  }
+
+  if (isHealthy) {
+    return (
+      `I can see your last scan - your ${scan.crop} crop looks healthy ` +
+      `(${scan.confidence}% confidence). Ask me anything - monitoring tips, ` +
+      `fertilizer, or when to scan again.`
+    );
+  }
+
+  return (
+    `I can see your last scan - your ${scan.crop} crop tested positive for ` +
+    `${scan.detected_issue} (${scan.confidence}% confidence, ${scan.severity} risk). ` +
+    `Ask me about treatment, prevention, or what to expect next.`
+  );
+}
+
 export default function ChatbotPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex h-dvh items-center justify-center bg-forest-deep">
+          <Loader2 size={24} className="animate-spin text-white/70" />
+        </main>
+      }
+    >
+      <ChatbotPageInner />
+    </Suspense>
+  );
+}
+
+function ChatbotPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
 
   const [language, setLanguage] = useState<Language>("en");
@@ -63,7 +127,9 @@ export default function ChatbotPage() {
   const [scanContext, setScanContext] =
     useState<PredictionResult | null>(null);
 
-  const scrollAnchorRef = useRef<HTMLDivElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const isNearBottomRef = useRef(true);
+  const hasAppliedAnalysisGreetingRef = useRef(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -83,6 +149,31 @@ export default function ChatbotPage() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  // When arriving from a just-finished analysis ("Get Help from
+  // Bot" on the result page), open with a greeting that already
+  // names the exact diagnosis instead of the generic one - built
+  // locally from the real scan result, so it's instant with no
+  // extra request.
+  useEffect(() => {
+    if (hasAppliedAnalysisGreetingRef.current) return;
+    if (!scanContext) return;
+    if (searchParams.get("fromAnalysis") !== "1") return;
+
+    hasAppliedAnalysisGreetingRef.current = true;
+
+    const timer = window.setTimeout(() => {
+      setMessages([
+        {
+          role: "assistant",
+          content: buildAnalysisGreeting(language, scanContext),
+        },
+      ]);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scanContext, searchParams]);
+
   // Default to the farmer's saved language preference once they're
   // loaded - but never override a language they've already picked
   // by hand in this session.
@@ -97,11 +188,33 @@ export default function ChatbotPage() {
     return () => window.clearTimeout(timer);
   }, [user, hasManuallyToggledLanguage]);
 
+  // Smart autoscroll: only snap to the bottom when the farmer was
+  // already reading near the bottom (or just sent a message) -
+  // never yank them back down while they're scrolled up reading
+  // earlier messages in a long conversation.
   useEffect(() => {
-    scrollAnchorRef.current?.scrollIntoView({
+    const container = messagesContainerRef.current;
+
+    if (!container || !isNearBottomRef.current) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
       behavior: "smooth",
     });
   }, [messages, isSending]);
+
+  function handleMessagesScroll() {
+    const container = messagesContainerRef.current;
+
+    if (!container) return;
+
+    const distanceFromBottom =
+      container.scrollHeight -
+      container.scrollTop -
+      container.clientHeight;
+
+    isNearBottomRef.current = distanceFromBottom < AUTO_SCROLL_THRESHOLD_PX;
+  }
 
   function toggleLanguage() {
     setHasManuallyToggledLanguage(true);
@@ -114,6 +227,10 @@ export default function ChatbotPage() {
     const trimmed = input.trim();
 
     if (!trimmed || isSending) return;
+
+    // The farmer just acted - always show them their own message
+    // and the reply that follows, regardless of prior scroll state.
+    isNearBottomRef.current = true;
 
     const nextMessages: ChatMessage[] = [
       ...messages,
@@ -134,11 +251,13 @@ export default function ChatbotPage() {
           message: trimmed,
           language,
           context: {
-            crop: "Tomato",
+            crop: scanContext?.crop || "Tomato",
             diagnosis: scanContext
               ? {
                   disease: scanContext.detected_issue,
                   confidence: scanContext.confidence,
+                  severity: scanContext.severity,
+                  prediction_status: scanContext.prediction_status,
                 }
               : undefined,
             weather: scanContext?.weather
@@ -150,6 +269,7 @@ export default function ChatbotPage() {
                     scanContext.weather.rain_expected,
                 }
               : undefined,
+            soil_summary: scanContext?.soil_context?.summary,
           },
         }),
       });
@@ -178,9 +298,9 @@ export default function ChatbotPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-cream pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
-        <header className="flex items-center justify-between px-5">
+    <main className="flex h-dvh items-center justify-center bg-forest-deep sm:p-6">
+      <section className="relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden bg-cream pb-32 pt-6 sm:h-[844px] sm:rounded-[36px]">
+        <header className="flex shrink-0 items-center justify-between px-5">
           <button
             type="button"
             onClick={() => router.back()}
@@ -211,7 +331,7 @@ export default function ChatbotPage() {
         </header>
 
         {scanContext && (
-          <div className="mx-5 mt-4 flex items-center gap-3 rounded-2xl bg-forest p-3 text-white">
+          <div className="mx-5 mt-4 flex shrink-0 items-center gap-3 rounded-2xl bg-forest p-3 text-white">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-leaf text-forest-deep">
               <Sprout size={17} />
             </span>
@@ -225,7 +345,11 @@ export default function ChatbotPage() {
           </div>
         )}
 
-        <div className="mt-4 flex-1 space-y-4 overflow-y-auto px-5">
+        <div
+          ref={messagesContainerRef}
+          onScroll={handleMessagesScroll}
+          className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto px-5"
+        >
           {messages.map((message, index) => (
             <ChatBubble key={index} message={message} />
           ))}
@@ -236,13 +360,11 @@ export default function ChatbotPage() {
               Thinking...
             </div>
           )}
-
-          <div ref={scrollAnchorRef} />
         </div>
 
         <form
           onSubmit={sendMessage}
-          className="sticky bottom-24 z-10 mx-5 mt-4 flex items-center gap-2 rounded-full border border-forest/10 bg-white p-2 shadow-lg"
+          className="z-10 mx-5 mt-4 flex shrink-0 items-center gap-2 rounded-full border border-forest/10 bg-white p-2 shadow-lg"
         >
           <input
             value={input}

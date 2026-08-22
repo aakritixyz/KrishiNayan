@@ -126,3 +126,93 @@ def test_chatbot_still_works_without_login():
 
     assert response.status_code == 200
     assert response.json()["language"] == "en"
+
+
+def test_chatbot_uses_diagnosis_for_vague_follow_up_question():
+    """
+    A vague follow-up like "what should I do?" carries no useful
+    retrieval keywords on its own - the chatbot must fall back on
+    the diagnosis already in context (disease + crop) to find
+    relevant guidance, instead of asking a diagnosis-blind
+    clarifying question or answering generically.
+    """
+    response = client.post(
+        "/chatbot/ask",
+        json={
+            "message": "what should I do?",
+            "language": "en",
+            "context": {
+                "crop": "Tomato",
+                "diagnosis": {
+                    "disease": "Early Blight",
+                    "confidence": 91.2,
+                    "severity": "High"
+                }
+            }
+        }
+    )
+
+    assert response.status_code == 200
+
+    result = response.json()
+
+    assert result["clarifying_question"] is None
+    assert "early_blight" in result["matched_topics"]
+    # The answer must visibly acknowledge the specific diagnosis,
+    # not read as generic advice with no memory of the analysis.
+    assert "Early Blight" in result["answer"]
+
+
+def test_chatbot_answer_names_known_diagnosis_even_for_odd_wording():
+    """
+    Even for oddly-worded input, if we already know the diagnosis,
+    retrieval is augmented with it - so the chatbot still finds and
+    names the specific disease rather than falling back to a
+    diagnosis-blind generic response.
+    """
+    response = client.post(
+        "/chatbot/ask",
+        json={
+            "message": "zzz qqq unrelated nonsense",
+            "language": "en",
+            "context": {
+                "crop": "Tomato",
+                "diagnosis": {
+                    "disease": "Late Blight",
+                    "confidence": 88.0
+                }
+            }
+        }
+    )
+
+    assert response.status_code == 200
+
+    result = response.json()
+
+    # The diagnosis context alone was enough to find real guidance -
+    # either as a direct answer naming it, or (if it still couldn't
+    # find anything) a clarifying question that names it. Either way
+    # "Late Blight" must appear somewhere in the reply.
+    assert "Late Blight" in result["answer"]
+
+
+def test_clarifying_question_names_diagnosis_when_known():
+    from app.services.chatbot_service import _clarifying_question
+
+    question = _clarifying_question(
+        "en",
+        {"crop": "Tomato", "diagnosis": {"disease": "Septoria Leaf Spot"}}
+    )
+
+    assert "Septoria Leaf Spot" in question
+
+
+def test_clarifying_question_is_generic_without_diagnosis():
+    from app.services.chatbot_service import (
+        CLARIFYING_QUESTIONS,
+        _clarifying_question
+    )
+
+    question = _clarifying_question("en", {})
+
+    assert question == CLARIFYING_QUESTIONS["en"]

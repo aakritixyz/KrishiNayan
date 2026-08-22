@@ -1,4 +1,3 @@
-from app.services.advisory_service import get_farmer_message
 from fastapi import (
     APIRouter,
     Depends,
@@ -7,6 +6,8 @@ from fastapi import (
     HTTPException,
     UploadFile
 )
+
+from sqlalchemy.orm import Session
 
 from app.services.advisory_service import (
     get_farmer_message
@@ -21,8 +22,11 @@ from app.core.config import (
     MAX_IMAGE_SIZE_BYTES
 )
 
+from app.core.database import get_db
 from app.core.deps import get_current_user_optional
 from app.models.user import User
+
+from app.services import health_service
 
 from app.services.ml_service import (
     generate_gradcam_overlay,
@@ -53,7 +57,9 @@ async def predict_image(
     state: str | None = Form(None),
     district: str | None = Form(None),
     crop: str | None = Form("tomato"),
-    current_user: User | None = Depends(get_current_user_optional)
+    field_label: str | None = Form(None),
+    current_user: User | None = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
 ):
     """
     Receive a tomato-leaf image and return
@@ -63,6 +69,12 @@ async def predict_image(
     supplied and the request comes from a logged-in farmer with
     those saved on their profile, the soil-context lookup falls
     back to the farmer's saved location instead of skipping it.
+
+    When the request is from a logged-in farmer, the scan is also
+    recorded into that farmer's Crop Health Memory (grouped by crop
+    and, optionally, field_label), and the response includes a real
+    before-vs-current health comparison against their previous scan
+    of the same crop/field, if one exists.
     """
 
     if file.content_type not in ALLOWED_CONTENT_TYPES:
@@ -149,10 +161,60 @@ async def predict_image(
             detail=str(error)
         ) from error
 
-    return {
-    "crop": CROP_CONFIG.get(
+    crop_display_label = CROP_CONFIG.get(
         prediction["crop"], {}
-    ).get("label", prediction["crop"].title()),
+    ).get("label", prediction["crop"].title())
+
+    health_summary = None
+
+    if current_user:
+        resolved_field_label = (
+            field_label.strip() if field_label else crop_display_label
+        )
+
+        previous_scan = health_service.get_previous_scan(
+            db,
+            current_user.id,
+            prediction["crop"],
+            resolved_field_label
+        )
+
+        health_score = health_service.compute_health_score(
+            prediction["disease"],
+            prediction["confidence"]
+        )
+
+        comparison = health_service.compute_comparison(
+            health_score,
+            previous_scan.health_score if previous_scan else None
+        )
+
+        health_service.record_scan(
+            db,
+            user_id=current_user.id,
+            crop=prediction["crop"],
+            crop_label=crop_display_label,
+            field_label=resolved_field_label,
+            disease=prediction["disease"],
+            confidence=prediction["confidence"],
+            prediction_status=prediction["status"],
+            severity=advisory["severity"],
+            image_path=saved_image_path
+        )
+
+        health_summary = {
+            "field_label": resolved_field_label,
+            "health_score": health_score,
+            "previous_health_score": (
+                previous_scan.health_score if previous_scan else None
+            ),
+            "point_change": comparison["point_change"],
+            "percent_change": comparison["percent_change"],
+            "trend": comparison["trend"]
+        }
+
+    return {
+    "crop": crop_display_label,
     "filename": file.filename,
     "detected_issue": prediction["disease"],
     "saved_image_path": saved_image_path,
@@ -164,6 +226,7 @@ async def predict_image(
     "recommended_action": advisory["recommended_action"],
     "farmer_message": advisory["farmer_message"],
     "soil_context": soil_context,
+    "health": health_summary,
     "gradcam_image": (
         gradcam_result["heatmap_image"] if gradcam_result else None
     )
