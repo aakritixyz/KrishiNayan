@@ -50,7 +50,7 @@ export async function apiFetch(
   const controller = new AbortController();
   const timeout = window.setTimeout(() => {
     controller.abort();
-  }, 15000);
+  }, 60000);
 
   const headers = new Headers(options.headers);
 

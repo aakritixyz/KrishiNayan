@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 
 from app.core.database import init_db
@@ -12,6 +14,24 @@ from app.routes.profile import router as profile_router
 from app.routes.crop_health import router as crop_health_router
 
 from fastapi.middleware.cors import CORSMiddleware
+
+
+def _get_allowed_origins():
+    defaults = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://krishinayan-comet.vercel.app",
+    ]
+
+    extra_origins = [
+        origin.strip().rstrip("/")
+        for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
+        if origin.strip()
+    ]
+
+    return sorted(set(defaults + extra_origins))
+
+
 app = FastAPI(
     title="KrishiNayan API",
     description="Backend API for crop disease detection and advisory",
@@ -20,10 +40,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=_get_allowed_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
