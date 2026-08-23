@@ -18,26 +18,31 @@ CROP_CONFIG = {
         "label": "Tomato",
         "model_path": MODELS_DIR / "KrishiNayan_Tomato_EfficientNetB0.keras",
         "class_names_path": MODELS_DIR / "class_names.json",
+        "image_size": (224, 224),
     },
     "maize": {
         "label": "Maize",
         "model_path": MODELS_DIR / "maize" / "KrishiNayan_Maize_EfficientNetB0.keras",
         "class_names_path": MODELS_DIR / "maize" / "class_names.json",
+        "image_size": (224, 224),
     },
     "rice": {
         "label": "Rice",
         "model_path": MODELS_DIR / "rice" / "KrishiNayan_Rice_EfficientNetB0.keras",
         "class_names_path": MODELS_DIR / "rice" / "class_names.json",
+        "image_size": (300, 300),
     },
     "wheat": {
         "label": "Wheat",
         "model_path": MODELS_DIR / "wheat" / "KrishiNayan_Wheat_EfficientNetB0.keras",
         "class_names_path": MODELS_DIR / "wheat" / "class_names.json",
+        "image_size": (224, 224),
     },
     "potato": {
         "label": "Potato",
         "model_path": MODELS_DIR / "potato" / "KrishiNayan_Potato_EfficientNetB0.keras",
         "class_names_path": MODELS_DIR / "potato" / "class_names.json",
+        "image_size": (224, 224),
     },
 }
 

@@ -61,7 +61,12 @@ def load_class_information(crop: str):
 
     if isinstance(class_data, list):
         class_names = class_data
-        image_size = (224, 224)
+        image_size = tuple(
+            crop_settings.get(
+                "image_size",
+                (224, 224)
+            )
+        )
 
     else:
         class_names = (
@@ -72,7 +77,10 @@ def load_class_information(crop: str):
         image_size = tuple(
             class_data.get(
                 "image_size",
-                [224, 224]
+                crop_settings.get(
+                    "image_size",
+                    (224, 224)
+                )
             )
         )
 

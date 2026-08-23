@@ -131,12 +131,44 @@ function ProfileView() {
     router.push("/login");
   }
 
-  if (isLoading || !profile) {
+  if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-forest-deep">
         <p className="text-sm font-semibold text-white/70">
           Loading profile...
         </p>
+      </main>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-forest-deep px-6">
+        <div className="w-full max-w-[360px] rounded-[24px] bg-cream p-5 text-center">
+          <p className="text-lg font-bold text-forest">
+            Profile could not load
+          </p>
+          <p className="mt-2 text-sm text-muted">
+            {error ||
+              "Backend is not reachable right now. Please try again."}
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={loadProfile}
+              className="rounded-xl bg-leaf px-4 py-3 text-sm font-bold text-forest-deep"
+            >
+              Retry
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-xl border border-forest/15 bg-white px-4 py-3 text-sm font-bold text-forest"
+            >
+              Log out
+            </button>
+          </div>
+        </div>
       </main>
     );
   }

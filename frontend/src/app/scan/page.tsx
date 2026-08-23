@@ -1,7 +1,7 @@
 "use client";
 
 import BottomNav from "@/components/BottomNav";
-import { getStoredToken } from "@/lib/api";
+import { API_BASE_URL, getStoredToken } from "@/lib/api";
 import Image from "next/image";
 import {
   CheckCircle2,
@@ -12,8 +12,6 @@ import {
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
-
-const API_BASE_URL = "http://127.0.0.1:8000";
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
