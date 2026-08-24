@@ -1,5 +1,5 @@
 "use client";
-
+import { WebSession } from "@omnidim-ai/client";
 import BottomNav from "@/components/BottomNav";
 import { apiJson, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -10,6 +10,8 @@ import {
   Globe,
   Loader2,
   Send,
+  Mic,
+  MicOff,
   Sprout,
 } from "lucide-react";
 import {
@@ -48,6 +50,11 @@ type ChatMessage = {
   sources?: ChatSource[];
 };
 
+type VoiceSessionResponse = {
+  session_id?: string | number | null;
+  ws_url: string;
+};
+
 type Language = "en" | "hi";
 
 const GREETING: Record<Language, string> = {
@@ -59,6 +66,147 @@ const GREETING: Record<Language, string> = {
 // for auto-scroll purposes - a little slack for sub-pixel rounding
 // and momentum scrolling on mobile.
 const AUTO_SCROLL_THRESHOLD_PX = 80;
+
+const OMNI_CAPTURE_WORKLET = `
+class OmniCaptureProcessor extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.buffer = new Float32Array(2048);
+    this.offset = 0;
+  }
+
+  process(inputs) {
+    const channel = inputs[0] && inputs[0][0];
+
+    if (!channel) return true;
+
+    let read = 0;
+
+    while (read < channel.length) {
+      const take = Math.min(
+        channel.length - read,
+        this.buffer.length - this.offset
+      );
+
+      this.buffer.set(channel.subarray(read, read + take), this.offset);
+      this.offset += take;
+      read += take;
+
+      if (this.offset === this.buffer.length) {
+        this.port.postMessage(this.buffer.slice(0));
+        this.offset = 0;
+      }
+    }
+
+    return true;
+  }
+}
+
+registerProcessor("krishinayan-omni-capture", OmniCaptureProcessor);
+`;
+
+type OmniAudioEngine = {
+  start(onChunk: (base64Pcm: string) => void): Promise<void>;
+  enqueue(base64Pcm: string): void;
+  clear(): void;
+  setMuted(muted: boolean): void;
+  stop(): void;
+};
+
+class SpeechToTextOnlyAudioEngine implements OmniAudioEngine {
+  private context: AudioContext | null = null;
+  private stream: MediaStream | null = null;
+  private workletNode: AudioWorkletNode | null = null;
+
+  async start(onChunk: (base64Pcm: string) => void): Promise<void> {
+    this.stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        sampleRate: 16000,
+        channelCount: 1,
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
+    });
+
+    this.context = new AudioContext({ sampleRate: 16000 });
+
+    if (this.context.state === "suspended") {
+      await this.context.resume();
+    }
+
+    const workletUrl = URL.createObjectURL(
+      new Blob([OMNI_CAPTURE_WORKLET], {
+        type: "application/javascript",
+      })
+    );
+
+    try {
+      await this.context.audioWorklet.addModule(workletUrl);
+    } finally {
+      URL.revokeObjectURL(workletUrl);
+    }
+
+    this.workletNode = new AudioWorkletNode(
+      this.context,
+      "krishinayan-omni-capture"
+    );
+    this.workletNode.port.onmessage = (event) => {
+      onChunk(float32ToBase64Pcm(event.data as Float32Array));
+    };
+
+    this.context
+      .createMediaStreamSource(this.stream)
+      .connect(this.workletNode);
+  }
+
+  enqueue() {
+    // Deliberately ignore Omni agent audio. KrishiNayan uses Omni for STT only.
+  }
+
+  clear() {
+    // No playback queue is used.
+  }
+
+  setMuted(muted: boolean) {
+    for (const track of this.stream?.getAudioTracks() ?? []) {
+      track.enabled = !muted;
+    }
+  }
+
+  stop() {
+    this.workletNode?.disconnect();
+    this.workletNode = null;
+
+    for (const track of this.stream?.getTracks() ?? []) {
+      track.stop();
+    }
+
+    this.stream = null;
+    void this.context?.close();
+    this.context = null;
+  }
+}
+
+function float32ToBase64Pcm(samples: Float32Array): string {
+  const pcm = new Int16Array(samples.length);
+
+  for (let index = 0; index < samples.length; index += 1) {
+    const sample = Math.max(-1, Math.min(1, samples[index]));
+    pcm[index] = sample < 0 ? sample * 32768 : sample * 32767;
+  }
+
+  const bytes = new Uint8Array(pcm.buffer);
+  let binary = "";
+
+  for (let index = 0; index < bytes.length; index += 32768) {
+    binary += String.fromCharCode(
+      ...bytes.subarray(index, index + 32768)
+    );
+  }
+
+  return btoa(binary);
+}
 
 function buildAnalysisGreeting(
   language: Language,
@@ -124,6 +272,12 @@ function ChatbotPageInner() {
   ]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isVoiceStarting, setIsVoiceStarting] = useState(false);
+  const [voiceError, setVoiceError] = useState("");
+
+  const omniSessionRef = useRef<WebSession | null>(null);
+  const isStartingVoiceRef = useRef(false);
   const [scanContext, setScanContext] =
     useState<PredictionResult | null>(null);
 
@@ -221,10 +375,8 @@ function ChatbotPageInner() {
     setLanguage((current) => (current === "en" ? "hi" : "en"));
   }
 
-  async function sendMessage(event: FormEvent) {
-    event.preventDefault();
-
-    const trimmed = input.trim();
+  async function sendChatMessage(text: string) {
+    const trimmed = text.trim();
 
     if (!trimmed || isSending) return;
 
@@ -239,6 +391,7 @@ function ChatbotPageInner() {
 
     setMessages(nextMessages);
     setInput("");
+    setVoiceError("");
     setIsSending(true);
 
     try {
@@ -296,6 +449,155 @@ function ChatbotPageInner() {
       setIsSending(false);
     }
   }
+
+  async function sendMessage(event: FormEvent) {
+    event.preventDefault();
+
+    await sendChatMessage(input);
+  }
+
+  async function startOmniVoice() {
+    if (
+      isSending ||
+      isListening ||
+      isStartingVoiceRef.current ||
+      omniSessionRef.current
+    ) {
+      return;
+    }
+
+    isStartingVoiceRef.current = true;
+    setIsVoiceStarting(true);
+    setVoiceError("");
+
+    let data: VoiceSessionResponse;
+
+    try {
+      data = await apiJson<VoiceSessionResponse>("/voice/session", {
+        method: "POST",
+      });
+
+      if (!data.ws_url) {
+        throw new Error("Voice session did not return ws_url");
+      }
+    } catch (error) {
+      console.error("Voice session request failed:", error);
+
+      setVoiceError(getVoiceSessionErrorMessage(error, language));
+      setIsListening(false);
+      omniSessionRef.current = null;
+      isStartingVoiceRef.current = false;
+      setIsVoiceStarting(false);
+
+      return;
+    }
+
+    try {
+      const session = new WebSession({
+        audioEngine: new SpeechToTextOnlyAudioEngine(),
+      });
+
+      session.on("status", (status) => {
+        console.log("OmniDimension status:", status);
+
+        if (typeof status === "object" && status.state === "ended") {
+          if (omniSessionRef.current === session) {
+            omniSessionRef.current = null;
+          }
+
+          setIsListening(false);
+          setIsVoiceStarting(false);
+        }
+      });
+
+      session.on("transcript", (transcript) => {
+        console.log("Omni transcript:", transcript);
+
+        if (transcript.role !== "user") return;
+
+        setInput(transcript.text);
+
+        if (transcript.final && transcript.text.trim()) {
+          const finalText = transcript.text.trim();
+
+          setInput(finalText);
+
+          try {
+            session.stop();
+          } catch (error) {
+            console.error("Error stopping completed voice session:", error);
+          }
+
+          if (omniSessionRef.current === session) {
+            omniSessionRef.current = null;
+          }
+
+          setIsListening(false);
+        }
+      });
+
+      session.on("error", (error) => {
+        console.error("OmniDimension error:", error);
+
+        setVoiceError(
+          language === "hi"
+            ? "आवाज़ पहचानने में समस्या हुई।"
+            : "There was a problem with voice recognition."
+        );
+
+        setIsListening(false);
+        setIsVoiceStarting(false);
+
+        if (omniSessionRef.current === session) {
+          omniSessionRef.current = null;
+        }
+      });
+
+      omniSessionRef.current = session;
+
+      await session.start({
+        wsUrl: data.ws_url,
+      });
+
+      setIsListening(true);
+    } catch (error) {
+      console.error("Voice startup failed:", error);
+
+      setVoiceError(getMicrophoneErrorMessage(error, language));
+
+      setIsListening(false);
+      omniSessionRef.current = null;
+    } finally {
+      isStartingVoiceRef.current = false;
+      setIsVoiceStarting(false);
+    }
+  }
+
+  function stopOmniVoice() {
+    try {
+      omniSessionRef.current?.stop();
+    } catch (error) {
+      console.error("Error stopping voice session:", error);
+    }
+
+    omniSessionRef.current = null;
+
+    setIsListening(false);
+    setIsVoiceStarting(false);
+  }
+
+  useEffect(() => {
+    return () => {
+      try {
+        omniSessionRef.current?.stop();
+      } catch {
+        // Ignore cleanup errors.
+      }
+
+      omniSessionRef.current = null;
+      isStartingVoiceRef.current = false;
+    };
+  }, []);
 
   return (
     <main className="flex h-dvh items-center justify-center bg-forest-deep sm:p-6">
@@ -362,6 +664,25 @@ function ChatbotPageInner() {
           )}
         </div>
 
+        {(isListening || isVoiceStarting) && (
+          <div className="mx-5 mb-2 flex items-center justify-center gap-2">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+            <span className="text-xs font-semibold text-forest/70">
+              {isVoiceStarting
+                ? language === "hi"
+                  ? "माइक्रोफ़ोन शुरू हो रहा है..."
+                  : "Starting microphone..."
+                : language === "hi"
+                  ? "सुन रहा हूँ... बोलिए"
+                  : "Listening... speak now"}
+            </span>
+          </div>
+        )}
+
+        {voiceError && (
+          <p className="mx-5 mb-2 text-xs text-red-600">{voiceError}</p>
+        )}
+
         <form
           onSubmit={sendMessage}
           className="z-10 mx-5 mt-4 flex shrink-0 items-center gap-2 rounded-full border border-forest/10 bg-white p-2 shadow-lg"
@@ -378,6 +699,30 @@ function ChatbotPageInner() {
           />
 
           <button
+            type="button"
+            onClick={isListening ? stopOmniVoice : startOmniVoice}
+            disabled={isSending || isVoiceStarting}
+            className={`group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:scale-110 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${
+              isListening || isVoiceStarting
+                ? "bg-red-500 text-white shadow-md ring-4 ring-red-500/15 hover:bg-red-600"
+                : "bg-forest/10 text-forest hover:bg-leaf hover:text-forest-deep"
+            }`}
+            aria-label={
+              isListening ? "Stop listening" : "Start voice input"
+            }
+            title={isListening ? "Stop listening" : "Speak"}
+          >
+            {isListening || isVoiceStarting ? (
+              <MicOff size={18} className="animate-pulse" />
+            ) : (
+              <Mic
+                size={18}
+                className="transition-transform duration-200 group-hover:scale-110"
+              />
+            )}
+          </button>
+
+          <button
             type="submit"
             disabled={isSending || !input.trim()}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-leaf text-forest-deep disabled:opacity-40"
@@ -391,6 +736,39 @@ function ChatbotPageInner() {
       </section>
     </main>
   );
+}
+
+function getVoiceSessionErrorMessage(
+  error: unknown,
+  language: Language
+): string {
+  if (error instanceof ApiError) {
+    return language === "hi"
+      ? `वॉइस सेवा शुरू नहीं हुई: ${error.message}`
+      : `Voice service could not start: ${error.message}`;
+  }
+
+  return language === "hi"
+    ? "वॉइस सेवा नहीं चल रही है। कृपया backend को port 8000 पर चालू रखें।"
+    : "Voice service is not running. Please keep the backend running on port 8000.";
+}
+
+function getMicrophoneErrorMessage(
+  error: unknown,
+  language: Language
+): string {
+  if (
+    error instanceof DOMException &&
+    (error.name === "NotAllowedError" || error.name === "PermissionDeniedError")
+  ) {
+    return language === "hi"
+      ? "माइक्रोफ़ोन की अनुमति दें, फिर दोबारा कोशिश करें।"
+      : "Allow microphone access, then try again.";
+  }
+
+  return language === "hi"
+    ? "माइक्रोफ़ोन शुरू नहीं हो सका।"
+    : "Could not start the microphone.";
 }
 
 function ChatBubble({ message }: { message: ChatMessage }) {

@@ -1,6 +1,8 @@
 import os
 
 from fastapi import FastAPI
+from dotenv import load_dotenv
+load_dotenv()
 
 from app.core.database import init_db
 from app.routes.predict import router as predict_router
@@ -14,6 +16,7 @@ from app.routes.profile import router as profile_router
 from app.routes.crop_health import router as crop_health_router
 
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.voice import router as voice_router
 
 
 def _get_allowed_origins():
@@ -62,7 +65,7 @@ app.include_router(crop_soil_advisory_router)
 app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(crop_health_router)
-
+app.include_router(voice_router)
 
 @app.get("/")
 def root():
