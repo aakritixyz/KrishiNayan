@@ -14,12 +14,16 @@ import {
   UserRound,
   ActivitySquare,
 } from "lucide-react";
+
 import BottomNav from "@/components/BottomNav";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/language-context";
+import { tr } from "@/lib/static-translate";
 
 export default function Home() {
   const { user, isLoading } = useAuth();
+  const { language } = useLanguage();
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
@@ -48,7 +52,7 @@ export default function Home() {
 
             <div className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg">
               <CloudOff size={16} />
-              <span>Offline Ready</span>
+              <span>{tr("Offline Ready", language)}</span>
             </div>
 
             {!isLoading &&
@@ -58,7 +62,9 @@ export default function Home() {
                   className="flex items-center gap-2 rounded-full border border-leaf/50 bg-leaf/15 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-leaf/25 hover:shadow-lg"
                 >
                   <UserRound size={16} className="text-leaf" />
-                  <span data-no-translate>{user.full_name.split(" ")[0]}</span>
+                  <span data-no-translate>
+                    {user.full_name.split(" ")[0]}
+                  </span>
                 </Link>
               ) : (
                 <Link
@@ -66,7 +72,7 @@ export default function Home() {
                   className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg"
                 >
                   <LogIn size={16} />
-                  <span>Log in</span>
+                  <span>{tr("Log in", language)}</span>
                 </Link>
               ))}
           </div>
@@ -76,25 +82,33 @@ export default function Home() {
               href="/onboarding"
               className="mb-4 flex items-center gap-2 rounded-full bg-leaf px-4 py-2 text-xs font-bold text-forest-deep shadow-lg"
             >
-              Finish setting up your farm profile →
+              {tr(
+                "Finish setting up your farm profile →",
+                language
+              )}
             </Link>
           )}
 
           <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
-            AI Farming Copilot
+            {tr("AI Farming Copilot", language)}
           </p>
 
-          <h1 data-no-translate className="mt-3 text-4xl font-bold tracking-tight text-white">
+          <h1
+            data-no-translate
+            className="mt-3 text-4xl font-bold tracking-tight text-white"
+          >
             KrishiNayan
           </h1>
 
           <p className="mt-3 max-w-xs text-base leading-7 text-white/75">
-            From crop photo to clear action
+            {tr("From crop photo to clear action", language)}
           </p>
 
           <div className="mt-6 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 font-semibold text-forest-deep shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white hover:shadow-xl">
             <CloudSun size={20} className="text-warning" />
-            <span data-no-translate>28°C · Pune</span>
+            <span>
+              28°C · {tr("Pune", language)}
+            </span>
           </div>
 
           <Link
@@ -102,7 +116,7 @@ export default function Home() {
             className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-leaf px-6 py-4 text-lg font-bold text-forest-deep shadow-lg transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:brightness-105 hover:shadow-2xl active:scale-95"
           >
             <Camera size={24} strokeWidth={2.2} />
-            <span>Scan Crop</span>
+            <span>{tr("Scan Crop", language)}</span>
           </Link>
 
           <div className="mt-3 grid w-full grid-cols-2 gap-3">
@@ -113,9 +127,12 @@ export default function Home() {
               <MapPinned size={24} className="shrink-0 text-leaf" />
 
               <span>
-                <span className="block font-semibold">My Farm</span>
+                <span className="block font-semibold">
+                  {tr("My Farm", language)}
+                </span>
+
                 <span className="mt-1 block text-xs text-white/65">
-                  View your plots
+                  {tr("View your plots", language)}
                 </span>
               </span>
             </Link>
@@ -127,9 +144,12 @@ export default function Home() {
               <Headphones size={24} className="shrink-0 text-leaf" />
 
               <span>
-                <span className="block font-semibold">Ask Expert</span>
+                <span className="block font-semibold">
+                  {tr("Ask Expert", language)}
+                </span>
+
                 <span className="mt-1 block text-xs text-white/65">
-                  AI chat + KVK support
+                  {tr("AI chat + KVK support", language)}
                 </span>
               </span>
             </Link>
@@ -145,10 +165,14 @@ export default function Home() {
 
             <span>
               <span className="block font-semibold">
-                Crop Health Memory
+                {tr("Crop Health Memory", language)}
               </span>
+
               <span className="mt-1 block text-xs text-white/65">
-                Track health scores and trends over time
+                {tr(
+                  "Track health scores and trends over time",
+                  language
+                )}
               </span>
             </span>
           </Link>
@@ -163,10 +187,14 @@ export default function Home() {
 
             <span>
               <span className="block font-semibold">
-                Government Schemes
+                {tr("Government Schemes", language)}
               </span>
+
               <span className="mt-1 block text-xs text-white/65">
-                Check what you&apos;re eligible for
+                {tr(
+                  "Check what you're eligible for",
+                  language
+                )}
               </span>
             </span>
           </Link>

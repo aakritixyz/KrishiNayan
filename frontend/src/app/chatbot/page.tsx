@@ -4,6 +4,7 @@ import BottomNav from "@/components/BottomNav";
 import { apiJson, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage, type Language } from "@/lib/language-context";
+import { tr } from "@/lib/static-translate";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -499,7 +500,7 @@ function ChatbotPageInner() {
       const message =
         error instanceof ApiError
           ? error.message
-          : "Backend connection failed.";
+          : tr("Backend connection failed.", language);
 
       setMessages((current) => [
         ...current,
@@ -600,9 +601,7 @@ function ChatbotPageInner() {
         console.error("OmniDimension error:", error);
 
         setVoiceError(
-          language === "hi"
-            ? "आवाज़ पहचानने में समस्या हुई।"
-            : "There was a problem with voice recognition."
+          tr("There was a problem with voice recognition.", language)
         );
 
         setIsListening(false);
@@ -667,17 +666,17 @@ function ChatbotPageInner() {
             type="button"
             onClick={() => router.back()}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-forest"
-            aria-label="Go back"
+            aria-label={tr("Go back", language)}
           >
             <ArrowLeft size={21} />
           </button>
 
           <div className="text-center">
             <h1 className="text-lg font-bold text-forest">
-              Ask KrishiNayan AI
+              {tr("Ask KrishiNayan AI", language)}
             </h1>
             <p className="text-[11px] text-muted">
-              Grounded in ICAR/KVK farming guidance
+              {tr("Grounded in ICAR/KVK farming guidance", language)}
             </p>
           </div>
 
@@ -685,7 +684,7 @@ function ChatbotPageInner() {
             type="button"
             onClick={toggleLanguage}
             className="flex h-11 items-center gap-1.5 rounded-full border border-forest/10 bg-white px-3 text-xs font-bold text-forest"
-            aria-label="Toggle language"
+            aria-label={tr("Toggle language", language)}
           >
             <Globe size={16} />
             {language === "en" ? "EN" : language === "hi" ? "हिं" : language === "pa" ? "ਪੰ" : "म"}
@@ -698,11 +697,11 @@ function ChatbotPageInner() {
               <Sprout size={17} />
             </span>
             <p className="text-xs leading-5 text-white/80">
-              Using your last scan:{" "}
+              {tr("Using your last scan:", language)}{" "}
               <span className="font-bold text-white">
                 {scanContext.detected_issue}
               </span>{" "}
-              ({scanContext.confidence}% confidence)
+              ({scanContext.confidence}% {tr("confidence", language)})
             </p>
           </div>
         )}
@@ -719,7 +718,7 @@ function ChatbotPageInner() {
           {isSending && (
             <div className="flex items-center gap-2 rounded-2xl rounded-tl-sm bg-white px-4 py-3 text-sm text-muted">
               <Loader2 size={16} className="animate-spin" />
-              Thinking...
+              {tr("Thinking...", language)}
             </div>
           )}
         </div>
@@ -729,12 +728,8 @@ function ChatbotPageInner() {
             <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
             <span className="text-xs font-semibold text-forest/70">
               {isVoiceStarting
-                ? language === "hi"
-                  ? "माइक्रोफ़ोन शुरू हो रहा है..."
-                  : "Starting microphone..."
-                : language === "hi"
-                  ? "सुन रहा हूँ... बोलिए"
-                  : "Listening... speak now"}
+                ? tr("Starting microphone...", language)
+                : tr("Listening... speak now", language)}
             </span>
           </div>
         )}
@@ -750,11 +745,7 @@ function ChatbotPageInner() {
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder={
-              language === "hi"
-                ? "अपना सवाल लिखें..."
-                : "Type your farming question..."
-            }
+            placeholder={tr("Type your farming question...", language)}
             className="flex-1 bg-transparent px-3 text-sm text-forest outline-none placeholder:text-muted"
           />
 
@@ -768,9 +759,15 @@ function ChatbotPageInner() {
                 : "bg-forest/10 text-forest hover:bg-leaf hover:text-forest-deep"
             }`}
             aria-label={
-              isListening ? "Stop listening" : "Start voice input"
+              isListening
+                ? tr("Stop listening", language)
+                : tr("Start voice input", language)
             }
-            title={isListening ? "Stop listening" : "Speak"}
+            title={
+              isListening
+                ? tr("Stop listening", language)
+                : tr("Speak", language)
+            }
           >
             {isListening || isVoiceStarting ? (
               <MicOff size={18} className="animate-pulse" />
@@ -786,7 +783,7 @@ function ChatbotPageInner() {
             type="submit"
             disabled={isSending || !input.trim()}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-leaf text-forest-deep disabled:opacity-40"
-            aria-label="Send message"
+            aria-label={tr("Send message", language)}
           >
             <Send size={18} />
           </button>
@@ -803,14 +800,12 @@ function getVoiceSessionErrorMessage(
   language: Language
 ): string {
   if (error instanceof ApiError) {
-    return language === "hi"
-      ? `वॉइस सेवा शुरू नहीं हुई: ${error.message}`
-      : `Voice service could not start: ${error.message}`;
+    return `${tr("Voice service could not start:", language)} ${error.message}`;
   }
-
-  return language === "hi"
-    ? "वॉइस सेवा नहीं चल रही है। कृपया backend को port 8000 पर चालू रखें।"
-    : "Voice service is not running. Please keep the backend running on port 8000.";
+  return tr(
+    "Voice service is not running. Please keep the backend running on port 8000.",
+    language
+  );
 }
 
 function getMicrophoneErrorMessage(
@@ -819,16 +814,12 @@ function getMicrophoneErrorMessage(
 ): string {
   if (
     error instanceof DOMException &&
-    (error.name === "NotAllowedError" || error.name === "PermissionDeniedError")
+    (error.name === "NotAllowedError" ||
+      error.name === "PermissionDeniedError")
   ) {
-    return language === "hi"
-      ? "माइक्रोफ़ोन की अनुमति दें, फिर दोबारा कोशिश करें।"
-      : "Allow microphone access, then try again.";
+    return tr("Allow microphone access, then try again.", language);
   }
-
-  return language === "hi"
-    ? "माइक्रोफ़ोन शुरू नहीं हो सका।"
-    : "Could not start the microphone.";
+  return tr("Could not start the microphone.", language);
 }
 
 function ChatBubble({ message }: { message: ChatMessage }) {
