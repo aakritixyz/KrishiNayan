@@ -3,6 +3,7 @@ import { WebSession } from "@omnidim-ai/client";
 import BottomNav from "@/components/BottomNav";
 import { apiJson, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage, type Language } from "@/lib/language-context";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -55,11 +56,11 @@ type VoiceSessionResponse = {
   ws_url: string;
 };
 
-type Language = "en" | "hi";
-
 const GREETING: Record<Language, string> = {
   en: "Namaste! Ask me about tomato diseases, watering, fertilizer, spraying weather, pests, or your last scan result.",
-  hi: "नमस्ते! टमाटर की बीमारियों, सिंचाई, खाद, स्प्रे के मौसम, कीट, या आपके पिछले स्कैन के बारे में पूछें।",
+  hi: "नमस्ते! मुझसे टमाटर की बीमारियों, सिंचाई, खाद, छिड़काव के मौसम, कीटों या अपने पिछले स्कैन के परिणाम के बारे में पूछें।",
+  pa: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਨੂੰ ਟਮਾਟਰ ਦੀਆਂ ਬਿਮਾਰੀਆਂ, ਸਿੰਚਾਈ, ਖਾਦ, ਛਿੜਕਾਅ ਦੇ ਮੌਸਮ, ਕੀੜਿਆਂ ਜਾਂ ਆਪਣੇ ਪਿਛਲੇ ਸਕੈਨ ਦੇ ਨਤੀਜੇ ਬਾਰੇ ਪੁੱਛੋ।",
+  mr: "नमस्कार! मला टोमॅटोचे रोग, पाणी देणे, खत, फवारणीसाठी योग्य हवामान, कीड किंवा तुमच्या मागील स्कॅनच्या निकालाबद्दल विचारा.",
 };
 
 // How close to the bottom (in px) still counts as "at the bottom"
@@ -230,6 +231,34 @@ function buildAnalysisGreeting(
     );
   }
 
+  if (language === "pa") {
+    if (isHealthy) {
+      return (
+        `ਮੈਂ ਤੁਹਾਡਾ ਪਿਛਲਾ ਸਕੈਨ ਵੇਖਿਆ - ਤੁਹਾਡੀ ${scan.crop} ਫਸਲ ਸਿਹਤਮੰਦ ਲੱਗ ਰਹੀ ਹੈ ` +
+        `(${scan.confidence}% ਭਰੋਸਾ)। ਨਿਗਰਾਨੀ, ਖਾਦ ਜਾਂ ਅਗਲਾ ਸਕੈਨ ਕਦੋਂ ਕਰਨਾ ਹੈ, ਇਸ ਬਾਰੇ ਪੁੱਛੋ।`
+      );
+    }
+
+    return (
+      `ਮੈਂ ਤੁਹਾਡਾ ਪਿਛਲਾ ਸਕੈਨ ਵੇਖਿਆ - ਤੁਹਾਡੀ ${scan.crop} ਫਸਲ ਵਿੱਚ ${scan.detected_issue} ਮਿਲਿਆ ` +
+      `(${scan.confidence}% ਭਰੋਸਾ, ${scan.severity} ਜੋਖਮ)। ਇਲਾਜ, ਬਚਾਅ ਜਾਂ ਅਗਲੇ ਕਦਮਾਂ ਬਾਰੇ ਪੁੱਛੋ।`
+    );
+  }
+
+  if (language === "mr") {
+    if (isHealthy) {
+      return (
+        `मी तुमचा मागील स्कॅन पाहिला - तुमचे ${scan.crop} पीक निरोगी दिसत आहे ` +
+        `(${scan.confidence}% विश्वास). निरीक्षण, खत किंवा पुढील स्कॅन कधी करायचा याबद्दल विचारा.`
+      );
+    }
+
+    return (
+      `मी तुमचा मागील स्कॅन पाहिला - तुमच्या ${scan.crop} पिकामध्ये ${scan.detected_issue} आढळले ` +
+      `(${scan.confidence}% विश्वास, ${scan.severity} धोका). उपचार, प्रतिबंध किंवा पुढील पावले याबद्दल विचारा.`
+    );
+  }
+
   if (isHealthy) {
     return (
       `I can see your last scan - your ${scan.crop} crop looks healthy ` +
@@ -263,13 +292,42 @@ function ChatbotPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
-
-  const [language, setLanguage] = useState<Language>("en");
-  const [hasManuallyToggledLanguage, setHasManuallyToggledLanguage] =
-    useState(false);
+  const { language, setLanguage } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: GREETING.en },
   ]);
+  useEffect(() => {
+  setMessages((current) => {
+    // No conversation yet: show greeting in selected language
+    if (current.length === 0) {
+      return [
+        {
+          role: "assistant",
+          content: GREETING[language],
+        },
+      ];
+    }
+
+    // If only the initial greeting is visible,
+    // update it whenever language changes.
+    if (
+      current.length === 1 &&
+      current[0].role === "assistant" &&
+      Object.values(GREETING).includes(
+        current[0].content
+      )
+    ) {
+      return [
+        {
+          role: "assistant",
+          content: GREETING[language],
+        },
+      ];
+    }
+
+    return current;
+  });
+}, [language]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -284,6 +342,20 @@ function ChatbotPageInner() {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const isNearBottomRef = useRef(true);
   const hasAppliedAnalysisGreetingRef = useRef(false);
+
+  useEffect(() => {
+    setMessages((current) => {
+      if (
+        current.length === 1 &&
+        current[0].role === "assistant" &&
+        Object.values(GREETING).includes(current[0].content)
+      ) {
+        return [{ role: "assistant", content: GREETING[language] }];
+      }
+
+      return current;
+    });
+  }, [language]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -328,20 +400,6 @@ function ChatbotPageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanContext, searchParams]);
 
-  // Default to the farmer's saved language preference once they're
-  // loaded - but never override a language they've already picked
-  // by hand in this session.
-  useEffect(() => {
-    if (!user || hasManuallyToggledLanguage) return;
-
-    const timer = window.setTimeout(() => {
-      const savedLanguage = user.language === "hi" ? "hi" : "en";
-      setLanguage(savedLanguage);
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, [user, hasManuallyToggledLanguage]);
-
   // Smart autoscroll: only snap to the bottom when the farmer was
   // already reading near the bottom (or just sent a message) -
   // never yank them back down while they're scrolled up reading
@@ -371,8 +429,10 @@ function ChatbotPageInner() {
   }
 
   function toggleLanguage() {
-    setHasManuallyToggledLanguage(true);
-    setLanguage((current) => (current === "en" ? "hi" : "en"));
+    const order: Language[] = ["en", "hi", "pa", "mr"];
+    const currentIndex = order.indexOf(language);
+    const nextLanguage = order[(currentIndex + 1) % order.length];
+    setLanguage(nextLanguage);
   }
 
   async function sendChatMessage(text: string) {
@@ -628,7 +688,7 @@ function ChatbotPageInner() {
             aria-label="Toggle language"
           >
             <Globe size={16} />
-            {language === "en" ? "EN" : "हिं"}
+            {language === "en" ? "EN" : language === "hi" ? "हिं" : language === "pa" ? "ਪੰ" : "म"}
           </button>
         </header>
 
