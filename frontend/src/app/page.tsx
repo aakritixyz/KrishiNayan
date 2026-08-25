@@ -9,13 +9,13 @@ import {
   Headphones,
   Landmark,
   MapPinned,
-  Languages,
   Leaf,
   LogIn,
   UserRound,
   ActivitySquare,
 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
+import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/lib/auth-context";
 
 export default function Home() {
@@ -44,10 +44,7 @@ export default function Home() {
           </div>
 
           <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
-            <button className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg active:scale-95">
-              <Languages size={16} />
-              <span>हिंदी</span>
-            </button>
+            <LanguageSelector />
 
             <div className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-leaf/70 hover:bg-white/20 hover:shadow-lg">
               <CloudOff size={16} />
@@ -61,7 +58,7 @@ export default function Home() {
                   className="flex items-center gap-2 rounded-full border border-leaf/50 bg-leaf/15 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-leaf/25 hover:shadow-lg"
                 >
                   <UserRound size={16} className="text-leaf" />
-                  <span>{user.full_name.split(" ")[0]}</span>
+                  <span data-no-translate>{user.full_name.split(" ")[0]}</span>
                 </Link>
               ) : (
                 <Link
@@ -87,7 +84,7 @@ export default function Home() {
             AI Farming Copilot
           </p>
 
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-white">
+          <h1 data-no-translate className="mt-3 text-4xl font-bold tracking-tight text-white">
             KrishiNayan
           </h1>
 
@@ -97,7 +94,7 @@ export default function Home() {
 
           <div className="mt-6 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 font-semibold text-forest-deep shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white hover:shadow-xl">
             <CloudSun size={20} className="text-warning" />
-            <span>28°C · Pune</span>
+            <span data-no-translate>28°C · Pune</span>
           </div>
 
           <Link

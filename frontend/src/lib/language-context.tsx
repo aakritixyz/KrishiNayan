@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Language = "en" | "hi" | "pa" | "mr";
 
@@ -15,64 +9,28 @@ type LanguageContextType = {
   setLanguage: (language: Language) => void;
 };
 
-const LanguageContext = createContext<
-  LanguageContextType | undefined
->(undefined);
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const STORAGE_KEY = "krishinayan-language";
 
-const SUPPORTED_LANGUAGES: Language[] = [
-  "en",
-  "hi",
-  "pa",
-  "mr",
-];
-
-function isLanguage(
-  value: string | null
-): value is Language {
-  return (
-    value !== null &&
-    SUPPORTED_LANGUAGES.includes(
-      value as Language
-    )
-  );
+function isLanguage(value: string | null): value is Language {
+  return value === "en" || value === "hi" || value === "pa" || value === "mr";
 }
 
-export function LanguageProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [language, setLanguageState] =
-    useState<Language>("en");
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>("en");
 
   useEffect(() => {
-    const saved = localStorage.getItem(
-      "krishinayan-language"
-    );
-
-    if (isLanguage(saved)) {
-      setLanguageState(saved);
-    }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (isLanguage(saved)) setLanguageState(saved);
   }, []);
 
-  function setLanguage(
-    newLanguage: Language
-  ) {
-    setLanguageState(newLanguage);
-
-    localStorage.setItem(
-      "krishinayan-language",
-      newLanguage
-    );
+  function setLanguage(next: Language) {
+    setLanguageState(next);
+    localStorage.setItem(STORAGE_KEY, next);
   }
 
   return (
-    <LanguageContext.Provider
-      value={{
-        language,
-        setLanguage,
-      }}
-    >
+    <LanguageContext.Provider value={{ language, setLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -80,12 +38,6 @@ export function LanguageProvider({
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
-
-  if (!context) {
-    throw new Error(
-      "useLanguage must be used inside LanguageProvider"
-    );
-  }
-
+  if (!context) throw new Error("useLanguage must be used inside LanguageProvider");
   return context;
 }
