@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/auth-context";
-<<<<<<< HEAD
 import AccessBoundary from "@/components/AccessBoundary";
-=======
 import { LanguageProvider } from "@/lib/language-context";
->>>>>>> origin/main
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,15 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-<<<<<<< HEAD
-        <AuthProvider><AccessBoundary>{children}</AccessBoundary></AuthProvider>
-=======
         <AuthProvider>
           <LanguageProvider>
-            {children}
+            <AccessBoundary>{children}</AccessBoundary>
           </LanguageProvider>
         </AuthProvider>
->>>>>>> origin/main
       </body>
     </html>
   );

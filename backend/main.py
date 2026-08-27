@@ -66,13 +66,9 @@ app.include_router(crop_soil_advisory_router)
 app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(crop_health_router)
-<<<<<<< HEAD
 app.include_router(officer_router)
 app.include_router(advisories_router)
-
-=======
 app.include_router(voice_router)
->>>>>>> origin/main
 
 @app.get("/")
 def root():

@@ -1,17 +1,11 @@
 const CONFIGURED_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
 
-<<<<<<< HEAD
 // Local development defaults to the local FastAPI server. Production has no
 // hard-coded backend hostname: configure NEXT_PUBLIC_API_BASE_URL explicitly
 // so a deployment can never silently talk to an obsolete project/backend.
 export const API_BASE_URL = (
   CONFIGURED_API_BASE_URL ||
   (process.env.NODE_ENV === "development" ? "http://127.0.0.1:8000" : "")
-=======
-export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  DEFAULT_API_BASE_URL
->>>>>>> origin/main
 ).replace(/\/$/, "");
 
 export const AUTH_TOKEN_STORAGE_KEY =
