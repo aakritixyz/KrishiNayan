@@ -51,10 +51,31 @@ def register_user(db: Session, data) -> User:
 def authenticate_user(db: Session, identifier: str, password: str):
     user = get_user_by_identifier(db, identifier)
 
-    if not user or not verify_password(password, user.password_hash):
+    if (
+        not user
+        or user.role != "farmer"
+        or not user.is_active
+        or not verify_password(password, user.password_hash)
+    ):
         return None
 
     return user
+
+
+def authenticate_officer(db: Session, institutional_id: str, password: str):
+    officer = db.query(User).filter(
+        User.institutional_id == institutional_id.strip().upper(),
+        User.role == "officer"
+    ).first()
+
+    if (
+        not officer
+        or not officer.is_active
+        or not verify_password(password, officer.password_hash)
+    ):
+        return None
+
+    return officer
 
 
 def issue_token(user: User) -> str:

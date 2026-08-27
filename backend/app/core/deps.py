@@ -68,3 +68,21 @@ def get_current_user_optional(
         return None
 
     return db.get(User, int(payload["sub"]))
+
+
+def require_farmer(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "farmer" or not current_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Farmer access required."
+        )
+    return current_user
+
+
+def require_officer(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "officer" or not current_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Government/organisation access required."
+        )
+    return current_user

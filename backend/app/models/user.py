@@ -12,7 +12,9 @@ def _utcnow():
 
 class User(Base):
     """
-    A registered farmer. Only the mock identity-verification status
+    A KrishiNayan account. Farmer accounts are self-registered; officer
+    accounts are provisioned by an administrator after institutional verification.
+    Only the mock identity-verification status
     is stored here (see app/services/identity_service.py) - no
     Aadhaar number or other government ID is ever collected or
     persisted by this prototype.
@@ -34,6 +36,17 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(
         String, nullable=False
     )
+
+    # --- Account role / institutional scope ---
+    role: Mapped[str] = mapped_column(String, default="farmer", index=True)
+    institutional_id: Mapped[str | None] = mapped_column(
+        String, unique=True, index=True, nullable=True
+    )
+    organisation: Mapped[str | None] = mapped_column(String, nullable=True)
+    designation: Mapped[str | None] = mapped_column(String, nullable=True)
+    access_state: Mapped[str | None] = mapped_column(String, nullable=True)
+    access_district: Mapped[str | None] = mapped_column(String, nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     # --- Profile ---
     full_name: Mapped[str] = mapped_column(String, nullable=False)

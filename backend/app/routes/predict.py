@@ -23,7 +23,7 @@ from app.core.config import (
 )
 
 from app.core.database import get_db
-from app.core.deps import get_current_user_optional
+from app.core.deps import require_farmer
 from app.models.user import User
 
 from app.services import health_service
@@ -58,17 +58,16 @@ async def predict_image(
     district: str | None = Form(None),
     crop: str | None = Form("tomato"),
     field_label: str | None = Form(None),
-    current_user: User | None = Depends(get_current_user_optional),
+    current_user: User = Depends(require_farmer),
     db: Session = Depends(get_db)
 ):
     """
     Receive a tomato-leaf image and return
     the predicted disease and confidence.
 
-    Works with or without login. If state/district weren't
-    supplied and the request comes from a logged-in farmer with
-    those saved on their profile, the soil-context lookup falls
-    back to the farmer's saved location instead of skipping it.
+    Requires a farmer account. If state/district weren't
+    supplied, the request falls back to the logged-in farmer's
+    saved profile location instead of skipping soil context.
 
     When the request is from a logged-in farmer, the scan is also
     recorded into that farmer's Crop Health Memory (grouped by crop

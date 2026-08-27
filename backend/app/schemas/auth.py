@@ -67,6 +67,11 @@ class UserLogin(BaseModel):
     password: str
 
 
+class OfficerLogin(BaseModel):
+    institutional_id: str
+    password: str
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -81,6 +86,12 @@ class UserOut(BaseModel):
     language: str
     profile_completed: bool
     identity_verification_status: str
+    role: str = "farmer"
+    institutional_id: str | None = None
+    organisation: str | None = None
+    designation: str | None = None
+    access_state: str | None = None
+    access_district: str | None = None
 
     model_config = {"from_attributes": True}
 

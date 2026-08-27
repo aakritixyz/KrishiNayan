@@ -45,3 +45,22 @@ select,
 textarea {
   font: inherit;
 }
+/* Mobile-first interaction defaults */
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+@media (max-width: 639px) {
+  body {
+    overflow-x: hidden;
+  }
+}

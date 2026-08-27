@@ -10,3 +10,4 @@ sqlalchemy
 bcrypt
 pyjwt
 email-validator
+python-dotenv

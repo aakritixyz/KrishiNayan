@@ -1,13 +1,11 @@
-const DEFAULT_API_BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://krishinayan-comet.onrender.com"
-    : "http://127.0.0.1:8000";
+const CONFIGURED_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
 
-// Use NEXT_PUBLIC_API_BASE_URL on Vercel/Netlify when the backend
-// URL changes. The production fallback keeps deployed pages from
-// accidentally calling localhost in the farmer's browser.
+// Local development defaults to the local FastAPI server. Production has no
+// hard-coded backend hostname: configure NEXT_PUBLIC_API_BASE_URL explicitly
+// so a deployment can never silently talk to an obsolete project/backend.
 export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL
+  CONFIGURED_API_BASE_URL ||
+  (process.env.NODE_ENV === "development" ? "http://127.0.0.1:8000" : "")
 ).replace(/\/$/, "");
 
 export const AUTH_TOKEN_STORAGE_KEY = "krishiNayanAuthToken";
@@ -46,6 +44,13 @@ export async function apiFetch(
   path: string,
   options: RequestInit = {}
 ): Promise<Response> {
+  if (!API_BASE_URL) {
+    throw new ApiError(
+      "Backend URL is not configured. Set NEXT_PUBLIC_API_BASE_URL for this deployment.",
+      503
+    );
+  }
+
   const token = getStoredToken();
   const controller = new AbortController();
   const timeout = window.setTimeout(() => {

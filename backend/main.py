@@ -12,6 +12,8 @@ from app.routes.crop_soil_advisory import router as crop_soil_advisory_router
 from app.routes.auth import router as auth_router
 from app.routes.profile import router as profile_router
 from app.routes.crop_health import router as crop_health_router
+from app.routes.officer import router as officer_router
+from app.routes.advisories import router as advisories_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,7 +22,6 @@ def _get_allowed_origins():
     defaults = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://krishinayan-comet.vercel.app",
     ]
 
     extra_origins = [
@@ -62,6 +63,8 @@ app.include_router(crop_soil_advisory_router)
 app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(crop_health_router)
+app.include_router(officer_router)
+app.include_router(advisories_router)
 
 
 @app.get("/")

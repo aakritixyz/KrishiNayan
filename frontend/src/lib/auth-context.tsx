@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -24,6 +25,12 @@ export type AuthUser = {
   language: string;
   profile_completed: boolean;
   identity_verification_status: string;
+  role: "farmer" | "officer";
+  institutional_id: string | null;
+  organisation: string | null;
+  designation: string | null;
+  access_state: string | null;
+  access_district: string | null;
 };
 
 export type Profile = {
@@ -70,9 +77,11 @@ type RegisterInput = {
 type AuthContextValue = {
   user: AuthUser | null;
   isLoading: boolean;
-  login: (identifier: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string) => Promise<AuthUser>;
+  officerLogin: (institutionalId: string, password: string) => Promise<AuthUser>;
   register: (input: RegisterInput) => Promise<void>;
   logout: () => void;
+  continueAsGuest: () => void;
   refreshUser: () => Promise<void>;
 };
 
@@ -81,25 +90,39 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  // Invalidates any in-flight /auth/me request when the active session changes.
+  // This prevents a stale officer response from restoring the officer session
+  // after the user explicitly chooses Guest mode.
+  const sessionEpochRef = useRef(0);
 
   const loadCurrentUser = useCallback(async () => {
+    const requestEpoch = sessionEpochRef.current;
+
     if (!getStoredToken()) {
-      setUser(null);
-      setIsLoading(false);
+      if (requestEpoch === sessionEpochRef.current) {
+        setUser(null);
+        setIsLoading(false);
+      }
       return;
     }
 
     try {
       const currentUser = await apiJson<AuthUser>("/auth/me");
-      setUser(currentUser);
+      if (requestEpoch === sessionEpochRef.current) {
+        setUser(currentUser);
+      }
     } catch (error) {
+      if (requestEpoch !== sessionEpochRef.current) return;
+
       // Expired/invalid token - clear it so we don't keep retrying.
       if (error instanceof ApiError && error.status === 401) {
         setStoredToken(null);
       }
       setUser(null);
     } finally {
-      setIsLoading(false);
+      if (requestEpoch === sessionEpochRef.current) {
+        setIsLoading(false);
+      }
     }
   }, []);
 
@@ -121,8 +144,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       );
 
+      sessionEpochRef.current += 1;
       setStoredToken(data.access_token);
       setUser(data.user);
+      setIsLoading(false);
+      return data.user;
+    },
+    []
+  );
+
+
+  const officerLogin = useCallback(
+    async (institutionalId: string, password: string) => {
+      const data = await apiJson<{ access_token: string; user: AuthUser }>(
+        "/auth/officer-login",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            institutional_id: institutionalId,
+            password,
+          }),
+        }
+      );
+
+      sessionEpochRef.current += 1;
+      setStoredToken(data.access_token);
+      setUser(data.user);
+      setIsLoading(false);
+      return data.user;
     },
     []
   );
@@ -136,21 +185,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
+    sessionEpochRef.current += 1;
     setStoredToken(data.access_token);
     setUser(data.user);
+    setIsLoading(false);
+  }, []);
+
+  const clearClientSession = useCallback(() => {
+    sessionEpochRef.current += 1;
+    setStoredToken(null);
+    setUser(null);
+    setIsLoading(false);
   }, []);
 
   const logout = useCallback(() => {
-    setStoredToken(null);
-    setUser(null);
-    // Best-effort server call; the client-side token clear above is
-    // what actually ends the session, so we don't await/block on it.
-    apiJson("/auth/logout", { method: "POST" }).catch(() => {});
-  }, []);
+    // JWT auth is stateless in this prototype. Clearing the browser token is
+    // the authoritative sign-out; calling /auth/logout after clearing it would
+    // only produce a 401 because there is no token left to send.
+    clearClientSession();
+  }, [clearClientSession]);
+
+  const continueAsGuest = useCallback(() => {
+    // Guest mode must always start from a clean unauthenticated session.
+    // In particular, this removes any previously stored officer token.
+    clearClientSession();
+  }, [clearClientSession]);
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, register, logout, refreshUser: loadCurrentUser }}
+      value={{
+        user,
+        isLoading,
+        login,
+        officerLogin,
+        register,
+        logout,
+        continueAsGuest,
+        refreshUser: loadCurrentUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

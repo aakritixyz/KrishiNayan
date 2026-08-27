@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.deps import get_current_user
+from app.core.deps import require_farmer
 from app.models.user import User
 
 from app.services.health_service import get_crop_health_overview
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/crop-health", tags=["crop-health"])
 
 @router.get("/overview")
 def crop_health_overview(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_farmer),
     db: Session = Depends(get_db)
 ):
     """

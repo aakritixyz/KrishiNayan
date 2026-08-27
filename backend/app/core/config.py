@@ -1,9 +1,11 @@
 import os
 
 from pathlib import Path
+from dotenv import load_dotenv
 
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(BACKEND_DIR / ".env")
 MODELS_DIR = BACKEND_DIR / "models"
 
 DEFAULT_CROP = "tomato"
@@ -136,10 +138,14 @@ DATABASE_URL = os.getenv(
 # IMPORTANT: this default is for local development only. Always set
 # KRISHINAYAN_JWT_SECRET to a long random value before deploying
 # anywhere reachable outside your own machine.
-JWT_SECRET_KEY = os.getenv(
-    "KRISHINAYAN_JWT_SECRET",
-    "dev-only-insecure-secret-change-me-before-any-real-deployment"
-)
+_DEFAULT_JWT_SECRET = "dev-only-insecure-secret-change-me-before-any-real-deployment"
+JWT_SECRET_KEY = os.getenv("KRISHINAYAN_JWT_SECRET", _DEFAULT_JWT_SECRET)
+APP_ENV = os.getenv("KRISHINAYAN_ENV", "development").strip().lower()
+
+if APP_ENV in {"production", "prod"} and JWT_SECRET_KEY == _DEFAULT_JWT_SECRET:
+    raise RuntimeError(
+        "KRISHINAYAN_JWT_SECRET must be set to a strong secret in production."
+    )
 
 JWT_ALGORITHM = "HS256"
 

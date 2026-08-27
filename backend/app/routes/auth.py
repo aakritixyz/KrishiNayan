@@ -6,6 +6,7 @@ from app.core.deps import get_current_user
 from app.models.user import User
 
 from app.schemas.auth import (
+    OfficerLogin,
     TokenResponse,
     UserLogin,
     UserOut,
@@ -13,6 +14,7 @@ from app.schemas.auth import (
 )
 
 from app.services.auth_service import (
+    authenticate_officer,
     authenticate_user,
     issue_token,
     register_user
@@ -62,6 +64,25 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
     return TokenResponse(
         access_token=token,
         user=UserOut.model_validate(user)
+    )
+
+
+@router.post("/officer-login", response_model=TokenResponse)
+def officer_login(payload: OfficerLogin, db: Session = Depends(get_db)):
+    officer = authenticate_officer(
+        db, payload.institutional_id, payload.password
+    )
+
+    if not officer:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect institutional ID or password."
+        )
+
+    token = issue_token(officer)
+    return TokenResponse(
+        access_token=token,
+        user=UserOut.model_validate(officer)
     )
 
 
