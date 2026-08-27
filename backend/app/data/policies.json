@@ -3,16 +3,47 @@
   "schemes": [
     {
       "id": "pm-kisan",
-      "name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
-      "category": "Income Support",
-      "administering_body": "Ministry of Agriculture & Farmers Welfare, Government of India",
-      "short_description": "Direct income support of Rs 6,000 per year paid to landholding farmer families in three equal installments of Rs 2,000 every four months, transferred straight to the farmer's Aadhaar-linked bank account.",
-      "benefits": "Rs 6,000 per year per farmer family, paid as three installments of Rs 2,000 (April-July, August-November, December-March) via Direct Benefit Transfer.",
+      "name": {
+        "en": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+        "hi": "पीएम-किसान (प्रधानमंत्री किसान सम्मान निधि)",
+        "pa": "ਪੀਐਮ-ਕਿਸਾਨ (ਪ੍ਰਧਾਨ ਮੰਤਰੀ ਕਿਸਾਨ ਸਨਮਾਨ ਨਿਧੀ)",
+        "mr": "पीएम-किसान (प्रधानमंत्री किसान सन्मान निधी)"
+      },
+      "category": {
+        "en": "Income Support",
+        "hi": "आय सहायता",
+        "pa": "ਆਮਦਨ ਸਹਾਇਤਾ",
+        "mr": "उत्पन्न सहाय्य"
+      },
+      "administering_body": {
+        "en": "Ministry of Agriculture & Farmers Welfare, Government of India",
+        "hi": "कृषि एवं किसान कल्याण मंत्रालय, भारत सरकार",
+        "pa": "ਖੇਤੀਬਾੜੀ ਅਤੇ ਕਿਸਾਨ ਭਲਾਈ ਮੰਤਰਾਲਾ, ਭਾਰਤ ਸਰਕਾਰ",
+        "mr": "कृषी आणि शेतकरी कल्याण मंत्रालय, भारत सरकार"
+      },
+      "short_description": {
+        "en": "Direct income support of Rs 6,000 per year paid to landholding farmer families in three equal installments of Rs 2,000 every four months, transferred straight to the farmer's Aadhaar-linked bank account.",
+        "hi": "भूमिधारक किसान परिवारों को प्रति वर्ष ₹6,000 की प्रत्यक्ष आय सहायता दी जाती है, जो हर चार महीने में ₹2,000 की तीन समान किस्तों में सीधे किसान के आधार-लिंक बैंक खाते में भेजी जाती है।",
+        "pa": "ਜ਼ਮੀਨਧਾਰੀ ਕਿਸਾਨ ਪਰਿਵਾਰਾਂ ਨੂੰ ਸਾਲਾਨਾ ₹6,000 ਦੀ ਸਿੱਧੀ ਆਮਦਨ ਸਹਾਇਤਾ ਦਿੱਤੀ ਜਾਂਦੀ ਹੈ, ਜੋ ਹਰ ਚਾਰ ਮਹੀਨੇ ਬਾਅਦ ₹2,000 ਦੀਆਂ ਤਿੰਨ ਬਰਾਬਰ ਕਿਸ਼ਤਾਂ ਵਿੱਚ ਕਿਸਾਨ ਦੇ ਆਧਾਰ-ਲਿੰਕ ਬੈਂਕ ਖਾਤੇ ਵਿੱਚ ਭੇਜੀ ਜਾਂਦੀ ਹੈ।",
+        "mr": "जमीनधारक शेतकरी कुटुंबांना दरवर्षी ₹6,000 थेट उत्पन्न सहाय्य दिले जाते. ही रक्कम दर चार महिन्यांनी ₹2,000 च्या तीन समान हप्त्यांत शेतकऱ्याच्या आधार-जोडलेल्या बँक खात्यात जमा केली जाते."
+      },
+      "benefits": {
+        "en": "Rs 6,000 per year per farmer family, paid as three installments of Rs 2,000 (April-July, August-November, December-March) via Direct Benefit Transfer.",
+        "hi": "प्रति किसान परिवार ₹6,000 प्रति वर्ष, ₹2,000 की तीन किस्तों में (अप्रैल-जुलाई, अगस्त-नवंबर, दिसंबर-मार्च) प्रत्यक्ष लाभ अंतरण के माध्यम से।",
+        "pa": "ਹਰ ਕਿਸਾਨ ਪਰਿਵਾਰ ਨੂੰ ਸਾਲਾਨਾ ₹6,000, ₹2,000 ਦੀਆਂ ਤਿੰਨ ਕਿਸ਼ਤਾਂ ਵਿੱਚ (ਅਪ੍ਰੈਲ-ਜੁਲਾਈ, ਅਗਸਤ-ਨਵੰਬਰ, ਦਸੰਬਰ-ਮਾਰਚ) ਸਿੱਧੇ ਲਾਭ ਅੰਤਰਣ ਰਾਹੀਂ।",
+        "mr": "प्रति शेतकरी कुटुंब दरवर्षी ₹6,000, ₹2,000 च्या तीन हप्त्यांत (एप्रिल-जुलै, ऑगस्ट-नोव्हेंबर, डिसेंबर-मार्च) थेट लाभ हस्तांतरणाद्वारे."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["any"],
+        "applicable_crops": [
+          "any"
+        ],
         "excluded_categories": [
           "institutional_landholders",
           "income_tax_payees",
@@ -26,13 +57,38 @@
         "notes": "Land must be recorded in the applicant's own name (or family member's) in state land records. e-KYC is mandatory to receive installments."
       },
       "required_documents": [
-        "Aadhaar card",
-        "Land ownership / land record documents",
-        "Bank account passbook (Aadhaar-seeded)"
+        {
+          "en": "Aadhaar card",
+          "hi": "आधार कार्ड",
+          "pa": "ਆਧਾਰ ਕਾਰਡ",
+          "mr": "आधार कार्ड"
+        },
+        {
+          "en": "Land ownership / land record documents",
+          "hi": "भूमि स्वामित्व / भूमि रिकॉर्ड दस्तावेज़",
+          "pa": "ਜ਼ਮੀਨ ਮਾਲਕੀ / ਜ਼ਮੀਨ ਰਿਕਾਰਡ ਦਸਤਾਵੇਜ਼",
+          "mr": "जमीन मालकी / जमीन नोंद कागदपत्रे"
+        },
+        {
+          "en": "Bank account passbook (Aadhaar-seeded)",
+          "hi": "बैंक पासबुक (आधार से लिंक)",
+          "pa": "ਬੈਂਕ ਪਾਸਬੁੱਕ (ਆਧਾਰ ਨਾਲ ਲਿੰਕ)",
+          "mr": "बँक पासबुक (आधार-जोडलेले)"
+        }
       ],
       "official_link": "https://pmkisan.gov.in/",
-      "application_mode": "Online self-registration at pmkisan.gov.in, or through the local Common Service Centre (CSC) / Patwari / Revenue Officer.",
-      "helpline": "PM-KISAN helpline 155261 / 011-24300606",
+      "application_mode": {
+        "en": "Online self-registration at pmkisan.gov.in, or through the local Common Service Centre (CSC) / Patwari / Revenue Officer.",
+        "hi": "pmkisan.gov.in पर ऑनलाइन स्व-पंजीकरण करें, या स्थानीय कॉमन सर्विस सेंटर (CSC) / पटवारी / राजस्व अधिकारी के माध्यम से आवेदन करें।",
+        "pa": "pmkisan.gov.in ਉੱਤੇ ਆਨਲਾਈਨ ਖੁਦ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਕਰੋ, ਜਾਂ ਸਥਾਨਕ ਕਾਮਨ ਸਰਵਿਸ ਸੈਂਟਰ (CSC) / ਪਟਵਾਰੀ / ਰੇਵਨਿਊ ਅਧਿਕਾਰੀ ਰਾਹੀਂ ਅਰਜ਼ੀ ਦਿਓ।",
+        "mr": "pmkisan.gov.in वर ऑनलाइन स्वयं-नोंदणी करा, किंवा स्थानिक कॉमन सर्व्हिस सेंटर (CSC) / तलाठी-पटवारी / महसूल अधिकारी यांच्यामार्फत अर्ज करा."
+      },
+      "helpline": {
+        "en": "PM-KISAN helpline 155261 / 011-24300606",
+        "hi": "पीएम-किसान हेल्पलाइन 155261 / 011-24300606",
+        "pa": "ਪੀਐਮ-ਕਿਸਾਨ ਹੈਲਪਲਾਈਨ 155261 / 011-24300606",
+        "mr": "पीएम-किसान हेल्पलाइन 155261 / 011-24300606"
+      },
       "source_urls": [
         "https://pmkisan.gov.in/",
         "https://cleartax.in/s/pradhan-mantri-kisan-samman-nidhi-scheme",
@@ -42,30 +98,93 @@
     },
     {
       "id": "pmfby",
-      "name": "PMFBY (Pradhan Mantri Fasal Bima Yojana)",
-      "category": "Crop Insurance",
-      "administering_body": "Ministry of Agriculture & Farmers Welfare, Government of India",
-      "short_description": "Crop insurance scheme that pays farmers for crop loss or damage from natural calamities, pests and diseases, at a low, fixed premium share while the government subsidizes the rest.",
-      "benefits": "Farmer pays only a small share of the premium - 2% of sum insured for Kharif crops, 1.5% for Rabi crops, and 5% for commercial/horticultural crops (which includes tomato); the balance premium is shared by the central and state governments. Claim payouts cover losses from drought, flood, hailstorm, pests/disease and post-harvest damage in a 14-day window.",
+      "name": {
+        "en": "PMFBY (Pradhan Mantri Fasal Bima Yojana)",
+        "hi": "पीएमएफबीवाई (प्रधानमंत्री फसल बीमा योजना)",
+        "pa": "ਪੀਐਮਐਫਬੀਵਾਈ (ਪ੍ਰਧਾਨ ਮੰਤਰੀ ਫਸਲ ਬੀਮਾ ਯੋਜਨਾ)",
+        "mr": "पीएमएफबीवाय (प्रधानमंत्री पीक विमा योजना)"
+      },
+      "category": {
+        "en": "Crop Insurance",
+        "hi": "फसल बीमा",
+        "pa": "ਫਸਲ ਬੀਮਾ",
+        "mr": "पीक विमा"
+      },
+      "administering_body": {
+        "en": "Ministry of Agriculture & Farmers Welfare, Government of India",
+        "hi": "कृषि एवं किसान कल्याण मंत्रालय, भारत सरकार",
+        "pa": "ਖੇਤੀਬਾੜੀ ਅਤੇ ਕਿਸਾਨ ਭਲਾਈ ਮੰਤਰਾਲਾ, ਭਾਰਤ ਸਰਕਾਰ",
+        "mr": "कृषी आणि शेतकरी कल्याण मंत्रालय, भारत सरकार"
+      },
+      "short_description": {
+        "en": "Crop insurance scheme that pays farmers for crop loss or damage from natural calamities, pests and diseases, at a low, fixed premium share while the government subsidizes the rest.",
+        "hi": "फसल बीमा योजना जो प्राकृतिक आपदाओं, कीटों और रोगों से फसल के नुकसान या क्षति पर किसानों को मुआवज़ा देती है। किसान कम और निश्चित प्रीमियम हिस्सा देते हैं और शेष राशि सरकार सब्सिडी करती है।",
+        "pa": "ਫਸਲ ਬੀਮਾ ਯੋਜਨਾ ਜੋ ਕੁਦਰਤੀ ਆਫ਼ਤਾਂ, ਕੀੜਿਆਂ ਅਤੇ ਬਿਮਾਰੀਆਂ ਕਾਰਨ ਫਸਲ ਦੇ ਨੁਕਸਾਨ ਜਾਂ ਖਰਾਬੀ ਲਈ ਕਿਸਾਨਾਂ ਨੂੰ ਮੁਆਵਜ਼ਾ ਦਿੰਦੀ ਹੈ। ਕਿਸਾਨ ਘੱਟ ਅਤੇ ਨਿਰਧਾਰਤ ਪ੍ਰੀਮੀਅਮ ਹਿੱਸਾ ਭਰਦੇ ਹਨ ਅਤੇ ਬਾਕੀ ਰਕਮ ਸਰਕਾਰ ਸਬਸਿਡੀ ਕਰਦੀ ਹੈ।",
+        "mr": "नैसर्गिक आपत्ती, कीड आणि रोगांमुळे पिकांचे नुकसान झाल्यास शेतकऱ्यांना भरपाई देणारी पीक विमा योजना. शेतकरी कमी आणि निश्चित प्रीमियमचा हिस्सा भरतात आणि उर्वरित रक्कम सरकार अनुदानित करते."
+      },
+      "benefits": {
+        "en": "Farmer pays only a small share of the premium - 2% of sum insured for Kharif crops, 1.5% for Rabi crops, and 5% for commercial/horticultural crops (which includes tomato); the balance premium is shared by the central and state governments. Claim payouts cover losses from drought, flood, hailstorm, pests/disease and post-harvest damage in a 14-day window.",
+        "hi": "किसान प्रीमियम का केवल छोटा हिस्सा देते हैं—खरीफ फसलों के लिए बीमित राशि का 2%, रबी फसलों के लिए 1.5% और वाणिज्यिक/बागवानी फसलों (टमाटर सहित) के लिए 5%; शेष प्रीमियम केंद्र और राज्य सरकारें साझा करती हैं। दावा भुगतान सूखा, बाढ़, ओलावृष्टि, कीट/रोग और कटाई के बाद 14 दिनों के भीतर हुई क्षति को कवर करता है।",
+        "pa": "ਕਿਸਾਨ ਪ੍ਰੀਮੀਅਮ ਦਾ ਸਿਰਫ਼ ਛੋਟਾ ਹਿੱਸਾ ਭਰਦੇ ਹਨ—ਖਰੀਫ ਫਸਲਾਂ ਲਈ ਬੀਮਿਤ ਰਕਮ ਦਾ 2%, ਰਬੀ ਲਈ 1.5% ਅਤੇ ਵਪਾਰਕ/ਬਾਗਬਾਨੀ ਫਸਲਾਂ (ਟਮਾਟਰ ਸਮੇਤ) ਲਈ 5%; ਬਾਕੀ ਪ੍ਰੀਮੀਅਮ ਕੇਂਦਰ ਅਤੇ ਰਾਜ ਸਰਕਾਰਾਂ ਵੰਡਦੀਆਂ ਹਨ। ਦਾਅਵਾ ਭੁਗਤਾਨ ਸੁੱਕਾ, ਬਾੜ, ਓਲੇ, ਕੀੜੇ/ਬਿਮਾਰੀ ਅਤੇ ਕਟਾਈ ਤੋਂ ਬਾਅਦ 14 ਦਿਨਾਂ ਦੇ ਅੰਦਰ ਨੁਕਸਾਨ ਨੂੰ ਕਵਰ ਕਰਦਾ ਹੈ।",
+        "mr": "शेतकरी प्रीमियमचा केवळ लहान हिस्सा भरतात—खरीप पिकांसाठी विमा रकमेच्या 2%, रब्बीसाठी 1.5% आणि व्यापारी/बागायती पिकांसाठी (टोमॅटोसह) 5%; उर्वरित प्रीमियम केंद्र व राज्य सरकारे भरतात. दाव्यात दुष्काळ, पूर, गारपीट, कीड/रोग आणि कापणीनंतर 14 दिवसांच्या आत झालेले नुकसान समाविष्ट आहे."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general", "tenant", "sharecropper"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general",
+          "tenant",
+          "sharecropper"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["notified crops in notified areas, including horticultural crops such as tomato where notified by the state"],
+        "applicable_crops": [
+          "notified crops in notified areas, including horticultural crops such as tomato where notified by the state"
+        ],
         "excluded_categories": [],
         "requires_bank_account": true,
         "requires_aadhaar": true,
         "notes": "Voluntary for all farmers since 2020. Loanee farmers with a Kisan Credit Card / crop loan may be enrolled automatically unless they opt out; non-loanee farmers must apply. Only crops notified by the state for that season/district are covered, so tomato coverage depends on the state's notification."
       },
       "required_documents": [
-        "Aadhaar card",
-        "Land records / tenancy agreement",
-        "Bank account details",
-        "Sowing declaration"
+        {
+          "en": "Aadhaar card",
+          "hi": "आधार कार्ड",
+          "pa": "ਆਧਾਰ ਕਾਰਡ",
+          "mr": "आधार कार्ड"
+        },
+        {
+          "en": "Land records / tenancy agreement",
+          "hi": "भूमि रिकॉर्ड / किरायेदारी समझौता",
+          "pa": "ਜ਼ਮੀਨ ਰਿਕਾਰਡ / ਕਿਰਾਏਦਾਰੀ ਸਮਝੌਤਾ",
+          "mr": "जमीन नोंदी / भाडेकरार"
+        },
+        {
+          "en": "Bank account details",
+          "hi": "बैंक खाते का विवरण",
+          "pa": "ਬੈਂਕ ਖਾਤੇ ਦੇ ਵੇਰਵੇ",
+          "mr": "बँक खात्याचा तपशील"
+        },
+        {
+          "en": "Sowing declaration",
+          "hi": "बुवाई घोषणा",
+          "pa": "ਬਿਜਾਈ ਘੋਸ਼ਣਾ",
+          "mr": "पेरणी घोषणा"
+        }
       ],
       "official_link": "https://pmfby.gov.in/",
-      "application_mode": "Online at pmfby.gov.in, or through your bank, Common Service Centre (CSC), or insurance company agent, within the notified enrolment window for the season.",
-      "helpline": "Crop insurance helpline 14447",
+      "application_mode": {
+        "en": "Online at pmfby.gov.in, or through your bank, Common Service Centre (CSC), or insurance company agent, within the notified enrolment window for the season.",
+        "hi": "pmfby.gov.in पर ऑनलाइन आवेदन करें, या अपने बैंक, कॉमन सर्विस सेंटर (CSC) या बीमा कंपनी एजेंट के माध्यम से, मौसम के लिए अधिसूचित नामांकन अवधि के भीतर आवेदन करें।",
+        "pa": "pmfby.gov.in ਉੱਤੇ ਆਨਲਾਈਨ ਅਰਜ਼ੀ ਦਿਓ, ਜਾਂ ਆਪਣੇ ਬੈਂਕ, ਕਾਮਨ ਸਰਵਿਸ ਸੈਂਟਰ (CSC) ਜਾਂ ਬੀਮਾ ਕੰਪਨੀ ਏਜੰਟ ਰਾਹੀਂ, ਮੌਸਮ ਲਈ ਨਿਰਧਾਰਤ ਨਾਮੰਕਨ ਮਿਆਦ ਦੇ ਅੰਦਰ ਅਰਜ਼ੀ ਦਿਓ।",
+        "mr": "pmfby.gov.in वर ऑनलाइन अर्ज करा, किंवा आपल्या बँक, कॉमन सर्व्हिस सेंटर (CSC) किंवा विमा कंपनी एजंटमार्फत हंगामाच्या अधिसूचित नोंदणी कालावधीत अर्ज करा."
+      },
+      "helpline": {
+        "en": "Crop insurance helpline 14447",
+        "hi": "फसल बीमा हेल्पलाइन 14447",
+        "pa": "ਫਸਲ ਬੀਮਾ ਹੈਲਪਲਾਈਨ 14447",
+        "mr": "पीक विमा हेल्पलाइन 14447"
+      },
       "source_urls": [
         "https://pmfby.gov.in/",
         "https://agriculture.hp.gov.in/en/our-scheme/pradhanmantri-fasal-bima-yojna-pmfby/",
@@ -75,31 +194,100 @@
     },
     {
       "id": "kcc",
-      "name": "Kisan Credit Card (KCC)",
-      "category": "Credit / Loan",
-      "administering_body": "Department of Financial Services, Ministry of Finance, with NABARD and participating banks",
-      "short_description": "A revolving credit line for farmers to fund crop cultivation, inputs and allied activities, at a concessional interest rate, with flexible withdrawal and repayment tied to the cropping cycle.",
-      "benefits": "Short-term crop loans up to Rs 3 lakh (being raised to Rs 5 lakh under the Modified Interest Subvention Scheme) at an effective interest rate as low as 4% p.a. after a 2% interest subvention plus a 3% prompt-repayment incentive from the government. Collateral-free for loans up to Rs 1.6 lakh. Also carries personal accident insurance and crop-damage insurance cover.",
+      "name": {
+        "en": "Kisan Credit Card (KCC)",
+        "hi": "किसान क्रेडिट कार्ड (KCC)",
+        "pa": "ਕਿਸਾਨ ਕ੍ਰੈਡਿਟ ਕਾਰਡ (KCC)",
+        "mr": "किसान क्रेडिट कार्ड (KCC)"
+      },
+      "category": {
+        "en": "Credit / Loan",
+        "hi": "ऋण / कर्ज",
+        "pa": "ਕ੍ਰੈਡਿਟ / ਕਰਜ਼ਾ",
+        "mr": "पत / कर्ज"
+      },
+      "administering_body": {
+        "en": "Department of Financial Services, Ministry of Finance, with NABARD and participating banks",
+        "hi": "वित्तीय सेवा विभाग, वित्त मंत्रालय, NABARD और सहभागी बैंकों के साथ",
+        "pa": "ਵਿੱਤੀ ਸੇਵਾਵਾਂ ਵਿਭਾਗ, ਵਿੱਤ ਮੰਤਰਾਲਾ, NABARD ਅਤੇ ਭਾਗੀਦਾਰ ਬੈਂਕਾਂ ਨਾਲ",
+        "mr": "वित्तीय सेवा विभाग, वित्त मंत्रालय, NABARD आणि सहभागी बँका"
+      },
+      "short_description": {
+        "en": "A revolving credit line for farmers to fund crop cultivation, inputs and allied activities, at a concessional interest rate, with flexible withdrawal and repayment tied to the cropping cycle.",
+        "hi": "किसानों के लिए फसल उत्पादन, कृषि इनपुट और संबद्ध गतिविधियों के खर्च हेतु रियायती ब्याज दर पर घूमती हुई ऋण सुविधा, जिसमें निकासी और भुगतान फसल चक्र के अनुसार लचीले होते हैं।",
+        "pa": "ਕਿਸਾਨਾਂ ਲਈ ਫਸਲ ਉਤਪਾਦਨ, ਖੇਤੀ ਇਨਪੁੱਟ ਅਤੇ ਸਹਾਇਕ ਗਤੀਵਿਧੀਆਂ ਲਈ ਰਿਆਯਤੀ ਵਿਆਜ ਦਰ ਉੱਤੇ ਘੁੰਮਣ ਵਾਲੀ ਕਰਜ਼ ਸਹੂਲਤ, ਜਿਸ ਵਿੱਚ ਕੱਢ ਅਤੇ ਵਾਪਸੀ ਫਸਲ ਚੱਕਰ ਅਨੁਸਾਰ ਲਚਕੀਲੀ ਹੁੰਦੀ ਹੈ।",
+        "mr": "शेतकऱ्यांसाठी पीक लागवड, कृषी इनपुट आणि पूरक उपक्रमांसाठी सवलतीच्या व्याजदरावर फिरती कर्जमर्यादा; पैसे काढणे व परतफेड पीक चक्रानुसार लवचिक असते."
+      },
+      "benefits": {
+        "en": "Short-term crop loans up to Rs 3 lakh (being raised to Rs 5 lakh under the Modified Interest Subvention Scheme) at an effective interest rate as low as 4% p.a. after a 2% interest subvention plus a 3% prompt-repayment incentive from the government. Collateral-free for loans up to Rs 1.6 lakh. Also carries personal accident insurance and crop-damage insurance cover.",
+        "hi": "₹3 लाख तक के अल्पकालीन फसल ऋण (संशोधित ब्याज सहायता योजना के तहत ₹5 लाख तक बढ़ाए जा रहे हैं), सरकारी ब्याज सहायता और समय पर भुगतान प्रोत्साहन के बाद प्रभावी ब्याज दर लगभग 4% वार्षिक तक हो सकती है। ₹1.6 लाख तक ऋण बिना जमानत के उपलब्ध है। व्यक्तिगत दुर्घटना बीमा और फसल-क्षति बीमा भी शामिल हो सकता है।",
+        "pa": "₹3 ਲੱਖ ਤੱਕ ਛੋਟੇ ਸਮੇਂ ਦੇ ਫਸਲ ਕਰਜ਼ੇ (ਸੰਸ਼ੋਧਿਤ ਵਿਆਜ ਸਬਸਿਡੀ ਯੋਜਨਾ ਹੇਠ ₹5 ਲੱਖ ਤੱਕ ਵਧਾਏ ਜਾ ਰਹੇ ਹਨ), ਸਰਕਾਰੀ ਵਿਆਜ ਸਹਾਇਤਾ ਅਤੇ ਸਮੇਂ ਸਿਰ ਭੁਗਤਾਨ ਪ੍ਰੋਤਸਾਹਨ ਤੋਂ ਬਾਅਦ ਪ੍ਰਭਾਵੀ ਵਿਆਜ ਦਰ ਲਗਭਗ 4% ਸਾਲਾਨਾ ਹੋ ਸਕਦੀ ਹੈ। ₹1.6 ਲੱਖ ਤੱਕ ਕਰਜ਼ਾ ਬਿਨਾਂ ਜ਼ਮਾਨਤ ਮਿਲ ਸਕਦਾ ਹੈ। ਨਿੱਜੀ ਹਾਦਸਾ ਅਤੇ ਫਸਲ ਨੁਕਸਾਨ ਬੀਮਾ ਵੀ ਸ਼ਾਮਲ ਹੋ ਸਕਦਾ ਹੈ।",
+        "mr": "₹3 लाखांपर्यंत अल्पमुदतीचे पीक कर्ज (सुधारित व्याज अनुदान योजनेत ₹5 लाखांपर्यंत वाढविले जात आहे), सरकारी व्याज अनुदान आणि वेळेवर परतफेड प्रोत्साहनानंतर प्रभावी व्याजदर सुमारे 4% वार्षिक असू शकतो. ₹1.6 लाखांपर्यंत कर्ज तारणाविना उपलब्ध असू शकते. वैयक्तिक अपघात आणि पीक नुकसान विमाही समाविष्ट असू शकतो."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general", "tenant", "sharecropper", "oral_lessee"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general",
+          "tenant",
+          "sharecropper",
+          "oral_lessee"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["any"],
+        "applicable_crops": [
+          "any"
+        ],
         "excluded_categories": [],
         "requires_bank_account": true,
         "requires_aadhaar": true,
         "notes": "Individual owner-cultivators, tenant farmers, oral lessees, sharecroppers, and SHGs/Joint Liability Groups of farmers are all eligible. Card validity is 5 years, with the limit reviewed annually."
       },
       "required_documents": [
-        "Filled KCC application form",
-        "Aadhaar card (mandatory for interest subvention)",
-        "Proof of land holding / cultivation, certified by revenue authorities",
-        "Passport-size photographs",
-        "Cropping pattern / area under cultivation details"
+        {
+          "en": "Filled KCC application form",
+          "hi": "भरा हुआ KCC आवेदन पत्र",
+          "pa": "ਭਰਿਆ ਹੋਇਆ KCC ਅਰਜ਼ੀ ਫਾਰਮ",
+          "mr": "भरलेला KCC अर्ज"
+        },
+        {
+          "en": "Aadhaar card (mandatory for interest subvention)",
+          "hi": "आधार कार्ड (ब्याज सहायता के लिए अनिवार्य)",
+          "pa": "ਆਧਾਰ ਕਾਰਡ (ਵਿਆਜ ਸਹਾਇਤਾ ਲਈ ਲਾਜ਼ਮੀ)",
+          "mr": "आधार कार्ड (व्याज अनुदानासाठी अनिवार्य)"
+        },
+        {
+          "en": "Proof of land holding / cultivation, certified by revenue authorities",
+          "hi": "राजस्व अधिकारियों द्वारा प्रमाणित भूमि जोत / खेती का प्रमाण",
+          "pa": "ਰੇਵਨਿਊ ਅਧਿਕਾਰੀਆਂ ਦੁਆਰਾ ਪ੍ਰਮਾਣਿਤ ਜ਼ਮੀਨ ਹੋਲਡਿੰਗ / ਖੇਤੀ ਦਾ ਸਬੂਤ",
+          "mr": "महसूल अधिकाऱ्यांनी प्रमाणित केलेला जमीनधारणा / शेतीचा पुरावा"
+        },
+        {
+          "en": "Passport-size photographs",
+          "hi": "पासपोर्ट आकार के फोटो",
+          "pa": "ਪਾਸਪੋਰਟ ਆਕਾਰ ਦੀਆਂ ਫੋਟੋਆਂ",
+          "mr": "पासपोर्ट आकाराचे फोटो"
+        },
+        {
+          "en": "Cropping pattern / area under cultivation details",
+          "hi": "फसल पैटर्न / खेती क्षेत्र का विवरण",
+          "pa": "ਫਸਲ ਪੈਟਰਨ / ਖੇਤੀ ਹੇਠ ਖੇਤਰ ਦੇ ਵੇਰਵੇ",
+          "mr": "पीक पद्धती / लागवडीखालील क्षेत्राचा तपशील"
+        }
       ],
       "official_link": "https://www.pmkisan.gov.in/Documents/KCC.pdf",
-      "application_mode": "Apply at any nationalised bank, regional rural bank, cooperative bank, or small finance bank branch; also available via bank net-banking/YONO-style apps.",
-      "helpline": "Kisan Call Centre 1800-180-1551",
+      "application_mode": {
+        "en": "Apply at any nationalised bank, regional rural bank, cooperative bank, or small finance bank branch; also available via bank net-banking/YONO-style apps.",
+        "hi": "किसी भी राष्ट्रीयकृत बैंक, क्षेत्रीय ग्रामीण बैंक, सहकारी बैंक या लघु वित्त बैंक शाखा में आवेदन करें; कई बैंकों में नेट-बैंकिंग/YONO जैसे ऐप से भी सुविधा उपलब्ध है।",
+        "pa": "ਕਿਸੇ ਵੀ ਰਾਸ਼ਟਰੀਕ੍ਰਿਤ ਬੈਂਕ, ਖੇਤਰੀ ਪਿੰਡ ਬੈਂਕ, ਸਹਿਕਾਰੀ ਬੈਂਕ ਜਾਂ ਛੋਟੇ ਵਿੱਤ ਬੈਂਕ ਸ਼ਾਖਾ ਵਿੱਚ ਅਰਜ਼ੀ ਦਿਓ; ਕਈ ਬੈਂਕਾਂ ਵਿੱਚ ਨੈੱਟ-ਬੈਂਕਿੰਗ/YONO ਵਰਗੀਆਂ ਐਪਾਂ ਰਾਹੀਂ ਵੀ ਸਹੂਲਤ ਹੈ।",
+        "mr": "कोणत्याही राष्ट्रीयीकृत बँक, प्रादेशिक ग्रामीण बँक, सहकारी बँक किंवा लघु वित्त बँक शाखेत अर्ज करा; अनेक बँकांमध्ये नेट-बँकिंग/YONO सारख्या अॅपद्वारेही सुविधा आहे."
+      },
+      "helpline": {
+        "en": "Kisan Call Centre 1800-180-1551",
+        "hi": "किसान कॉल सेंटर 1800-180-1551",
+        "pa": "ਕਿਸਾਨ ਕਾਲ ਸੈਂਟਰ 1800-180-1551",
+        "mr": "किसान कॉल सेंटर 1800-180-1551"
+      },
       "source_urls": [
         "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2106230&reg=3&lang=2",
         "https://sbi.bank.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card",
@@ -109,28 +297,80 @@
     },
     {
       "id": "soil-health-card",
-      "name": "Soil Health Card (SHC) Scheme",
-      "category": "Advisory / Soil Testing",
-      "administering_body": "Department of Agriculture & Farmers Welfare, Government of India",
-      "short_description": "Free soil testing for every land-holding farmer, with a card that reports nutrient status and recommends the right fertilizer dose and crop choices for that specific field.",
-      "benefits": "Free soil sample testing and a printed/digital Soil Health Card every 3 years, showing nutrient levels (N, P, K and micronutrients) and tailored fertilizer/crop recommendations to cut input costs and improve yield.",
+      "name": {
+        "en": "Soil Health Card (SHC) Scheme",
+        "hi": "मृदा स्वास्थ्य कार्ड (SHC) योजना",
+        "pa": "ਮਿੱਟੀ ਸਿਹਤ ਕਾਰਡ (SHC) ਯੋਜਨਾ",
+        "mr": "मृदा आरोग्य कार्ड (SHC) योजना"
+      },
+      "category": {
+        "en": "Advisory / Soil Testing",
+        "hi": "सलाह / मृदा परीक्षण",
+        "pa": "ਸਲਾਹ / ਮਿੱਟੀ ਜਾਂਚ",
+        "mr": "सल्ला / माती परीक्षण"
+      },
+      "administering_body": {
+        "en": "Department of Agriculture & Farmers Welfare, Government of India",
+        "hi": "कृषि एवं किसान कल्याण विभाग, भारत सरकार",
+        "pa": "ਖੇਤੀਬਾੜੀ ਅਤੇ ਕਿਸਾਨ ਭਲਾਈ ਵਿਭਾਗ, ਭਾਰਤ ਸਰਕਾਰ",
+        "mr": "कृषी आणि शेतकरी कल्याण विभाग, भारत सरकार"
+      },
+      "short_description": {
+        "en": "Free soil testing for every land-holding farmer, with a card that reports nutrient status and recommends the right fertilizer dose and crop choices for that specific field.",
+        "hi": "हर भूमिधारक किसान के लिए मुफ्त मृदा परीक्षण, जिसमें पोषक तत्वों की स्थिति बताने वाला कार्ड मिलता है और उसी खेत के लिए सही उर्वरक मात्रा तथा फसल विकल्प सुझाए जाते हैं।",
+        "pa": "ਹਰ ਜ਼ਮੀਨਧਾਰੀ ਕਿਸਾਨ ਲਈ ਮੁਫ਼ਤ ਮਿੱਟੀ ਜਾਂਚ, ਜਿਸ ਵਿੱਚ ਪੋਸ਼ਕ ਤੱਤਾਂ ਦੀ ਸਥਿਤੀ ਦੱਸਣ ਵਾਲਾ ਕਾਰਡ ਮਿਲਦਾ ਹੈ ਅਤੇ ਉਸੇ ਖੇਤ ਲਈ ਢੁਕਵੀਂ ਖਾਦ ਮਾਤਰਾ ਅਤੇ ਫਸਲ ਚੋਣ ਦੀ ਸਿਫ਼ਾਰਸ਼ ਹੁੰਦੀ ਹੈ।",
+        "mr": "प्रत्येक जमीनधारक शेतकऱ्यासाठी मोफत माती परीक्षण; कार्डमध्ये पोषकतत्त्वांची स्थिती दिली जाते आणि त्या शेतासाठी योग्य खत मात्रा व पीक पर्याय सुचवले जातात."
+      },
+      "benefits": {
+        "en": "Free soil sample testing and a printed/digital Soil Health Card every 3 years, showing nutrient levels (N, P, K and micronutrients) and tailored fertilizer/crop recommendations to cut input costs and improve yield.",
+        "hi": "हर 3 वर्ष में मुफ्त मिट्टी नमूना परीक्षण और मुद्रित/डिजिटल मृदा स्वास्थ्य कार्ड, जिसमें N, P, K और सूक्ष्म पोषक तत्वों के स्तर तथा लागत घटाने और उपज सुधारने के लिए अनुकूलित उर्वरक/फसल सुझाव दिए जाते हैं।",
+        "pa": "ਹਰ 3 ਸਾਲਾਂ ਵਿੱਚ ਮੁਫ਼ਤ ਮਿੱਟੀ ਨਮੂਨਾ ਜਾਂਚ ਅਤੇ ਛਪਿਆ/ਡਿਜ਼ਿਟਲ ਮਿੱਟੀ ਸਿਹਤ ਕਾਰਡ, ਜਿਸ ਵਿੱਚ N, P, K ਅਤੇ ਸੂਖਮ ਪੋਸ਼ਕ ਤੱਤਾਂ ਦੇ ਪੱਧਰ ਅਤੇ ਲਾਗਤ ਘਟਾਉਣ ਤੇ ਉਪਜ ਵਧਾਉਣ ਲਈ ਖਾਦ/ਫਸਲ ਸਿਫ਼ਾਰਸ਼ਾਂ ਹੁੰਦੀਆਂ ਹਨ।",
+        "mr": "दर 3 वर्षांनी मोफत माती नमुना परीक्षण आणि मुद्रित/डिजिटल मृदा आरोग्य कार्ड; त्यात N, P, K व सूक्ष्म पोषकतत्त्वांची पातळी आणि खर्च कमी करून उत्पादन वाढवण्यासाठी सानुकूल खत/पीक शिफारसी दिल्या जातात."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general", "tenant"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general",
+          "tenant"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["any"],
+        "applicable_crops": [
+          "any"
+        ],
         "excluded_categories": [],
         "requires_bank_account": false,
         "requires_aadhaar": true,
         "notes": "Open to all land-holding farmers with no defined eligibility ceiling; tenants and sharecroppers can also apply where permitted locally."
       },
       "required_documents": [
-        "Aadhaar card",
-        "Land record / khasra-khatauni details"
+        {
+          "en": "Aadhaar card",
+          "hi": "आधार कार्ड",
+          "pa": "ਆਧਾਰ ਕਾਰਡ",
+          "mr": "आधार कार्ड"
+        },
+        {
+          "en": "Land record / khasra-khatauni details",
+          "hi": "भूमि रिकॉर्ड / खसरा-खतौनी विवरण",
+          "pa": "ਜ਼ਮੀਨ ਰਿਕਾਰਡ / ਖਸਰਾ-ਖਤੌਨੀ ਵੇਰਵੇ",
+          "mr": "जमीन नोंद / खसरा-खतौनी तपशील"
+        }
       ],
       "official_link": "https://soilhealth.dac.gov.in/",
-      "application_mode": "Register online at soilhealth.dac.gov.in ('Farmer Corner') or through your local agriculture office / Krishi Vigyan Kendra, which will schedule soil sample collection.",
-      "helpline": "Kisan Call Centre 1800-180-1551",
+      "application_mode": {
+        "en": "Register online at soilhealth.dac.gov.in ('Farmer Corner') or through your local agriculture office / Krishi Vigyan Kendra, which will schedule soil sample collection.",
+        "hi": "soilhealth.dac.gov.in के 'Farmer Corner' पर ऑनलाइन पंजीकरण करें या स्थानीय कृषि कार्यालय / कृषि विज्ञान केंद्र के माध्यम से आवेदन करें; वे मिट्टी नमूना संग्रह की व्यवस्था करेंगे।",
+        "pa": "soilhealth.dac.gov.in ਦੇ 'Farmer Corner' ਉੱਤੇ ਆਨਲਾਈਨ ਰਜਿਸਟਰ ਕਰੋ ਜਾਂ ਸਥਾਨਕ ਖੇਤੀ ਦਫ਼ਤਰ / ਕ੍ਰਿਸ਼ੀ ਵਿਗਿਆਨ ਕੇਂਦਰ ਰਾਹੀਂ ਅਰਜ਼ੀ ਦਿਓ; ਉਹ ਮਿੱਟੀ ਨਮੂਨਾ ਇਕੱਠਾ ਕਰਨ ਦੀ ਵਿਵਸਥਾ ਕਰਨਗੇ।",
+        "mr": "soilhealth.dac.gov.in वरील 'Farmer Corner' मध्ये ऑनलाइन नोंदणी करा किंवा स्थानिक कृषी कार्यालय / कृषी विज्ञान केंद्रामार्फत अर्ज करा; ते माती नमुना संकलनाची व्यवस्था करतील."
+      },
+      "helpline": {
+        "en": "Kisan Call Centre 1800-180-1551",
+        "hi": "किसान कॉल सेंटर 1800-180-1551",
+        "pa": "ਕਿਸਾਨ ਕਾਲ ਸੈਂਟਰ 1800-180-1551",
+        "mr": "किसान कॉल सेंटर 1800-180-1551"
+      },
       "source_urls": [
         "https://soilhealth.dac.gov.in/",
         "https://www.hdfcergo.com/blogs/health-insurance/soil-health-card-scheme",
@@ -140,30 +380,91 @@
     },
     {
       "id": "pm-kusum",
-      "name": "PM-KUSUM (Pradhan Mantri Kisan Urja Suraksha evam Utthaan Mahabhiyan)",
-      "category": "Irrigation / Solar Energy",
-      "administering_body": "Ministry of New and Renewable Energy (MNRE), Government of India",
-      "short_description": "Helps farmers move off diesel pumps to solar power - subsidised standalone solar irrigation pumps, solarisation of existing grid-connected pumps, and support to set up small solar power plants on farmland.",
-      "benefits": "Central Financial Assistance of 30% of the solar pump/plant cost (Component B/C), with states typically adding their own top-up subsidy on top - total subsidy commonly ranges from 30% to 90% of project cost depending on the state, cutting diesel/electricity costs for irrigation. Component A lets farmers earn income by selling surplus solar power to the grid.",
+      "name": {
+        "en": "PM-KUSUM (Pradhan Mantri Kisan Urja Suraksha evam Utthaan Mahabhiyan)",
+        "hi": "पीएम-कुसुम (प्रधानमंत्री किसान ऊर्जा सुरक्षा एवं उत्थान महाभियान)",
+        "pa": "ਪੀਐਮ-ਕੁਸੁਮ (ਪ੍ਰਧਾਨ ਮੰਤਰੀ ਕਿਸਾਨ ਊਰਜਾ ਸੁਰੱਖਿਆ ਅਤੇ ਉੱਥਾਨ ਮਹਾਅਭਿਆਨ)",
+        "mr": "पीएम-कुसुम (प्रधानमंत्री किसान ऊर्जा सुरक्षा व उत्थान महाभियान)"
+      },
+      "category": {
+        "en": "Irrigation / Solar Energy",
+        "hi": "सिंचाई / सौर ऊर्जा",
+        "pa": "ਸਿੰਚਾਈ / ਸੂਰਜੀ ਊਰਜਾ",
+        "mr": "सिंचन / सौर ऊर्जा"
+      },
+      "administering_body": {
+        "en": "Ministry of New and Renewable Energy (MNRE), Government of India",
+        "hi": "नवीन और नवीकरणीय ऊर्जा मंत्रालय (MNRE), भारत सरकार",
+        "pa": "ਨਵੀਂ ਅਤੇ ਨਵੀਕਰਣਯੋਗ ਊਰਜਾ ਮੰਤਰਾਲਾ (MNRE), ਭਾਰਤ ਸਰਕਾਰ",
+        "mr": "नवीन आणि नवीकरणीय ऊर्जा मंत्रालय (MNRE), भारत सरकार"
+      },
+      "short_description": {
+        "en": "Helps farmers move off diesel pumps to solar power - subsidised standalone solar irrigation pumps, solarisation of existing grid-connected pumps, and support to set up small solar power plants on farmland.",
+        "hi": "किसानों को डीज़ल पंप से सौर ऊर्जा की ओर ले जाने में मदद—सब्सिडी वाले स्वतंत्र सौर सिंचाई पंप, मौजूदा ग्रिड-जुड़े पंपों का सौरकरण और खेत पर छोटे सौर बिजली संयंत्र लगाने में सहायता।",
+        "pa": "ਕਿਸਾਨਾਂ ਨੂੰ ਡੀਜ਼ਲ ਪੰਪਾਂ ਤੋਂ ਸੂਰਜੀ ਊਰਜਾ ਵੱਲ ਲਿਜਾਣ ਵਿੱਚ ਮਦਦ—ਸਬਸਿਡੀ ਵਾਲੇ ਸੁਤੰਤਰ ਸੂਰਜੀ ਸਿੰਚਾਈ ਪੰਪ, ਮੌਜੂਦਾ ਗ੍ਰਿਡ-ਜੁੜੇ ਪੰਪਾਂ ਦਾ ਸੂਰਜੀਕਰਨ ਅਤੇ ਖੇਤ ਵਿੱਚ ਛੋਟੇ ਸੂਰਜੀ ਬਿਜਲੀ ਪਲਾਂਟ ਲਈ ਸਹਾਇਤਾ।",
+        "mr": "शेतकऱ्यांना डिझेल पंपांपासून सौर ऊर्जेकडे वळण्यास मदत—अनुदानित स्वतंत्र सौर सिंचन पंप, विद्यमान ग्रीड-जोडलेल्या पंपांचे सौरिकीकरण आणि शेतात लहान सौर वीज प्रकल्प उभारण्यासाठी सहाय्य."
+      },
+      "benefits": {
+        "en": "Central Financial Assistance of 30% of the solar pump/plant cost (Component B/C), with states typically adding their own top-up subsidy on top - total subsidy commonly ranges from 30% to 90% of project cost depending on the state, cutting diesel/electricity costs for irrigation. Component A lets farmers earn income by selling surplus solar power to the grid.",
+        "hi": "सौर पंप/संयंत्र लागत का 30% केंद्रीय वित्तीय सहायता (घटक B/C), और राज्य अक्सर अतिरिक्त सब्सिडी देते हैं। राज्य के अनुसार कुल सब्सिडी आमतौर पर परियोजना लागत के 30% से 90% तक हो सकती है। घटक A में किसान अतिरिक्त सौर बिजली ग्रिड को बेचकर आय कमा सकते हैं।",
+        "pa": "ਸੂਰਜੀ ਪੰਪ/ਪਲਾਂਟ ਲਾਗਤ ਦਾ 30% ਕੇਂਦਰੀ ਵਿੱਤੀ ਸਹਾਇਤਾ (ਘਟਕ B/C), ਅਤੇ ਰਾਜ ਅਕਸਰ ਵਾਧੂ ਸਬਸਿਡੀ ਦਿੰਦੇ ਹਨ। ਰਾਜ ਅਨੁਸਾਰ ਕੁੱਲ ਸਬਸਿਡੀ ਆਮ ਤੌਰ ਤੇ ਪ੍ਰੋਜੈਕਟ ਲਾਗਤ ਦੇ 30% ਤੋਂ 90% ਤੱਕ ਹੋ ਸਕਦੀ ਹੈ। ਘਟਕ A ਹੇਠ ਕਿਸਾਨ ਵਾਧੂ ਸੂਰਜੀ ਬਿਜਲੀ ਗ੍ਰਿਡ ਨੂੰ ਵੇਚ ਕੇ ਆਮਦਨ ਕਮਾ ਸਕਦੇ ਹਨ।",
+        "mr": "सौर पंप/प्रकल्प खर्चाच्या 30% केंद्रीय आर्थिक सहाय्य (घटक B/C), आणि राज्ये अनेकदा अतिरिक्त अनुदान देतात. राज्यानुसार एकूण अनुदान साधारणपणे प्रकल्प खर्चाच्या 30% ते 90% पर्यंत असू शकते. घटक A अंतर्गत शेतकरी अतिरिक्त सौर वीज ग्रीडला विकून उत्पन्न मिळवू शकतात."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["any"],
+        "applicable_crops": [
+          "any"
+        ],
         "excluded_categories": [],
         "requires_bank_account": true,
         "requires_aadhaar": true,
         "notes": "Individual farmers, groups of farmers (SHGs/JLGs), cooperatives, panchayats, FPOs and Water User Associations are all eligible. Exact subsidy share and application windows vary by state - check your state's renewable energy nodal agency."
       },
       "required_documents": [
-        "Aadhaar card",
-        "Land ownership document",
-        "Bank account details",
-        "Existing electricity connection details (for pump solarisation)"
+        {
+          "en": "Aadhaar card",
+          "hi": "आधार कार्ड",
+          "pa": "ਆਧਾਰ ਕਾਰਡ",
+          "mr": "आधार कार्ड"
+        },
+        {
+          "en": "Land ownership document",
+          "hi": "भूमि स्वामित्व दस्तावेज़",
+          "pa": "ਜ਼ਮੀਨ ਮਾਲਕੀ ਦਸਤਾਵੇਜ਼",
+          "mr": "जमीन मालकी कागदपत्र"
+        },
+        {
+          "en": "Bank account details",
+          "hi": "बैंक खाते का विवरण",
+          "pa": "ਬੈਂਕ ਖਾਤੇ ਦੇ ਵੇਰਵੇ",
+          "mr": "बँक खात्याचा तपशील"
+        },
+        {
+          "en": "Existing electricity connection details (for pump solarisation)",
+          "hi": "मौजूदा बिजली कनेक्शन का विवरण (पंप सौरकरण के लिए)",
+          "pa": "ਮੌਜੂਦਾ ਬਿਜਲੀ ਕਨੈਕਸ਼ਨ ਦੇ ਵੇਰਵੇ (ਪੰਪ ਸੂਰਜੀਕਰਨ ਲਈ)",
+          "mr": "विद्यमान वीज जोडणीचा तपशील (पंप सौरिकीकरणासाठी)"
+        }
       ],
       "official_link": "https://pmkusum.mnre.gov.in/",
-      "application_mode": "Apply through your state's renewable energy development agency portal (linked from pmkusum.mnre.gov.in) during the state's open application window.",
-      "helpline": "State renewable energy agency helpdesk (varies by state)",
+      "application_mode": {
+        "en": "Apply through your state's renewable energy development agency portal (linked from pmkusum.mnre.gov.in) during the state's open application window.",
+        "hi": "अपने राज्य की नवीकरणीय ऊर्जा विकास एजेंसी के पोर्टल के माध्यम से आवेदन करें (लिंक pmkusum.mnre.gov.in पर उपलब्ध है), जब राज्य की आवेदन अवधि खुली हो।",
+        "pa": "ਆਪਣੇ ਰਾਜ ਦੀ ਨਵੀਕਰਣਯੋਗ ਊਰਜਾ ਵਿਕਾਸ ਏਜੰਸੀ ਦੇ ਪੋਰਟਲ ਰਾਹੀਂ ਅਰਜ਼ੀ ਦਿਓ (ਲਿੰਕ pmkusum.mnre.gov.in ਉੱਤੇ ਹੈ), ਜਦੋਂ ਰਾਜ ਦੀ ਅਰਜ਼ੀ ਵਿੰਡੋ ਖੁੱਲ੍ਹੀ ਹੋਵੇ।",
+        "mr": "आपल्या राज्याच्या नवीकरणीय ऊर्जा विकास संस्थेच्या पोर्टलद्वारे अर्ज करा (दुवा pmkusum.mnre.gov.in वर उपलब्ध आहे), राज्याची अर्ज विंडो खुली असताना."
+      },
+      "helpline": {
+        "en": "State renewable energy agency helpdesk (varies by state)",
+        "hi": "राज्य नवीकरणीय ऊर्जा एजेंसी हेल्पडेस्क (राज्य के अनुसार अलग)",
+        "pa": "ਰਾਜ ਨਵੀਕਰਣਯੋਗ ਊਰਜਾ ਏਜੰਸੀ ਹੈਲਪਡੈਸਕ (ਰਾਜ ਅਨੁਸਾਰ ਵੱਖਰਾ)",
+        "mr": "राज्य नवीकरणीय ऊर्जा संस्था हेल्पडेस्क (राज्यानुसार वेगळे)"
+      },
       "source_urls": [
         "https://pmkusum.mnre.gov.in/",
         "https://mnre.gov.in/en/pradhan-mantri-kisan-urja-suraksha-evam-utthaan-mahabhiyaan-pm-kusum/",
@@ -173,29 +474,85 @@
     },
     {
       "id": "e-nam",
-      "name": "e-NAM (National Agriculture Market)",
-      "category": "Market Access",
-      "administering_body": "Small Farmers' Agribusiness Consortium (SFAC), Ministry of Agriculture & Farmers Welfare",
-      "short_description": "A pan-India online trading portal that links mandis (APMC markets) so farmers can get transparent, real-time price discovery and sell produce to buyers beyond their local mandi.",
-      "benefits": "Access to competitive bidding across linked mandis, real-time commodity prices via app/SMS, quality assaying, and direct online payment settlement to the farmer's bank account - reducing dependence on local middlemen.",
+      "name": {
+        "en": "e-NAM (National Agriculture Market)",
+        "hi": "ई-नाम (राष्ट्रीय कृषि बाजार)",
+        "pa": "ਈ-ਨਾਮ (ਰਾਸ਼ਟਰੀ ਖੇਤੀਬਾੜੀ ਮਾਰਕੀਟ)",
+        "mr": "ई-नाम (राष्ट्रीय कृषी बाजार)"
+      },
+      "category": {
+        "en": "Market Access",
+        "hi": "बाजार पहुँच",
+        "pa": "ਬਾਜ਼ਾਰ ਪਹੁੰਚ",
+        "mr": "बाजार प्रवेश"
+      },
+      "administering_body": {
+        "en": "Small Farmers' Agribusiness Consortium (SFAC), Ministry of Agriculture & Farmers Welfare",
+        "hi": "लघु कृषक कृषि-व्यवसाय संघ (SFAC), कृषि एवं किसान कल्याण मंत्रालय",
+        "pa": "ਛੋਟੇ ਕਿਸਾਨ ਖੇਤੀ-ਵਪਾਰ ਸੰਘ (SFAC), ਖੇਤੀਬਾੜੀ ਅਤੇ ਕਿਸਾਨ ਭਲਾਈ ਮੰਤਰਾਲਾ",
+        "mr": "लघु शेतकरी कृषी-व्यवसाय संघ (SFAC), कृषी आणि शेतकरी कल्याण मंत्रालय"
+      },
+      "short_description": {
+        "en": "A pan-India online trading portal that links mandis (APMC markets) so farmers can get transparent, real-time price discovery and sell produce to buyers beyond their local mandi.",
+        "hi": "पूरे भारत का ऑनलाइन व्यापार पोर्टल जो मंडियों (APMC बाजारों) को जोड़ता है, ताकि किसानों को पारदर्शी, वास्तविक समय मूल्य जानकारी मिले और वे स्थानीय मंडी से बाहर के खरीदारों को भी उपज बेच सकें।",
+        "pa": "ਸਾਰੇ ਭਾਰਤ ਦਾ ਆਨਲਾਈਨ ਵਪਾਰ ਪੋਰਟਲ ਜੋ ਮੰਡੀਆਂ (APMC ਮਾਰਕੀਟਾਂ) ਨੂੰ ਜੋੜਦਾ ਹੈ, ਤਾਂ ਜੋ ਕਿਸਾਨਾਂ ਨੂੰ ਪਾਰਦਰਸ਼ੀ, ਰੀਅਲ-ਟਾਈਮ ਕੀਮਤ ਜਾਣਕਾਰੀ ਮਿਲੇ ਅਤੇ ਉਹ ਸਥਾਨਕ ਮੰਡੀ ਤੋਂ ਬਾਹਰ ਦੇ ਖਰੀਦਦਾਰਾਂ ਨੂੰ ਵੀ ਉਪਜ ਵੇਚ ਸਕਣ।",
+        "mr": "संपूर्ण भारतातील ऑनलाइन व्यापार पोर्टल जे मंड्या (APMC बाजार) जोडते, त्यामुळे शेतकऱ्यांना पारदर्शक, प्रत्यक्ष-वेळ किंमत माहिती मिळते आणि स्थानिक मंडीबाहेरील खरेदीदारांनाही माल विकता येतो."
+      },
+      "benefits": {
+        "en": "Access to competitive bidding across linked mandis, real-time commodity prices via app/SMS, quality assaying, and direct online payment settlement to the farmer's bank account - reducing dependence on local middlemen.",
+        "hi": "जुड़ी हुई मंडियों में प्रतिस्पर्धी बोली, ऐप/SMS से वास्तविक समय कमोडिटी कीमतें, गुणवत्ता परीक्षण और किसान के बैंक खाते में सीधे ऑनलाइन भुगतान—स्थानीय बिचौलियों पर निर्भरता घटती है।",
+        "pa": "ਜੁੜੀਆਂ ਮੰਡੀਆਂ ਵਿੱਚ ਮੁਕਾਬਲੇ ਵਾਲੀ ਬੋਲੀ, ਐਪ/SMS ਰਾਹੀਂ ਰੀਅਲ-ਟਾਈਮ ਵਸਤੂ ਕੀਮਤਾਂ, ਗੁਣਵੱਤਾ ਜਾਂਚ ਅਤੇ ਕਿਸਾਨ ਦੇ ਬੈਂਕ ਖਾਤੇ ਵਿੱਚ ਸਿੱਧਾ ਆਨਲਾਈਨ ਭੁਗਤਾਨ—ਸਥਾਨਕ ਦਲਾਲਾਂ ਉੱਤੇ ਨਿਰਭਰਤਾ ਘਟਦੀ ਹੈ।",
+        "mr": "जोडलेल्या मंड्यांमध्ये स्पर्धात्मक बोली, अॅप/SMS द्वारे प्रत्यक्ष-वेळ मालभाव, गुणवत्ता परीक्षण आणि शेतकऱ्याच्या बँक खात्यात थेट ऑनलाइन पेमेंट—स्थानिक मध्यस्थांवरील अवलंबित्व कमी होते."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["any produce traded at a linked mandi, including vegetables such as tomato where the local mandi is e-NAM enabled"],
+        "applicable_crops": [
+          "any produce traded at a linked mandi, including vegetables such as tomato where the local mandi is e-NAM enabled"
+        ],
         "excluded_categories": [],
         "requires_bank_account": true,
         "requires_aadhaar": true,
         "notes": "Any farmer can register for free; benefit depends on whether your nearest APMC mandi is integrated with e-NAM."
       },
       "required_documents": [
-        "Aadhaar card",
-        "Bank account details",
-        "Mobile number for OTP registration"
+        {
+          "en": "Aadhaar card",
+          "hi": "आधार कार्ड",
+          "pa": "ਆਧਾਰ ਕਾਰਡ",
+          "mr": "आधार कार्ड"
+        },
+        {
+          "en": "Bank account details",
+          "hi": "बैंक खाते का विवरण",
+          "pa": "ਬੈਂਕ ਖਾਤੇ ਦੇ ਵੇਰਵੇ",
+          "mr": "बँक खात्याचा तपशील"
+        },
+        {
+          "en": "Mobile number for OTP registration",
+          "hi": "OTP पंजीकरण के लिए मोबाइल नंबर",
+          "pa": "OTP ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਲਈ ਮੋਬਾਈਲ ਨੰਬਰ",
+          "mr": "OTP नोंदणीसाठी मोबाईल क्रमांक"
+        }
       ],
       "official_link": "https://enam.gov.in/",
-      "application_mode": "Free registration on the e-NAM portal or mobile app, or through your local APMC mandi office if it is e-NAM linked.",
-      "helpline": "SFAC / local APMC mandi office",
+      "application_mode": {
+        "en": "Free registration on the e-NAM portal or mobile app, or through your local APMC mandi office if it is e-NAM linked.",
+        "hi": "ई-नाम पोर्टल या मोबाइल ऐप पर मुफ्त पंजीकरण करें, या यदि आपकी स्थानीय APMC मंडी ई-नाम से जुड़ी है तो मंडी कार्यालय के माध्यम से पंजीकरण करें।",
+        "pa": "ਈ-ਨਾਮ ਪੋਰਟਲ ਜਾਂ ਮੋਬਾਈਲ ਐਪ ਉੱਤੇ ਮੁਫ਼ਤ ਰਜਿਸਟਰ ਕਰੋ, ਜਾਂ ਜੇ ਤੁਹਾਡੀ ਸਥਾਨਕ APMC ਮੰਡੀ ਈ-ਨਾਮ ਨਾਲ ਜੁੜੀ ਹੈ ਤਾਂ ਮੰਡੀ ਦਫ਼ਤਰ ਰਾਹੀਂ ਰਜਿਸਟਰ ਕਰੋ।",
+        "mr": "ई-नाम पोर्टल किंवा मोबाईल अॅपवर मोफत नोंदणी करा, किंवा तुमची स्थानिक APMC मंडी ई-नामशी जोडलेली असल्यास मंडी कार्यालयामार्फत नोंदणी करा."
+      },
+      "helpline": {
+        "en": "SFAC / local APMC mandi office",
+        "hi": "SFAC / स्थानीय APMC मंडी कार्यालय",
+        "pa": "SFAC / ਸਥਾਨਕ APMC ਮੰਡੀ ਦਫ਼ਤਰ",
+        "mr": "SFAC / स्थानिक APMC मंडी कार्यालय"
+      },
       "source_urls": [
         "https://enam.gov.in/",
         "https://dmshahdara.delhi.gov.in/scheme/e-national-agriculture-market-e-nam-scheme/",
@@ -205,30 +562,95 @@
     },
     {
       "id": "midh",
-      "name": "MIDH (Mission for Integrated Development of Horticulture)",
-      "category": "Horticulture / Infrastructure Subsidy",
-      "administering_body": "Department of Agriculture & Farmers Welfare, Government of India (State Horticulture Missions)",
-      "short_description": "Centrally sponsored scheme supporting vegetable and fruit growers - including tomato - with subsidies for quality planting material, protected cultivation (polyhouse/shadenet), micro-irrigation, and post-harvest/cold-chain infrastructure.",
-      "benefits": "Project-linked subsidies - for example up to 50% of project cost (capped) for commercial horticulture infrastructure such as polyhouses, and back-ended credit-linked subsidies for quality vegetable seed and planting material; exact percentages vary by component and state, with GOI typically funding 60% and the state 40% of the overall outlay (higher central share for NE/Himalayan states).",
+      "name": {
+        "en": "MIDH (Mission for Integrated Development of Horticulture)",
+        "hi": "MIDH (एकीकृत बागवानी विकास मिशन)",
+        "pa": "MIDH (ਇਕਰੂਪ ਬਾਗਬਾਨੀ ਵਿਕਾਸ ਮਿਸ਼ਨ)",
+        "mr": "MIDH (एकात्मिक फलोत्पादन विकास अभियान)"
+      },
+      "category": {
+        "en": "Horticulture / Infrastructure Subsidy",
+        "hi": "बागवानी / अवसंरचना सब्सिडी",
+        "pa": "ਬਾਗਬਾਨੀ / ਢਾਂਚਾਗਤ ਸਬਸਿਡੀ",
+        "mr": "फलोत्पादन / पायाभूत सुविधा अनुदान"
+      },
+      "administering_body": {
+        "en": "Department of Agriculture & Farmers Welfare, Government of India (State Horticulture Missions)",
+        "hi": "कृषि एवं किसान कल्याण विभाग, भारत सरकार (राज्य बागवानी मिशन)",
+        "pa": "ਖੇਤੀਬਾੜੀ ਅਤੇ ਕਿਸਾਨ ਭਲਾਈ ਵਿਭਾਗ, ਭਾਰਤ ਸਰਕਾਰ (ਰਾਜ ਬਾਗਬਾਨੀ ਮਿਸ਼ਨ)",
+        "mr": "कृषी आणि शेतकरी कल्याण विभाग, भारत सरकार (राज्य फलोत्पादन अभियान)"
+      },
+      "short_description": {
+        "en": "Centrally sponsored scheme supporting vegetable and fruit growers - including tomato - with subsidies for quality planting material, protected cultivation (polyhouse/shadenet), micro-irrigation, and post-harvest/cold-chain infrastructure.",
+        "hi": "केंद्र प्रायोजित योजना जो सब्ज़ी और फल उत्पादकों—टमाटर सहित—को गुणवत्तापूर्ण रोपण सामग्री, संरक्षित खेती (पॉलीहाउस/शेडनेट), सूक्ष्म सिंचाई और कटाई-बाद/कोल्ड-चेन ढाँचे के लिए सब्सिडी देती है।",
+        "pa": "ਕੇਂਦਰ ਪ੍ਰਾਯੋਜਿਤ ਯੋਜਨਾ ਜੋ ਸਬਜ਼ੀ ਅਤੇ ਫਲ ਉਗਾਉਣ ਵਾਲਿਆਂ—ਟਮਾਟਰ ਸਮੇਤ—ਨੂੰ ਗੁਣਵੱਤਾ ਵਾਲੀ ਰੋਪਣ ਸਮੱਗਰੀ, ਸੁਰੱਖਿਅਤ ਖੇਤੀ (ਪੋਲੀਹਾਊਸ/ਸ਼ੇਡਨੈੱਟ), ਮਾਈਕ੍ਰੋ-ਸਿੰਚਾਈ ਅਤੇ ਕਟਾਈ-ਬਾਅਦ/ਕੋਲਡ-ਚੇਨ ਢਾਂਚੇ ਲਈ ਸਬਸਿਡੀ ਦਿੰਦੀ ਹੈ।",
+        "mr": "केंद्र पुरस्कृत योजना जी भाजीपाला आणि फळ उत्पादकांना—टोमॅटोसह—गुणवत्तापूर्ण लागवड साहित्य, संरक्षित शेती (पॉलीहाऊस/शेडनेट), सूक्ष्म सिंचन आणि काढणीनंतर/कोल्ड-चेन पायाभूत सुविधांसाठी अनुदान देते."
+      },
+      "benefits": {
+        "en": "Project-linked subsidies - for example up to 50% of project cost (capped) for commercial horticulture infrastructure such as polyhouses, and back-ended credit-linked subsidies for quality vegetable seed and planting material; exact percentages vary by component and state, with GOI typically funding 60% and the state 40% of the overall outlay (higher central share for NE/Himalayan states).",
+        "hi": "परियोजना आधारित सब्सिडी—उदाहरण के लिए पॉलीहाउस जैसी वाणिज्यिक बागवानी अवसंरचना पर परियोजना लागत का 50% तक (सीमा सहित), और गुणवत्तापूर्ण सब्ज़ी बीज व रोपण सामग्री के लिए क्रेडिट-लिंक्ड सब्सिडी। सटीक प्रतिशत घटक और राज्य के अनुसार बदलते हैं।",
+        "pa": "ਪ੍ਰੋਜੈਕਟ-ਅਧਾਰਿਤ ਸਬਸਿਡੀ—ਉਦਾਹਰਨ ਲਈ ਪੋਲੀਹਾਊਸ ਵਰਗੇ ਵਪਾਰਕ ਬਾਗਬਾਨੀ ਢਾਂਚੇ ਉੱਤੇ ਪ੍ਰੋਜੈਕਟ ਲਾਗਤ ਦਾ 50% ਤੱਕ (ਸੀਮਾ ਅਨੁਸਾਰ), ਅਤੇ ਗੁਣਵੱਤਾ ਵਾਲੇ ਸਬਜ਼ੀ ਬੀਜ ਅਤੇ ਰੋਪਣ ਸਮੱਗਰੀ ਲਈ ਕ੍ਰੈਡਿਟ-ਲਿੰਕਡ ਸਬਸਿਡੀ। ਸਹੀ ਪ੍ਰਤੀਸ਼ਤ ਘਟਕ ਅਤੇ ਰਾਜ ਅਨੁਸਾਰ ਬਦਲਦੇ ਹਨ।",
+        "mr": "प्रकल्प-आधारित अनुदान—उदा. पॉलीहाऊससारख्या व्यापारी फलोत्पादन पायाभूत सुविधांसाठी प्रकल्प खर्चाच्या 50% पर्यंत (मर्यादेसह), आणि गुणवत्तापूर्ण भाजीपाला बियाणे व लागवड साहित्यासाठी क्रेडिट-लिंक्ड अनुदान. अचूक टक्केवारी घटक व राज्यानुसार बदलते."
+      },
       "eligibility": {
-        "farmer_types": ["small", "marginal", "general"],
+        "farmer_types": [
+          "small",
+          "marginal",
+          "general"
+        ],
         "max_land_holding_acres": null,
         "min_land_holding_acres": 0,
-        "applicable_crops": ["vegetables (including tomato)", "fruits", "spices", "flowers", "plantation crops"],
+        "applicable_crops": [
+          "vegetables (including tomato)",
+          "fruits",
+          "spices",
+          "flowers",
+          "plantation crops"
+        ],
         "excluded_categories": [],
         "requires_bank_account": true,
         "requires_aadhaar": true,
         "notes": "Open to individual farmers, FPOs and agri-entrepreneurs with agricultural land; specific component eligibility (e.g. polyhouse subsidy) depends on project proposal and state guidelines."
       },
       "required_documents": [
-        "Aadhaar card",
-        "Land ownership document",
-        "Detailed project report (for infrastructure components)",
-        "Bank account details"
+        {
+          "en": "Aadhaar card",
+          "hi": "आधार कार्ड",
+          "pa": "ਆਧਾਰ ਕਾਰਡ",
+          "mr": "आधार कार्ड"
+        },
+        {
+          "en": "Land ownership document",
+          "hi": "भूमि स्वामित्व दस्तावेज़",
+          "pa": "ਜ਼ਮੀਨ ਮਾਲਕੀ ਦਸਤਾਵੇਜ਼",
+          "mr": "जमीन मालकी कागदपत्र"
+        },
+        {
+          "en": "Detailed project report (for infrastructure components)",
+          "hi": "विस्तृत परियोजना रिपोर्ट (अवसंरचना घटकों के लिए)",
+          "pa": "ਵੇਰਵੇਦਾਰ ਪ੍ਰੋਜੈਕਟ ਰਿਪੋਰਟ (ਢਾਂਚਾਗਤ ਘਟਕਾਂ ਲਈ)",
+          "mr": "सविस्तर प्रकल्प अहवाल (पायाभूत सुविधा घटकांसाठी)"
+        },
+        {
+          "en": "Bank account details",
+          "hi": "बैंक खाते का विवरण",
+          "pa": "ਬੈਂਕ ਖਾਤੇ ਦੇ ਵੇਰਵੇ",
+          "mr": "बँक खात्याचा तपशील"
+        }
       ],
       "official_link": "https://midh.gov.in/",
-      "application_mode": "Apply through your District Horticulture Office or the State Horticulture Mission; some components are routed via the National Horticulture Board (nhb.gov.in) for project-based subsidy.",
-      "helpline": "District Horticulture Office / State Horticulture Mission",
+      "application_mode": {
+        "en": "Apply through your District Horticulture Office or the State Horticulture Mission; some components are routed via the National Horticulture Board (nhb.gov.in) for project-based subsidy.",
+        "hi": "जिला बागवानी कार्यालय या राज्य बागवानी मिशन के माध्यम से आवेदन करें; कुछ घटक परियोजना-आधारित सब्सिडी के लिए राष्ट्रीय बागवानी बोर्ड (nhb.gov.in) के माध्यम से संचालित होते हैं।",
+        "pa": "ਜ਼ਿਲ੍ਹਾ ਬਾਗਬਾਨੀ ਦਫ਼ਤਰ ਜਾਂ ਰਾਜ ਬਾਗਬਾਨੀ ਮਿਸ਼ਨ ਰਾਹੀਂ ਅਰਜ਼ੀ ਦਿਓ; ਕੁਝ ਘਟਕ ਪ੍ਰੋਜੈਕਟ-ਅਧਾਰਿਤ ਸਬਸਿਡੀ ਲਈ ਰਾਸ਼ਟਰੀ ਬਾਗਬਾਨੀ ਬੋਰਡ (nhb.gov.in) ਰਾਹੀਂ ਚਲਦੇ ਹਨ।",
+        "mr": "जिल्हा फलोत्पादन कार्यालय किंवा राज्य फलोत्पादन अभियानामार्फत अर्ज करा; काही घटक प्रकल्प-आधारित अनुदानासाठी राष्ट्रीय फलोत्पादन मंडळ (nhb.gov.in) मार्फत चालवले जातात."
+      },
+      "helpline": {
+        "en": "District Horticulture Office / State Horticulture Mission",
+        "hi": "जिला बागवानी कार्यालय / राज्य बागवानी मिशन",
+        "pa": "ਜ਼ਿਲ੍ਹਾ ਬਾਗਬਾਨੀ ਦਫ਼ਤਰ / ਰਾਜ ਬਾਗਬਾਨੀ ਮਿਸ਼ਨ",
+        "mr": "जिल्हा फलोत्पादन कार्यालय / राज्य फलोत्पादन अभियान"
+      },
       "source_urls": [
         "https://midh.gov.in/",
         "https://shm.kerala.gov.in/scheme-details/",

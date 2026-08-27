@@ -12,7 +12,7 @@ const FARMER_ONLY_PREFIXES = [
 ];
 
 export default function AccessBoundary({ children }: { children: ReactNode }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isGuest } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
@@ -24,11 +24,11 @@ export default function AccessBoundary({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isLoading) return;
-    if (farmerOnly && !user) setModalOpen(true);
+    if (farmerOnly && !user && !isGuest) setModalOpen(true);
     if (farmerOnly && user?.role === "officer") router.replace("/officer");
     if (officerOnly && user?.role === "farmer") router.replace("/");
     if (officerOnly && !user) router.replace("/login?mode=officer");
-  }, [farmerOnly, officerOnly, user, isLoading, router]);
+  }, [farmerOnly, officerOnly, user, isGuest, isLoading, router]);
 
   if (isLoading && (farmerOnly || officerOnly)) {
     return (
@@ -38,7 +38,7 @@ export default function AccessBoundary({ children }: { children: ReactNode }) {
     );
   }
 
-  if (farmerOnly && !user) {
+  if (farmerOnly && !user && !isGuest) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-forest-deep px-5">
         <section className="w-full max-w-[390px] rounded-[28px] bg-cream p-6 text-center">

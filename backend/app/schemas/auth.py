@@ -72,6 +72,35 @@ class OfficerLogin(BaseModel):
     password: str
 
 
+class OfficerRegistrationRequestCreate(BaseModel):
+    full_name: str
+    official_email: EmailStr
+    institutional_id: str
+    organisation: str
+    designation: str
+    state: str
+    district: str
+
+    @field_validator(
+        "full_name",
+        "institutional_id",
+        "organisation",
+        "designation",
+        "state",
+        "district",
+    )
+    @classmethod
+    def required_text_not_blank(cls, value):
+        if not value or not value.strip():
+            raise ValueError("This field is required.")
+        return value.strip()
+
+    @field_validator("institutional_id")
+    @classmethod
+    def normalize_institutional_id(cls, value):
+        return value.strip().upper()
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"

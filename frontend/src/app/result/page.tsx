@@ -16,11 +16,17 @@ import {
   UserRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/lib/language-context";
 import {
-  getDiseaseHindi,
-  LANGUAGE_STORAGE_KEY,
-  type Language,
-} from "@/lib/hindiTranslations";
+  tx,
+  translateCrop,
+  translateDisease,
+  translatePlace,
+  translateRecommendedAction,
+  translateSoilText,
+  translateValue,
+  translateWeatherRisk,
+} from "@/lib/analysis-translations";
 
 type PredictionResult = {
   crop: string;
@@ -64,51 +70,70 @@ type PredictionResult = {
   gradcam_image: string | null;
 };
 
-
 export default function ResultPage() {
   const router = useRouter();
-  const [scanImage, setScanImage] = useState(
-    "/images/tomato-field.png"
-  );
+  const { language } = useLanguage();
 
-  const [prediction, setPrediction] =
-  useState<PredictionResult | null>(null);
+  const [scanImage, setScanImage] = useState("/images/tomato-field.png");
+  const [prediction, setPrediction] = useState<PredictionResult | null>(null);
 
-  const [language, setLanguage] = useState<Language>("en");
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const savedImage = sessionStorage.getItem("krishiNayanScanImage");
+      const savedPrediction = sessionStorage.getItem("krishiNayanPrediction");
 
- useEffect(() => {
-  const timer = window.setTimeout(() => {
-    const savedImage = sessionStorage.getItem(
-      "krishiNayanScanImage"
-    );
+      if (savedImage) setScanImage(savedImage);
 
-    const savedPrediction = sessionStorage.getItem(
-      "krishiNayanPrediction"
-    );
-
-    const savedLanguage = sessionStorage.getItem(
-      LANGUAGE_STORAGE_KEY
-    );
-
-    if (savedLanguage === "en" || savedLanguage === "hi") {
-      setLanguage(savedLanguage);
-    }
-
-    if (savedImage) {
-      setScanImage(savedImage);
-    }
-
-    if (savedPrediction) {
-      try {
-        setPrediction(JSON.parse(savedPrediction));
-      } catch {
-        setPrediction(null);
+      if (savedPrediction) {
+        try {
+          setPrediction(JSON.parse(savedPrediction));
+        } catch {
+          setPrediction(null);
+        }
       }
-    }
-  }, 0);
+    }, 0);
 
-  return () => window.clearTimeout(timer);
-}, []);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const disease = prediction
+    ? translateDisease(prediction.detected_issue, language)
+    : tx("No prediction", language);
+
+  const severity = prediction
+    ? translateValue(prediction.severity, language)
+    : "";
+
+  const trendLabel = prediction?.health
+    ? prediction.health.trend === "improving"
+      ? tx("Improving", language)
+      : prediction.health.trend === "deteriorating"
+      ? tx("Deteriorating", language)
+      : tx("Stable", language)
+    : "";
+
+  function speakAdvice() {
+    if (!prediction || !window.speechSynthesis) return;
+
+    const text = translateRecommendedAction(
+      prediction.recommended_action,
+      prediction.detected_issue,
+      language
+    );
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang =
+      language === "hi"
+        ? "hi-IN"
+        : language === "pa"
+        ? "pa-IN"
+        : language === "mr"
+        ? "mr-IN"
+        : "en-IN";
+
+    window.speechSynthesis.speak(utterance);
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
@@ -118,22 +143,18 @@ export default function ResultPage() {
             type="button"
             onClick={() => router.back()}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-forest"
-            aria-label="Go back"
+            aria-label={tx("Go back", language)}
           >
             <ArrowLeft size={21} />
           </button>
 
           <h1 className="text-lg font-bold text-forest">
-            Analysis Result
+            {tx("Analysis Result", language)}
           </h1>
 
-          <button
-            type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-forest"
-            aria-label="Result information"
-          >
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-forest">
             <ShieldCheck size={21} />
-          </button>
+          </span>
         </header>
 
         <div className="mt-6 flex items-center gap-5">
@@ -146,10 +167,10 @@ export default function ResultPage() {
           >
             <div className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-cream">
               <strong className="text-2xl text-forest">
-                {prediction ? `${prediction.confidence}%` : "--"}
+                {prediction ? `${Number(prediction.confidence).toFixed(1)}%` : "--"}
               </strong>
               <span className="text-[11px] text-muted">
-                Confidence
+                {tx("Confidence", language)}
               </span>
             </div>
           </div>
@@ -158,21 +179,17 @@ export default function ResultPage() {
             <span className="inline-flex items-center gap-2 rounded-full bg-warning px-3 py-2 text-xs font-bold text-forest-deep">
               <AlertTriangle size={15} />
               {prediction
-  ? `${prediction.severity} Risk`
-  : "Risk unavailable"}
+                ? `${severity} ${tx("Risk", language)}`
+                : tx("Risk unavailable", language)}
             </span>
 
-            <h2 className="mt-3 text-2xl font-bold text-forest">
-              {prediction
-                ? language === "hi"
-                  ? getDiseaseHindi(prediction.detected_issue).name_hi
-                  : prediction.detected_issue
-                : "No prediction"}
-            </h2>
+            <h2 className="mt-3 text-2xl font-bold text-forest">{disease}</h2>
 
             <p className="mt-1 text-sm italic text-muted">
-            Prediction status:{" "}
-{prediction?.prediction_status ?? "--"}
+              {tx("Prediction status", language)}:{" "}
+              {prediction
+                ? translateValue(prediction.prediction_status, language)
+                : "--"}
             </p>
           </div>
         </div>
@@ -180,36 +197,37 @@ export default function ResultPage() {
         <div className="relative mt-6 h-[260px] overflow-hidden rounded-[26px] bg-forest/10">
           <Image
             src={scanImage}
-            alt="Analysed tomato leaf"
+            alt="Analysed leaf"
             fill
             unoptimized
             className="object-cover"
           />
 
           <span className="absolute left-[40%] top-[32%] h-12 w-12 rounded-full border-2 border-warning bg-warning/30 shadow-[0_0_0_9px_rgba(245,168,0,0.2)]" />
-
           <span className="absolute right-[20%] top-[48%] h-9 w-9 rounded-full border-2 border-danger bg-danger/30 shadow-[0_0_0_8px_rgba(216,58,50,0.18)]" />
 
           <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-forest-deep/85 px-4 py-3 text-sm font-semibold text-white backdrop-blur">
-            AI prediction generated from uploaded leaf image
+            {tx("AI prediction generated from uploaded leaf image", language)}
           </div>
         </div>
 
         {prediction?.gradcam_image && (
           <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
             <h3 className="font-bold text-forest">
-              Why the AI thinks this
+              {tx("Why the AI thinks this", language)}
             </h3>
 
             <p className="mt-1 text-sm leading-5 text-muted">
-              The highlighted region shows which part of the leaf
-              most influenced this diagnosis.
+              {tx(
+                "The highlighted region shows which part of the leaf most influenced this diagnosis.",
+                language
+              )}
             </p>
 
             <div className="relative mt-3 h-[220px] overflow-hidden rounded-[18px] bg-forest/10">
               <Image
                 src={prediction.gradcam_image}
-                alt="Grad-CAM heatmap showing the diagnosed region"
+                alt="Grad-CAM heatmap"
                 fill
                 unoptimized
                 className="object-cover"
@@ -220,18 +238,19 @@ export default function ResultPage() {
 
         <div className="mt-4 flex items-center gap-4 rounded-[22px] bg-warning p-4 text-forest-deep">
           <CloudRain size={34} className="shrink-0" />
-
           <div>
             <p className="font-bold">
-  {prediction?.weather_risk ?? "Weather unavailable"}
-</p>
+              {prediction
+                ? translateWeatherRisk(prediction.weather_risk, language)
+                : tx("Weather unavailable", language)}
+            </p>
             <p className="mt-1 text-sm">
-  Humidity • {prediction?.weather.humidity ?? "--"}%
-</p>
+              {tx("Humidity", language)} • {prediction?.weather.humidity ?? "--"}%
+            </p>
             <p className="text-sm">
-  Temperature •{" "}
-  {prediction?.weather.temperature ?? "--"}°C
-</p>
+              {tx("Temperature", language)} •{" "}
+              {prediction?.weather.temperature ?? "--"}°C
+            </p>
           </div>
         </div>
 
@@ -243,30 +262,28 @@ export default function ResultPage() {
 
             <div>
               <h3 className="font-bold text-forest">
-                {language === "hi" ? "अनुशंसित कार्रवाई" : "Recommended action"}
+                {tx("Recommended action", language)}
               </h3>
 
               <p className="mt-1 text-sm leading-5 text-muted">
-  {prediction
-    ? language === "hi"
-      ? getDiseaseHindi(prediction.detected_issue).advisory_hi
-      : prediction.recommended_action
-    : language === "hi"
-    ? "सलाह पाने के लिए स्कैन पूरा करें।"
-    : "Complete a scan to receive treatment advice."}
-</p>
+                {prediction
+                  ? translateRecommendedAction(
+                      prediction.recommended_action,
+                      prediction.detected_issue,
+                      language
+                    )
+                  : tx("Complete a scan to receive treatment advice.", language)}
+              </p>
             </div>
           </div>
 
           <div className="mt-4 flex items-center gap-3 border-t border-forest/10 pt-4">
             <CalendarClock size={20} className="text-forest" />
-
             <div>
-      
-              <p className="text-xs text-muted">Weather source</p>
-<p className="font-bold text-forest">
-  {prediction?.weather.source ?? "--"}
-</p>
+              <p className="text-xs text-muted">{tx("Weather source", language)}</p>
+              <p className="font-bold text-forest">
+                {prediction?.weather.source ?? "--"}
+              </p>
             </div>
           </div>
         </div>
@@ -280,26 +297,29 @@ export default function ResultPage() {
 
               <div>
                 <h3 className="font-bold text-forest">
-                  Soil context —{" "}
-                  {prediction.soil_context.district},{" "}
-                  {prediction.soil_context.state}
+                  {tx("Soil context", language)} —{" "}
+                  {translatePlace(prediction.soil_context.district, language)},{" "}
+                  {translatePlace(prediction.soil_context.state, language)}
                 </h3>
 
                 <span
                   className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-bold ${
                     prediction.soil_context.soil_risk_level === "High"
                       ? "bg-danger/15 text-danger"
-                      : prediction.soil_context.soil_risk_level ===
-                        "Medium"
+                      : prediction.soil_context.soil_risk_level === "Medium"
                       ? "bg-warning/40 text-forest-deep"
                       : "bg-leaf/30 text-forest"
                   }`}
                 >
-                  {prediction.soil_context.soil_risk_level} soil risk
+                  {translateValue(
+                    prediction.soil_context.soil_risk_level,
+                    language
+                  )}{" "}
+                  {tx("soil risk", language)}
                 </span>
 
                 <p className="mt-2 text-sm leading-5 text-muted">
-                  {prediction.soil_context.summary}
+                  {translateSoilText(prediction.soil_context.summary, language)}
                 </p>
               </div>
             </div>
@@ -307,76 +327,72 @@ export default function ResultPage() {
             <div className="mt-3 grid grid-cols-3 gap-2 border-t border-forest/10 pt-3 text-center text-xs">
               <div>
                 <p className="font-bold text-forest">
-                  {prediction.soil_context.soil_type}
+                  {translateValue(prediction.soil_context.soil_type, language)}
                 </p>
-                <p className="text-muted">Soil type</p>
+                <p className="text-muted">{tx("Soil type", language)}</p>
               </div>
 
               <div>
-                <p className="font-bold text-forest">
-                  {prediction.soil_context.ph}
-                </p>
+                <p className="font-bold text-forest">{prediction.soil_context.ph}</p>
                 <p className="text-muted">pH</p>
               </div>
 
               <div>
                 <p className="font-bold text-forest">
-                  {prediction.soil_context.moisture_retention}
+                  {translateValue(
+                    prediction.soil_context.moisture_retention,
+                    language
+                  )}
                 </p>
-                <p className="text-muted">Moisture</p>
+                <p className="text-muted">{tx("Moisture", language)}</p>
               </div>
 
               <div>
                 <p className="font-bold text-forest">
-                  {prediction.soil_context.nitrogen}
+                  {translateValue(prediction.soil_context.nitrogen, language)}
                 </p>
-                <p className="text-muted">Nitrogen</p>
+                <p className="text-muted">{tx("Nitrogen", language)}</p>
               </div>
 
               <div>
                 <p className="font-bold text-forest">
-                  {prediction.soil_context.phosphorus}
+                  {translateValue(prediction.soil_context.phosphorus, language)}
                 </p>
-                <p className="text-muted">Phosphorus</p>
+                <p className="text-muted">{tx("Phosphorus", language)}</p>
               </div>
 
               <div>
                 <p className="font-bold text-forest">
-                  {prediction.soil_context.potassium}
+                  {translateValue(prediction.soil_context.potassium, language)}
                 </p>
-                <p className="text-muted">Potassium</p>
+                <p className="text-muted">{tx("Potassium", language)}</p>
               </div>
             </div>
 
             {prediction.soil_context.soil_risk_factors.length > 0 && (
               <div className="mt-3 border-t border-forest/10 pt-3">
                 <p className="text-xs font-bold text-forest">
-                  Why soil is adding risk
+                  {tx("Why soil is adding risk", language)}
                 </p>
 
                 <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted">
-                  {prediction.soil_context.soil_risk_factors.map(
-                    (factor) => (
-                      <li key={factor}>{factor}</li>
-                    )
-                  )}
+                  {prediction.soil_context.soil_risk_factors.map((factor) => (
+                    <li key={factor}>{translateSoilText(factor, language)}</li>
+                  ))}
                 </ul>
               </div>
             )}
 
-            {prediction.soil_context.soil_recommendations.length >
-              0 && (
+            {prediction.soil_context.soil_recommendations.length > 0 && (
               <div className="mt-3 border-t border-forest/10 pt-3">
                 <p className="text-xs font-bold text-forest">
-                  Soil-based recommendations
+                  {tx("Soil-based recommendations", language)}
                 </p>
 
                 <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted">
-                  {prediction.soil_context.soil_recommendations.map(
-                    (rec) => (
-                      <li key={rec}>{rec}</li>
-                    )
-                  )}
+                  {prediction.soil_context.soil_recommendations.map((rec) => (
+                    <li key={rec}>{translateSoilText(rec, language)}</li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -387,7 +403,7 @@ export default function ResultPage() {
           <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-forest">
-                Crop Health Memory
+                {tx("Crop Health Memory", language)}
               </h3>
 
               <button
@@ -395,7 +411,7 @@ export default function ResultPage() {
                 onClick={() => router.push("/health")}
                 className="text-xs font-bold text-forest underline"
               >
-                View full history
+                {tx("View full history", language)}
               </button>
             </div>
 
@@ -408,12 +424,13 @@ export default function ResultPage() {
 
               <div>
                 <p className="text-xs text-muted">
-                  Health score for {prediction.health.field_label}
+                  {tx("Health score for", language)}{" "}
+                  {translateCrop(prediction.health.field_label, language)}
                 </p>
 
                 {prediction.health.previous_health_score === null ? (
                   <p className="mt-1 text-sm font-semibold text-forest">
-                    First scan recorded — history starts now.
+                    {tx("First scan recorded — history starts now.", language)}
                   </p>
                 ) : (
                   <p className="mt-1 text-sm font-semibold">
@@ -427,19 +444,14 @@ export default function ResultPage() {
                       }
                     >
                       {prediction.health.point_change! > 0 ? "+" : ""}
-                      {prediction.health.point_change} pts
+                      {prediction.health.point_change} {tx("points", language)}
                       {prediction.health.percent_change !== null &&
-                        ` (${prediction.health.percent_change! > 0 ? "+" : ""}${
-                          prediction.health.percent_change
-                        }%)`}
+                        ` (${
+                          prediction.health.percent_change! > 0 ? "+" : ""
+                        }${prediction.health.percent_change}%)`}
                     </span>{" "}
                     <span className="text-muted">
-                      vs last scan ·{" "}
-                      {prediction.health.trend === "improving"
-                        ? "Improving"
-                        : prediction.health.trend === "deteriorating"
-                        ? "Deteriorating"
-                        : "Stable"}
+                      {tx("vs last scan", language)} · {trendLabel}
                     </span>
                   </p>
                 )}
@@ -451,49 +463,26 @@ export default function ResultPage() {
         <div className="mt-4 grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => {
-              if (!prediction) return;
-
-              const hindiText = getDiseaseHindi(
-                prediction.detected_issue
-              ).advisory_hi;
-
-              if (!window.speechSynthesis) {
-                window.alert(
-                  "Voice playback isn't supported in this browser."
-                );
-                return;
-              }
-
-              window.speechSynthesis.cancel();
-
-              const utterance = new SpeechSynthesisUtterance(
-                hindiText
-              );
-              utterance.lang = "hi-IN";
-
-              window.speechSynthesis.speak(utterance);
-            }}
+            onClick={speakAdvice}
             disabled={!prediction}
             className="flex items-center justify-center gap-2 rounded-2xl bg-forest px-3 py-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Headphones size={19} />
-            Listen in Hindi
+            {tx("Listen", language)}
           </button>
 
           <button
             type="button"
             onClick={() => router.push("/recovery")}
             className="flex items-center justify-center gap-2 rounded-2xl bg-leaf px-3 py-4 text-sm font-bold text-forest-deep"
-            
           >
             <UserRound size={19} />
-            Recovery Plan
+            {tx("Recovery Plan", language)}
           </button>
         </div>
 
         <h3 className="mt-5 text-sm font-bold uppercase tracking-widest text-muted">
-          Need more help?
+          {tx("Need more help?", language)}
         </h3>
 
         <div className="mt-3 grid grid-cols-2 gap-3">
@@ -503,7 +492,7 @@ export default function ResultPage() {
             className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
           >
             <MessageCircle size={19} className="text-leaf" />
-            Get Help from Bot
+            {tx("Get Help from Bot", language)}
           </button>
 
           <button
@@ -512,7 +501,7 @@ export default function ResultPage() {
             className="flex items-center justify-center gap-2 rounded-2xl border border-forest/15 bg-white px-3 py-4 text-sm font-bold text-forest"
           >
             <Landmark size={19} className="text-leaf" />
-            Govt. Schemes
+            {tx("Govt. Schemes", language)}
           </button>
         </div>
 

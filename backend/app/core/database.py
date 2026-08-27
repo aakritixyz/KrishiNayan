@@ -44,6 +44,7 @@ def init_db():
     from app.models import user  # noqa: F401  (registers the model)
     from app.models import scan_record  # noqa: F401
     from app.models import officer_advisory  # noqa: F401
+    from app.models import officer_registration_request  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 

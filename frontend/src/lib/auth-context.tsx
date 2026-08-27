@@ -77,6 +77,7 @@ type RegisterInput = {
 type AuthContextValue = {
   user: AuthUser | null;
   isLoading: boolean;
+  isGuest: boolean;
   login: (identifier: string, password: string) => Promise<AuthUser>;
   officerLogin: (institutionalId: string, password: string) => Promise<AuthUser>;
   register: (input: RegisterInput) => Promise<void>;
@@ -90,6 +91,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
   // Invalidates any in-flight /auth/me request when the active session changes.
   // This prevents a stale officer response from restoring the officer session
   // after the user explicitly chooses Guest mode.
@@ -101,6 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!getStoredToken()) {
       if (requestEpoch === sessionEpochRef.current) {
         setUser(null);
+        setIsGuest(sessionStorage.getItem("krishinayan-guest-mode") === "true");
         setIsLoading(false);
       }
       return;
@@ -145,6 +148,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
 
       sessionEpochRef.current += 1;
+      sessionStorage.removeItem("krishinayan-guest-mode");
+      setIsGuest(false);
       setStoredToken(data.access_token);
       setUser(data.user);
       setIsLoading(false);
@@ -168,6 +173,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
 
       sessionEpochRef.current += 1;
+      sessionStorage.removeItem("krishinayan-guest-mode");
+      setIsGuest(false);
       setStoredToken(data.access_token);
       setUser(data.user);
       setIsLoading(false);
@@ -186,6 +193,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     sessionEpochRef.current += 1;
+    sessionStorage.removeItem("krishinayan-guest-mode");
+    setIsGuest(false);
     setStoredToken(data.access_token);
     setUser(data.user);
     setIsLoading(false);
@@ -194,6 +203,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const clearClientSession = useCallback(() => {
     sessionEpochRef.current += 1;
     setStoredToken(null);
+    sessionStorage.removeItem("krishinayan-guest-mode");
+    setIsGuest(false);
     setUser(null);
     setIsLoading(false);
   }, []);
@@ -206,16 +217,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [clearClientSession]);
 
   const continueAsGuest = useCallback(() => {
-    // Guest mode must always start from a clean unauthenticated session.
-    // In particular, this removes any previously stored officer token.
-    clearClientSession();
-  }, [clearClientSession]);
+    sessionEpochRef.current += 1;
+    setStoredToken(null);
+    sessionStorage.setItem("krishinayan-guest-mode", "true");
+    setUser(null);
+    setIsGuest(true);
+    setIsLoading(false);
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoading,
+        isGuest,
         login,
         officerLogin,
         register,

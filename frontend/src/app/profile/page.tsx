@@ -18,6 +18,28 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { tr } from "@/lib/static-translate";
 
+
+const GUEST_PROFILE: Profile = {
+  id: 0,
+  full_name: "Guest Farmer",
+  email: null,
+  phone: null,
+  language: "en",
+  state: "Maharashtra",
+  district: "Pune",
+  village: "Wagholi",
+  farm_size_acres: 2,
+  crops: ["Tomato", "Rice"],
+  irrigation_type: "drip",
+  farmer_category: "small",
+  profile_completed: true,
+  completion_percent: 100,
+  missing_fields: [],
+  identity_verification_status: "verified",
+  identity_verification_provider: "guest-sample",
+  identity_verified_at: null,
+};
+
 const IRRIGATION_OPTIONS = [
   ["drip", "Drip"],
   ["sprinkler", "Sprinkler"],
@@ -30,7 +52,7 @@ const IRRIGATION_OPTIONS = [
 
 function ProfileView() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, isGuest } = useAuth();
   const { language } = useLanguage();
 
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -50,6 +72,12 @@ function ProfileView() {
 
   async function loadProfile() {
     setIsLoading(true);
+    if (isGuest) {
+      setProfile(GUEST_PROFILE);
+      setForm({ state: GUEST_PROFILE.state ?? "", district: GUEST_PROFILE.district ?? "", village: GUEST_PROFILE.village ?? "", farm_size_acres: String(GUEST_PROFILE.farm_size_acres ?? ""), crops: GUEST_PROFILE.crops.join(", "), irrigation_type: GUEST_PROFILE.irrigation_type ?? "drip" });
+      setIsLoading(false);
+      return;
+    }
     try {
       const data = await apiJson<Profile>("/profile");
       setProfile(data);
@@ -81,9 +109,10 @@ function ProfileView() {
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [isGuest]);
 
   async function handleSave() {
+    if (isGuest) { setError("Guest mode is read-only. Create a farmer profile to save changes."); return; }
     setIsSaving(true);
     setError(null);
 
@@ -116,6 +145,7 @@ function ProfileView() {
   }
 
   async function handleVerifyIdentity() {
+    if (isGuest) { setError("Identity verification is disabled in Guest mode."); return; }
     setError(null);
     try {
       await apiJson("/profile/verify-identity", { method: "POST" });
@@ -211,7 +241,7 @@ function ProfileView() {
             </span>
 
             <div>
-              <h2 className="text-xl font-bold">{profile.full_name}</h2>
+              <h2 className="text-xl font-bold">{isGuest ? tr("Guest Farmer", language) : profile.full_name}</h2>
 
               <p className="mt-1 flex items-center gap-1 text-sm text-white/65">
                 <MapPin size={15} />
@@ -268,7 +298,7 @@ function ProfileView() {
             </p>
           </div>
 
-          {profile.identity_verification_status === "verified" ? (
+          {profile.identity_verification_status === "verified" || isGuest ? (
             <BadgeCheck size={20} className="text-leaf" />
           ) : (
             <button
@@ -299,17 +329,17 @@ function ProfileView() {
             {tr("Farm details", language)}
           </h2>
 
-          <button
+          {!isGuest && <button
             type="button"
             onClick={() => setIsEditing((value) => !value)}
             className="flex items-center gap-1 text-xs font-bold text-forest"
           >
             <Pencil size={13} />
             {isEditing ? tr("Cancel", language) : tr("Edit", language)}
-          </button>
+          </button>}
         </div>
 
-        {isEditing ? (
+        {isEditing && !isGuest ? (
           <div className="space-y-3 rounded-[24px] border border-forest/10 bg-white p-4">
             <div className="grid grid-cols-2 gap-3">
               <EditField label={tr("State", language)}>

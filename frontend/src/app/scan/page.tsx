@@ -13,10 +13,12 @@ import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useLanguage } from "@/lib/language-context";
+import { useAuth } from "@/lib/auth-context";
 import { tr } from "@/lib/static-translate";
 
 export default function ScanPage() {
   const { language } = useLanguage();
+  const { isGuest } = useAuth();
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -34,6 +36,7 @@ export default function ScanPage() {
   ]);
   const [selectedCrop, setSelectedCrop] = useState<string>("tomato");
   const [fieldLabel, setFieldLabel] = useState<string>("");
+  const [cropStage, setCropStage] = useState<string>("Flowering");
 
   useEffect(() => {
     async function loadCrops() {
@@ -100,6 +103,7 @@ export default function ScanPage() {
   }, [selectedState]);
 
   function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+    if (isGuest) return;
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -118,6 +122,10 @@ export default function ScanPage() {
   const router = useRouter();
 
 async function handleAnalyse() {
+  if (isGuest) {
+    window.alert("Guest mode is read-only. Create a farmer account to upload and analyse crop images.");
+    return;
+  }
   if (!preview || !selectedFile || isAnalyzing) return;
 
   setIsAnalyzing(true);
@@ -197,12 +205,12 @@ async function handleAnalyse() {
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          {tr("Upload a clear leaf photo for disease analysis.", language)}
+          {isGuest ? "Guest preview: image upload and analysis are disabled." : tr("Upload a clear leaf photo for disease analysis.", language)}
         </p>
 
         <label
           htmlFor="leaf-image"
-          className="mt-7 block cursor-pointer overflow-hidden rounded-[28px] border-2 border-dashed border-forest/20 bg-white p-3 transition hover:border-leaf"
+          className={`mt-7 block overflow-hidden ${isGuest ? "cursor-not-allowed opacity-70" : "cursor-pointer"} rounded-[28px] border-2 border-dashed border-forest/20 bg-white p-3 transition hover:border-leaf`}
         >
           <input
             id="leaf-image"
@@ -210,6 +218,7 @@ async function handleAnalyse() {
             type="file"
             accept="image/png, image/jpeg"
             onChange={handleImageChange}
+            disabled={isGuest}
             className="sr-only"
           />
 
@@ -238,11 +247,11 @@ async function handleAnalyse() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-muted">
-                {tr("Take a clear photo or select one from your device.", language)}
+                {isGuest ? "Sign in as a farmer to choose a photo." : tr("Take a clear photo or select one from your device.", language)}
               </p>
 
               <span className="mt-5 rounded-full bg-leaf px-6 py-3 text-sm font-bold text-forest-deep">
-                {tr("Choose Photo", language)}
+                {isGuest ? "Upload disabled in Guest mode" : tr("Choose Photo", language)}
               </span>
             </div>
           )}
@@ -285,9 +294,21 @@ async function handleAnalyse() {
           </p>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">
-              🌼 {tr("Flowering", language)}
-            </span>
+<label className="inline-flex items-center rounded-full border border-forest/10 bg-white px-3 py-2 text-sm font-semibold text-forest shadow-sm">
+              <span className="mr-1.5" aria-hidden="true">🌼</span>
+              <select
+                value={cropStage}
+                onChange={(event) => setCropStage(event.target.value)}
+                className="cursor-pointer bg-transparent pr-1 font-semibold text-forest outline-none"
+                aria-label={tr("Crop Stage", language)}
+              >
+                {["Seedling", "Vegetative", "Flowering", "Fruiting", "Maturity"].map((stage) => (
+                  <option key={stage} value={stage}>
+                    {tr(stage, language)}
+                  </option>
+                ))}
+              </select>
+            </label>
 
             <LanguageSelector variant="light" />
           </div>
@@ -315,7 +336,7 @@ async function handleAnalyse() {
               <option value="">{tr("State", language)}</option>
               {states.map((state) => (
                 <option key={state} value={state}>
-                  {state}
+                  {tr(state, language)}
                 </option>
               ))}
             </select>
@@ -333,7 +354,7 @@ async function handleAnalyse() {
               </option>
               {districts.map((district) => (
                 <option key={district} value={district}>
-                  {district}
+                  {tr(district, language)}
                 </option>
               ))}
             </select>
@@ -373,11 +394,11 @@ async function handleAnalyse() {
         <button
           type="button"
           onClick={handleAnalyse}
-          disabled={!preview || isAnalyzing}
+          disabled={isGuest || !preview || isAnalyzing}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-5 py-4 font-bold text-forest-deep transition disabled:cursor-not-allowed disabled:opacity-40"
         >
         <ScanLine size={22} />
-          {isAnalyzing ? tr("Analysing Leaf...", language) : tr("Analyse Leaf", language)}
+          {isGuest ? "Analysis disabled in Guest mode" : isAnalyzing ? tr("Analysing Leaf...", language) : tr("Analyse Leaf", language)}
         </button>
 
         <BottomNav />

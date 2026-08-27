@@ -5,6 +5,7 @@ import HealthTrendChart from "@/components/HealthTrendChart";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { apiJson, ApiError } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 import {
   ArrowLeft,
   ChevronRight,
@@ -213,12 +214,19 @@ function HealthGroupDetail({ group }: { group: CropHealthGroup }) {
 
 function CropHealthView() {
   const router = useRouter();
+  const { isGuest } = useAuth();
 
   const [groups, setGroups] = useState<CropHealthGroup[] | null>(null);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    if (isGuest) {
+      const sample: CropHealthGroup[] = [{ crop: "tomato", crop_label: "Tomato", field_label: "North Plot", scan_count: 3, current: { id: 3, disease: "Early Blight", confidence: 0.88, prediction_status: "complete", severity: "moderate", health_score: 72, created_at: "2026-08-26T10:00:00Z" }, previous: { id: 2, disease: "Early Blight", confidence: 0.84, prediction_status: "complete", severity: "moderate", health_score: 64, created_at: "2026-08-19T10:00:00Z" }, point_change: 8, percent_change: 12.5, trend: "improving", next_estimate: { projected_next_score: 78, direction: "improving", based_on_scans: 3 }, history: [{ id: 1, disease: "Early Blight", confidence: 0.81, prediction_status: "complete", severity: "high", health_score: 55, created_at: "2026-08-12T10:00:00Z" }, { id: 2, disease: "Early Blight", confidence: 0.84, prediction_status: "complete", severity: "moderate", health_score: 64, created_at: "2026-08-19T10:00:00Z" }, { id: 3, disease: "Early Blight", confidence: 0.88, prediction_status: "complete", severity: "moderate", health_score: 72, created_at: "2026-08-26T10:00:00Z" }] }];
+      setGroups(sample);
+      setSelectedKey("tomato::North Plot");
+      return;
+    }
     const timer = window.setTimeout(async () => {
       try {
         const data = await apiJson<{ crops: CropHealthGroup[] }>(
@@ -239,7 +247,7 @@ function CropHealthView() {
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [isGuest]);
 
   const selectedGroup = groups?.find(
     (group) => `${group.crop}::${group.field_label}` === selectedKey

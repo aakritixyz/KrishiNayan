@@ -10,16 +10,16 @@ export default function ProtectedRoute({
 }: {
   children: ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isGuest } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!isLoading && !user && !isGuest) {
       router.replace("/login");
     }
-  }, [isLoading, user, router]);
+  }, [isLoading, user, isGuest, router]);
 
-  if (isLoading || !user) {
+  if (isLoading || (!user && !isGuest)) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-forest-deep">
         <div className="flex items-center gap-2 text-sm font-semibold text-white/70">

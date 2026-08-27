@@ -124,9 +124,10 @@ export default function OfficerPage() {
   const scopeState = overview?.scope.state || user?.access_state || "Assigned state";
 
   return (
-    <main className="min-h-screen bg-[#eef2ec] text-forest">
+    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-x-hidden bg-[#eef2ec] text-forest sm:min-h-[844px] sm:rounded-[32px]">
       <header className="sticky top-0 z-20 border-b border-white/10 bg-forest-deep text-white shadow-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+        <div className="flex w-full items-center justify-between gap-2 px-4 py-3 sm:px-5 sm:py-4">
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-leaf text-forest-deep sm:h-11 sm:w-11">
               <Leaf size={22} />
@@ -149,26 +150,26 @@ export default function OfficerPage() {
             aria-label="Sign out"
           >
             <LogOut size={16} />
-            <span className="hidden sm:inline">Sign out</span>
+            <span>Sign out</span>
           </button>
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-6xl px-4 pb-10 pt-5 sm:px-6 sm:pt-7">
-        <section className="rounded-[24px] bg-white p-4 shadow-sm sm:p-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="w-full px-4 pb-10 pt-4 sm:px-5 sm:pb-10 sm:pt-6">
+        <section className="rounded-[20px] bg-white p-3.5 shadow-sm sm:rounded-[24px] sm:p-5">
+          <div className="flex flex-col gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold text-muted sm:text-sm">
                 <ShieldCheck size={17} className="shrink-0 text-forest" />
                 Verified institutional access
               </div>
-              <h2 className="mt-2 text-xl font-bold sm:text-2xl">Regional crop intelligence</h2>
+              <h2 className="mt-2 text-[22px] font-bold leading-tight sm:text-2xl">Regional crop intelligence</h2>
               <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
                 Aggregated farmer scan signals for your assigned geography. Individual farmer identities are not shown.
               </p>
             </div>
 
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-forest/10 bg-[#f8faf6] px-3 py-3 sm:min-w-[220px] sm:flex-col sm:items-start">
+            <div className="flex w-full items-center justify-between gap-3 rounded-2xl border border-forest/10 bg-[#f8faf6] px-3 py-3">
               <div className="min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">Assigned scope</p>
                 <p className="mt-1 truncate text-sm font-bold text-forest">{scopeDistrict}, {scopeState}</p>
@@ -177,11 +178,11 @@ export default function OfficerPage() {
                 type="button"
                 onClick={() => void loadDashboard()}
                 disabled={loading}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-forest/10 bg-white text-forest disabled:opacity-50 sm:h-auto sm:w-auto sm:px-3 sm:py-2 sm:text-xs sm:font-bold"
+                className="flex h-9 shrink-0 items-center justify-center gap-2 rounded-xl border border-forest/10 bg-white px-3 text-xs font-bold text-forest disabled:opacity-50"
                 aria-label="Refresh dashboard"
               >
                 <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
-                <span className="ml-2 hidden sm:inline">Refresh</span>
+                <span>Refresh</span>
               </button>
             </div>
           </div>
@@ -201,15 +202,15 @@ export default function OfficerPage() {
 
         {!loading && overview && (
           <>
-            <section className="mt-4 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-4">
+            <section className="mt-4 grid grid-cols-2 gap-3">
               <Metric icon={<BarChart3 size={18} />} label="Total scans" value={overview.summary.total_scans} />
               <Metric icon={<Users size={18} />} label="Farmers represented" value={overview.summary.unique_farmers} />
               <Metric icon={<AlertTriangle size={18} />} label="Disease scans · 7d" value={overview.summary.recent_disease_scans} />
               <Metric icon={<MapPinned size={18} />} label="High-risk scans" value={overview.summary.high_risk_scans} />
             </section>
 
-            <section className="mt-4 grid gap-4 sm:mt-6 lg:grid-cols-[1.15fr_.85fr] lg:gap-5">
-              <div className="rounded-[24px] bg-white p-4 shadow-sm sm:p-5">
+            <section className="mt-4 grid grid-cols-1 gap-3 sm:mt-5">
+              <div className="rounded-[20px] bg-white p-3.5 shadow-sm sm:rounded-[24px] sm:p-5">
                 <div className="flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                   <div>
                     <h3 className="font-bold">Disease distribution</h3>
@@ -240,7 +241,7 @@ export default function OfficerPage() {
                 </div>
               </div>
 
-              <div className="rounded-[24px] bg-forest-deep p-4 text-white shadow-sm sm:p-5">
+              <div className="rounded-[20px] bg-forest-deep p-3.5 text-white shadow-sm sm:rounded-[24px] sm:p-5">
                 <div className="flex items-center gap-2">
                   <AlertTriangle size={19} className="text-leaf" />
                   <h3 className="font-bold">Intervention priority</h3>
@@ -268,8 +269,8 @@ export default function OfficerPage() {
               </div>
             </section>
 
-            <section className="mt-4 grid gap-4 sm:mt-6 lg:grid-cols-[.9fr_1.1fr] lg:gap-5">
-              <form onSubmit={publishAdvisory} className="rounded-[24px] bg-white p-4 shadow-sm sm:p-5">
+            <section className="mt-4 grid grid-cols-1 gap-3 sm:mt-5">
+              <form onSubmit={publishAdvisory} className="rounded-[20px] bg-white p-3.5 shadow-sm sm:rounded-[24px] sm:p-5">
                 <div className="flex items-center gap-2">
                   <Megaphone size={19} />
                   <h3 className="font-bold">Publish regional advisory</h3>
@@ -329,8 +330,8 @@ export default function OfficerPage() {
                 </button>
               </form>
 
-              <div className="rounded-[24px] bg-white p-4 shadow-sm sm:p-5">
-                <div className="flex items-center justify-between gap-3">
+              <div className="rounded-[20px] bg-white p-3.5 shadow-sm sm:rounded-[24px] sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2"><FileText size={19} /><h3 className="font-bold">Recent advisories</h3></div>
                   <span className="rounded-full bg-forest/5 px-2.5 py-1 text-[10px] font-bold text-muted">{advisories.length} published</span>
                 </div>
@@ -355,7 +356,7 @@ export default function OfficerPage() {
 
             <section className="mt-4 rounded-[24px] border border-forest/10 bg-white p-4 shadow-sm sm:mt-6 sm:p-5">
               <div className="flex items-center gap-2"><Building2 size={19} /><h3 className="font-bold">Access boundaries</h3></div>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
+              <p className="mt-2 max-w-3xl break-words text-sm leading-6 text-muted">
                 This account can access aggregated intelligence only for <strong>{scopeDistrict}, {scopeState}</strong>. Farmer phone numbers, emails and personal profiles are intentionally excluded from this dashboard.
               </p>
               <div className="mt-3 rounded-2xl bg-[#f8faf6] p-3 text-xs leading-5 text-muted sm:hidden">
@@ -365,16 +366,17 @@ export default function OfficerPage() {
           </>
         )}
       </div>
+      </section>
     </main>
   );
 }
 
 function Metric({ icon, label, value }: { icon: ReactNode; label: string; value: number }) {
   return (
-    <div className="rounded-[20px] bg-white p-3.5 shadow-sm sm:rounded-[22px] sm:p-4">
+    <div className="min-w-0 rounded-[18px] bg-white p-3 shadow-sm sm:rounded-[22px] sm:p-4">
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-leaf/25 text-forest">{icon}</span>
-      <p className="mt-3 text-2xl font-bold">{value}</p>
-      <p className="mt-1 text-[11px] font-semibold leading-4 text-muted sm:text-xs">{label}</p>
+      <p className="mt-2.5 text-2xl font-bold leading-none">{value}</p>
+      <p className="mt-1.5 break-words text-[11px] font-semibold leading-4 text-muted sm:text-xs">{label}</p>
     </div>
   );
 }

@@ -2,6 +2,8 @@ import os
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
+from app.routes.weather import router as weather_router
+
 load_dotenv()
 
 from app.core.database import init_db
@@ -41,6 +43,8 @@ app = FastAPI(
     description="Backend API for crop disease detection and advisory",
     version="1.0.0"
 )
+
+app.include_router(weather_router)
 
 app.add_middleware(
     CORSMiddleware,

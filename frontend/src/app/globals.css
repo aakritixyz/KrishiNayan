@@ -45,6 +45,7 @@ select,
 textarea {
   font: inherit;
 }
+
 /* Mobile-first interaction defaults */
 button,
 a,
@@ -57,6 +58,75 @@ textarea {
 button,
 a {
   touch-action: manipulation;
+}
+
+button:not(:disabled),
+a[href],
+summary {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    filter 180ms ease,
+    opacity 180ms ease;
+}
+
+button:not(:disabled),
+summary {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Desktop/laptop hover states */
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+    box-shadow: 0 10px 24px rgba(3, 39, 31, 0.14);
+  }
+
+  a[href]:not(.no-global-hover):hover {
+    filter: brightness(1.04);
+  }
+
+  /* Card/button-like links */
+  a[href][class*="rounded-"]:not(.no-global-hover):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(3, 39, 31, 0.12);
+  }
+
+  summary:hover {
+    opacity: 0.76;
+  }
+
+  select:hover,
+  input:hover,
+  textarea:hover {
+    border-color: rgba(6, 59, 42, 0.35);
+  }
+}
+
+/* Click/tap feedback */
+button:not(:disabled):active,
+a[href]:active,
+summary:active {
+  transform: scale(0.985);
+}
+
+/* Keyboard accessibility */
+button:focus-visible,
+a[href]:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-leaf);
+  outline-offset: 2px;
 }
 
 @media (max-width: 639px) {

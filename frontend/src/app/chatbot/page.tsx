@@ -292,7 +292,7 @@ export default function ChatbotPage() {
 function ChatbotPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
   const { language, setLanguage } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: GREETING.en },
@@ -440,6 +440,10 @@ function ChatbotPageInner() {
     const trimmed = text.trim();
 
     if (!trimmed || isSending) return;
+    if (isGuest) {
+      setVoiceError("Guest mode is read-only. Sign in as a farmer to Ask the Expert.");
+      return;
+    }
 
     // The farmer just acted - always show them their own message
     // and the reply that follows, regardless of prior scroll state.
@@ -518,6 +522,10 @@ function ChatbotPageInner() {
   }
 
   async function startOmniVoice() {
+    if (isGuest) {
+      setVoiceError("Voice and Ask the Expert are disabled in Guest mode.");
+      return;
+    }
     if (
       isSending ||
       isListening ||

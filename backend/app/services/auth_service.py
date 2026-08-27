@@ -7,6 +7,7 @@ from app.core.security import (
     verify_password
 )
 from app.models.user import User
+from app.models.officer_registration_request import OfficerRegistrationRequest
 
 
 def get_user_by_identifier(db: Session, identifier: str):
@@ -80,3 +81,43 @@ def authenticate_officer(db: Session, institutional_id: str, password: str):
 
 def issue_token(user: User) -> str:
     return create_access_token(subject=user.id)
+
+
+def create_officer_registration_request(db: Session, data) -> OfficerRegistrationRequest:
+    institutional_id = data.institutional_id.strip().upper()
+    official_email = str(data.official_email).strip().lower()
+
+    existing_user = db.query(User).filter(
+        User.institutional_id == institutional_id
+    ).first()
+
+    if existing_user:
+        raise ValueError(
+            "An officer account with this institutional ID already exists."
+        )
+
+    existing_request = db.query(OfficerRegistrationRequest).filter(
+        OfficerRegistrationRequest.institutional_id == institutional_id,
+        OfficerRegistrationRequest.status == "pending",
+    ).first()
+
+    if existing_request:
+        raise ValueError(
+            "A pending request already exists for this institutional ID."
+        )
+
+    request = OfficerRegistrationRequest(
+        full_name=data.full_name.strip(),
+        official_email=official_email,
+        institutional_id=institutional_id,
+        organisation=data.organisation.strip(),
+        designation=data.designation.strip(),
+        state=data.state.strip(),
+        district=data.district.strip(),
+        status="pending",
+    )
+
+    db.add(request)
+    db.commit()
+    db.refresh(request)
+    return request

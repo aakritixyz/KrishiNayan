@@ -5,14 +5,13 @@ import { useLanguage, type Language } from "@/lib/language-context";
 
 const OPTIONS: { value: Language; label: string }[] = [
   { value: "en", label: "English" },
-  { value: "hi", label: "हिन्दी" },
+  { value: "hi", label: "हिंदी" },
   { value: "pa", label: "ਪੰਜਾਬੀ" },
   { value: "mr", label: "मराठी" },
 ];
 
 export default function LanguageSelector({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { language, setLanguage } = useLanguage();
-
   const isLight = variant === "light";
 
   return (

@@ -7,6 +7,7 @@ from app.models.user import User
 
 from app.schemas.auth import (
     OfficerLogin,
+    OfficerRegistrationRequestCreate,
     TokenResponse,
     UserLogin,
     UserOut,
@@ -17,7 +18,8 @@ from app.services.auth_service import (
     authenticate_officer,
     authenticate_user,
     issue_token,
-    register_user
+    register_user,
+    create_officer_registration_request
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -65,6 +67,31 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
         access_token=token,
         user=UserOut.model_validate(user)
     )
+
+
+@router.post(
+    "/officer-register-request",
+    status_code=status.HTTP_201_CREATED
+)
+def officer_register_request(
+    payload: OfficerRegistrationRequestCreate,
+    db: Session = Depends(get_db)
+):
+    try:
+        request = create_officer_registration_request(db, payload)
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        ) from error
+
+    return {
+        "request_id": request.id,
+        "status": request.status,
+        "message": (
+            "Institutional account request submitted for verification."
+        )
+    }
 
 
 @router.post("/officer-login", response_model=TokenResponse)
