@@ -1,6 +1,8 @@
 import os
 
 from fastapi import FastAPI
+from dotenv import load_dotenv
+load_dotenv()
 
 from app.core.database import init_db
 from app.routes.predict import router as predict_router
@@ -16,6 +18,7 @@ from app.routes.officer import router as officer_router
 from app.routes.advisories import router as advisories_router
 
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.voice import router as voice_router
 
 
 def _get_allowed_origins():
@@ -63,9 +66,13 @@ app.include_router(crop_soil_advisory_router)
 app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(crop_health_router)
+<<<<<<< HEAD
 app.include_router(officer_router)
 app.include_router(advisories_router)
 
+=======
+app.include_router(voice_router)
+>>>>>>> origin/main
 
 @app.get("/")
 def root():

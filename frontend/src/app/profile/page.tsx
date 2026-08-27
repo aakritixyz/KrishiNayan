@@ -15,6 +15,8 @@ import {
   UserRound,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import { useLanguage } from "@/lib/language-context";
+import { tr } from "@/lib/static-translate";
 
 const IRRIGATION_OPTIONS = [
   ["drip", "Drip"],
@@ -29,6 +31,7 @@ const IRRIGATION_OPTIONS = [
 function ProfileView() {
   const router = useRouter();
   const { logout } = useAuth();
+  const { language } = useLanguage();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -135,7 +138,7 @@ function ProfileView() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-forest-deep">
         <p className="text-sm font-semibold text-white/70">
-          Loading profile...
+          {tr("Loading profile...", language)}
         </p>
       </main>
     );
@@ -146,11 +149,12 @@ function ProfileView() {
       <main className="flex min-h-screen items-center justify-center bg-forest-deep px-6">
         <div className="w-full max-w-[360px] rounded-[24px] bg-cream p-5 text-center">
           <p className="text-lg font-bold text-forest">
-            Profile could not load
+            {tr("Profile could not load", language)}
           </p>
           <p className="mt-2 text-sm text-muted">
-            {error ||
-              "Backend is not reachable right now. Please try again."}
+            {error
+              ? tr(error, language)
+              : tr("Backend is not reachable right now. Please try again.", language)}
           </p>
           <div className="mt-5 grid grid-cols-2 gap-3">
             <button
@@ -158,14 +162,14 @@ function ProfileView() {
               onClick={loadProfile}
               className="rounded-xl bg-leaf px-4 py-3 text-sm font-bold text-forest-deep"
             >
-              Retry
+              {tr("Retry", language)}
             </button>
             <button
               type="button"
               onClick={handleLogout}
               className="rounded-xl border border-forest/15 bg-white px-4 py-3 text-sm font-bold text-forest"
             >
-              Log out
+              {tr("Log out", language)}
             </button>
           </div>
         </div>
@@ -183,10 +187,10 @@ function ProfileView() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-muted">
-              Farmer Profile
+              {tr("Farmer Profile", language)}
             </p>
             <h1 className="mt-1 text-3xl font-bold text-forest">
-              Your Account
+              {tr("Your Account", language)}
             </h1>
           </div>
 
@@ -194,7 +198,7 @@ function ProfileView() {
             type="button"
             onClick={handleLogout}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-danger"
-            aria-label="Log out"
+            aria-label={tr("Log out", language)}
           >
             <LogOut size={19} />
           </button>
@@ -211,14 +215,19 @@ function ProfileView() {
 
               <p className="mt-1 flex items-center gap-1 text-sm text-white/65">
                 <MapPin size={15} />
-                {locationLine || "Location not set yet"}
+                {locationLine
+                  ? locationLine
+                      .split(",")
+                      .map((part) => tr(part.trim(), language))
+                      .join(", ")
+                  : tr("Location not set yet", language)}
               </p>
             </div>
           </div>
 
           <div className="mt-5">
             <div className="flex items-center justify-between text-xs text-white/70">
-              <span>Profile completion</span>
+              <span>{tr("Profile completion", language)}</span>
               <span className="font-bold text-leaf">
                 {profile.completion_percent}%
               </span>
@@ -250,12 +259,12 @@ function ProfileView() {
 
           <div className="flex-1">
             <p className="font-bold text-forest">
-              Identity verification
+              {tr("Identity verification", language)}
             </p>
             <p className="text-xs text-muted">
               {profile.identity_verification_status === "verified"
-                ? "Verified (prototype mock check)"
-                : "Not verified yet - prototype mock check"}
+                ? tr("Verified (prototype mock check)", language)
+                : tr("Not verified yet - prototype mock check", language)}
             </p>
           </div>
 
@@ -267,7 +276,7 @@ function ProfileView() {
               onClick={handleVerifyIdentity}
               className="rounded-full bg-forest px-3 py-1.5 text-xs font-bold text-white"
             >
-              Verify
+              {tr("Verify", language)}
             </button>
           )}
         </div>
@@ -276,9 +285,9 @@ function ProfileView() {
           <CloudOff size={23} className="text-forest" />
 
           <div className="flex-1">
-            <p className="font-bold text-forest">Offline Ready</p>
+            <p className="font-bold text-forest">{tr("Offline Ready", language)}</p>
             <p className="text-xs text-muted">
-              Farm information is available offline
+              {tr("Farm information is available offline", language)}
             </p>
           </div>
 
@@ -287,7 +296,7 @@ function ProfileView() {
 
         <div className="mb-3 mt-6 flex items-center justify-between">
           <h2 className="text-sm font-bold uppercase tracking-widest text-muted">
-            Farm details
+            {tr("Farm details", language)}
           </h2>
 
           <button
@@ -296,14 +305,14 @@ function ProfileView() {
             className="flex items-center gap-1 text-xs font-bold text-forest"
           >
             <Pencil size={13} />
-            {isEditing ? "Cancel" : "Edit"}
+            {isEditing ? tr("Cancel", language) : tr("Edit", language)}
           </button>
         </div>
 
         {isEditing ? (
           <div className="space-y-3 rounded-[24px] border border-forest/10 bg-white p-4">
             <div className="grid grid-cols-2 gap-3">
-              <EditField label="State">
+              <EditField label={tr("State", language)}>
                 <input
                   value={form.state}
                   onChange={(event) =>
@@ -315,7 +324,7 @@ function ProfileView() {
                   className="mt-1 w-full rounded-xl border border-forest/15 bg-cream px-3 py-2 text-sm font-medium text-forest"
                 />
               </EditField>
-              <EditField label="District">
+              <EditField label={tr("District", language)}>
                 <input
                   value={form.district}
                   onChange={(event) =>
@@ -329,7 +338,7 @@ function ProfileView() {
               </EditField>
             </div>
 
-            <EditField label="Village / town">
+            <EditField label={tr("Village / town", language)}>
               <input
                 value={form.village}
                 onChange={(event) =>
@@ -342,7 +351,7 @@ function ProfileView() {
               />
             </EditField>
 
-            <EditField label="Farm size (acres)">
+            <EditField label={tr("Farm size (acres)", language)}>
               <input
                 type="number"
                 min={0}
@@ -358,7 +367,7 @@ function ProfileView() {
               />
             </EditField>
 
-            <EditField label="Crops (comma separated)">
+            <EditField label={tr("Crops (comma separated)", language)}>
               <input
                 value={form.crops}
                 onChange={(event) =>
@@ -371,7 +380,7 @@ function ProfileView() {
               />
             </EditField>
 
-            <EditField label="Irrigation type">
+            <EditField label={tr("Irrigation type", language)}>
               <select
                 value={form.irrigation_type}
                 onChange={(event) =>
@@ -384,7 +393,7 @@ function ProfileView() {
               >
                 {IRRIGATION_OPTIONS.map(([value, label]) => (
                   <option key={value} value={value}>
-                    {label}
+                    {tr(label, language)}
                   </option>
                 ))}
               </select>
@@ -396,28 +405,30 @@ function ProfileView() {
               disabled={isSaving}
               className="w-full rounded-xl bg-leaf px-4 py-3 text-sm font-bold text-forest-deep disabled:opacity-60"
             >
-              {isSaving ? "Saving..." : "Save changes"}
+              {isSaving ? tr("Saving...", language) : tr("Save changes", language)}
             </button>
           </div>
         ) : (
           <div className="overflow-hidden rounded-[24px] border border-forest/10 bg-white">
             <DetailRow
-              label="Farm size"
+              label={tr("Farm size", language)}
               value={
                 profile.farm_size_acres
-                  ? `${profile.farm_size_acres} acres`
-                  : "Not set"
+                  ? `${profile.farm_size_acres} ${tr("acres", language)}`
+                  : tr("Not set", language)
               }
             />
             <DetailRow
-              label="Crops"
+              label={tr("Crops", language)}
               value={
-                profile.crops.length ? profile.crops.join(", ") : "Not set"
+                profile.crops.length
+                  ? profile.crops.map((crop) => tr(crop, language)).join(", ")
+                  : tr("Not set", language)
               }
             />
             <DetailRow
-              label="Irrigation"
-              value={profile.irrigation_type ?? "Not set"}
+              label={tr("Irrigation", language)}
+              value={profile.irrigation_type ? tr(IRRIGATION_OPTIONS.find(([value]) => value === profile.irrigation_type)?.[1] ?? profile.irrigation_type, language) : tr("Not set", language)}
               last
             />
           </div>
@@ -426,7 +437,7 @@ function ProfileView() {
         <div className="mt-5 rounded-[22px] bg-white p-4 text-center">
           <p className="font-bold text-forest">KrishiNayan</p>
           <p className="mt-1 text-xs text-muted">
-            AI Farming Copilot &bull; Prototype v1.0
+            {tr("AI Farming Copilot", language)} &bull; Prototype v1.0
           </p>
         </div>
 

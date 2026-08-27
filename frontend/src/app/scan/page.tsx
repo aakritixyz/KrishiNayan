@@ -11,32 +11,15 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useLanguage } from "@/lib/language-context";
+import { tr } from "@/lib/static-translate";
 
 export default function ScanPage() {
+  const { language } = useLanguage();
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-  const [language, setLanguage] = useState<Language>("en");
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
-
-      if (stored === "en" || stored === "hi") {
-        setLanguage(stored);
-      }
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  function toggleLanguage() {
-    const next: Language = language === "en" ? "hi" : "en";
-    setLanguage(next);
-    sessionStorage.setItem(LANGUAGE_STORAGE_KEY, next);
-  }
 
   const [states, setStates] = useState<string[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
@@ -175,7 +158,7 @@ async function handleAnalyse() {
 
     if (!response.ok) {
       throw new Error(
-        result.detail || "Unable to analyse this image."
+        result.detail || tr("Unable to analyse this image.", language)
       );
     }
 
@@ -194,7 +177,7 @@ async function handleAnalyse() {
     const message =
       error instanceof Error
         ? error.message
-        : "Backend connection failed.";
+        : tr("Backend connection failed.", language);
 
     window.alert(message);
   } finally {
@@ -206,15 +189,15 @@ async function handleAnalyse() {
     <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
       <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-8 sm:min-h-[844px] sm:rounded-[36px]">
         <p className="text-sm font-semibold uppercase tracking-widest text-muted">
-          KrishiNayan AI Scan
+          {tr("KrishiNayan AI Scan", language)}
         </p>
 
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-forest">
-          Check Crop Health
+          {tr("Check Crop Health", language)}
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          Upload a clear leaf photo for disease analysis.
+          {tr("Upload a clear leaf photo for disease analysis.", language)}
         </p>
 
         <label
@@ -234,14 +217,14 @@ async function handleAnalyse() {
             <div className="relative h-[340px] overflow-hidden rounded-[22px]">
               <Image
                 src={preview}
-                alt="Selected tomato leaf"
+                alt={tr("Selected tomato leaf", language)}
                 fill
                 unoptimized
                 className="object-cover"
               />
 
               <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-forest-deep/80 px-4 py-3 text-center text-sm font-semibold text-white backdrop-blur">
-                Tap here to choose another photo
+                {tr("Tap here to choose another photo", language)}
               </div>
             </div>
           ) : (
@@ -251,22 +234,22 @@ async function handleAnalyse() {
               </span>
 
               <h2 className="mt-5 text-lg font-bold text-forest">
-                Add tomato-leaf photo
+                {tr("Add tomato-leaf photo", language)}
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-muted">
-                Take a clear photo or select one from your device.
+                {tr("Take a clear photo or select one from your device.", language)}
               </p>
 
               <span className="mt-5 rounded-full bg-leaf px-6 py-3 text-sm font-bold text-forest-deep">
-                Choose Photo
+                {tr("Choose Photo", language)}
               </span>
             </div>
           )}
         </label>
 
         <div className="mt-5 rounded-2xl bg-white p-4">
-          <p className="text-sm font-bold text-forest">Crop</p>
+          <p className="text-sm font-bold text-forest">{tr("Crop", language)}</p>
 
           <select
             value={selectedCrop}
@@ -279,51 +262,48 @@ async function handleAnalyse() {
                 value={crop.id}
                 disabled={!crop.available}
               >
-                {crop.label}
-                {!crop.available ? " (coming soon)" : ""}
+                {tr(crop.label, language)}
+                {!crop.available ? ` (${tr("coming soon", language)})` : ""}
               </option>
             ))}
           </select>
 
           <label className="mt-3 block text-xs font-semibold text-muted">
-            Field name (optional)
+            {tr("Field name (optional)", language)}
             <input
               value={fieldLabel}
               onChange={(event) => setFieldLabel(event.target.value)}
-              placeholder="e.g. North Plot"
+              placeholder={tr("e.g. North Plot", language)}
               className="mt-1 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
             />
           </label>
           <p className="mt-1 text-xs text-muted">
-            Name your field if you track more than one plot of the
-            same crop - your Crop Health history is grouped by this.
+            {tr(
+              "Name your field if you track more than one plot of the same crop - your Crop Health history is grouped by this.",
+              language
+            )}
           </p>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">
-              🌼 Flowering
+              🌼 {tr("Flowering", language)}
             </span>
 
-            <button
-              type="button"
-              onClick={toggleLanguage}
-              className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest transition hover:border-leaf"
-            >
-              🌐 {language === "en" ? "English" : "हिंदी"}
-            </button>
+            <LanguageSelector variant="light" />
           </div>
         </div>
 
         <div className="mt-4 rounded-2xl bg-white p-4">
           <p className="flex items-center gap-2 text-sm font-bold text-forest">
             <MapPin size={18} className="text-leaf" />
-            Soil context (optional)
+            {tr("Soil context (optional)", language)}
           </p>
 
           <p className="mt-1 text-xs leading-5 text-muted">
-            Choose your state and district to see how local soil
-            conditions may be affecting your crop, alongside the
-            leaf diagnosis.
+            {tr(
+              "Choose your state and district to see how local soil conditions may be affecting your crop, alongside the leaf diagnosis.",
+              language
+            )}
           </p>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -332,7 +312,7 @@ async function handleAnalyse() {
               onChange={(event) => setSelectedState(event.target.value)}
               className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
             >
-              <option value="">State</option>
+              <option value="">{tr("State", language)}</option>
               {states.map((state) => (
                 <option key={state} value={state}>
                   {state}
@@ -349,7 +329,7 @@ async function handleAnalyse() {
               className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest disabled:opacity-50"
             >
               <option value="">
-                {isLoadingDistricts ? "Loading..." : "District"}
+                {isLoadingDistricts ? tr("Loading...", language) : tr("District", language)}
               </option>
               {districts.map((district) => (
                 <option key={district} value={district}>
@@ -361,29 +341,31 @@ async function handleAnalyse() {
 
           {states.length === 0 && (
             <p className="mt-2 text-xs text-muted">
-              Soil data is currently unavailable — diagnosis will
-              still work without it.
+              {tr(
+                "Soil data is currently unavailable — diagnosis will still work without it.",
+                language
+              )}
             </p>
           )}
         </div>
 
         <div className="mt-5 rounded-[24px] border border-forest/10 bg-white p-4">
-          <p className="font-bold text-forest">Scan quality checklist</p>
+          <p className="font-bold text-forest">{tr("Scan quality checklist", language)}</p>
 
           <div className="mt-3 grid gap-2 text-sm text-muted">
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              Keep the full leaf visible
+              {tr("Keep the full leaf visible", language)}
             </p>
 
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              Use natural or bright light
+              {tr("Use natural or bright light", language)}
             </p>
 
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              Avoid a blurry image
+              {tr("Avoid a blurry image", language)}
             </p>
           </div>
         </div>
@@ -391,11 +373,11 @@ async function handleAnalyse() {
         <button
           type="button"
           onClick={handleAnalyse}
-          disabled={!preview}
+          disabled={!preview || isAnalyzing}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-5 py-4 font-bold text-forest-deep transition disabled:cursor-not-allowed disabled:opacity-40"
         >
         <ScanLine size={22} />
-          Analyse Leaf
+          {isAnalyzing ? tr("Analysing Leaf...", language) : tr("Analyse Leaf", language)}
         </button>
 
         <BottomNav />

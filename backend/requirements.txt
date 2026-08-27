@@ -10,4 +10,8 @@ sqlalchemy
 bcrypt
 pyjwt
 email-validator
+<<<<<<< HEAD
 python-dotenv
+=======
+python-dotenv
+>>>>>>> origin/main
