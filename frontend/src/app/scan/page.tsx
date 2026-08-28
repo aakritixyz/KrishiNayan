@@ -11,23 +11,134 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import LanguageSelector from "@/components/LanguageSelector";
-import { useLanguage } from "@/lib/language-context";
-import { useAuth } from "@/lib/auth-context";
-import { tr } from "@/lib/static-translate";
+import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
 
 export default function ScanPage() {
-  const { language } = useLanguage();
-  const { isGuest } = useAuth();
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [language, setLanguage] = useState<Language>("en");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+      if (stored === "en" || stored === "hi") {
+        setLanguage(stored);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  function toggleLanguage() {
+    const next: Language = language === "en" ? "hi" : "en";
+    setLanguage(next);
+    sessionStorage.setItem(LANGUAGE_STORAGE_KEY, next);
+  }
 
   const [states, setStates] = useState<string[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
+
+  const [coords, setCoords] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<
+    | "idle"
+    | "requesting"
+    | "matching"
+    | "matched"
+    | "no-match"
+    | "denied"
+    | "unsupported"
+  >("idle");
+
+  // Auto-detect device location, then reverse-geocode it (via the
+  // free OpenStreetMap Nominatim API - no key needed) to a state +
+  // district, and auto-select those in the dropdowns below if we
+  // have soil/advisory data for them. The farmer can always change
+  // the selection manually afterward - this only pre-fills it.
+  useEffect(() => {
+    if (!("geolocation" in navigator)) {
+      setLocationStatus("unsupported");
+      return;
+    }
+
+    setLocationStatus("requesting");
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        setCoords({ latitude, longitude });
+        setLocationStatus("matching");
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=8&addressdetails=1`,
+            { headers: { Accept: "application/json" } }
+          );
+
+          const data = await response.json();
+          const address = data?.address ?? {};
+
+          const detectedState: string | undefined = address.state;
+          const detectedDistrict: string | undefined =
+            address.county ||
+            address.state_district ||
+            address.city_district ||
+            address.city;
+
+          if (detectedState) {
+            setSelectedState(detectedState);
+
+            // Wait a tick for the district list to load for this
+            // state, then try to match the detected district in it.
+            window.setTimeout(async () => {
+              try {
+                const districtsResponse = await fetch(
+                  `${API_BASE_URL}/soil/districts?state=${encodeURIComponent(
+                    detectedState
+                  )}`
+                );
+                const districtsData = await districtsResponse.json();
+                const availableDistricts: string[] =
+                  districtsData.districts ?? [];
+
+                const matchedDistrict = availableDistricts.find(
+                  (district) =>
+                    detectedDistrict &&
+                    district.toLowerCase() ===
+                      detectedDistrict.toLowerCase()
+                );
+
+                if (matchedDistrict) {
+                  setSelectedDistrict(matchedDistrict);
+                  setLocationStatus("matched");
+                } else {
+                  setLocationStatus("no-match");
+                }
+              } catch {
+                setLocationStatus("no-match");
+              }
+            }, 300);
+          } else {
+            setLocationStatus("no-match");
+          }
+        } catch {
+          setLocationStatus("no-match");
+        }
+      },
+      () => setLocationStatus("denied"),
+      { enableHighAccuracy: false, timeout: 8000 }
+    );
+  }, []);
 
   type Crop = { id: string; label: string; available: boolean };
 
@@ -36,7 +147,6 @@ export default function ScanPage() {
   ]);
   const [selectedCrop, setSelectedCrop] = useState<string>("tomato");
   const [fieldLabel, setFieldLabel] = useState<string>("");
-  const [cropStage, setCropStage] = useState<string>("Flowering");
 
   useEffect(() => {
     async function loadCrops() {
@@ -103,7 +213,6 @@ export default function ScanPage() {
   }, [selectedState]);
 
   function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
-    if (isGuest) return;
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -122,10 +231,6 @@ export default function ScanPage() {
   const router = useRouter();
 
 async function handleAnalyse() {
-  if (isGuest) {
-    window.alert("Guest mode is read-only. Create a farmer account to upload and analyse crop images.");
-    return;
-  }
   if (!preview || !selectedFile || isAnalyzing) return;
 
   setIsAnalyzing(true);
@@ -133,6 +238,11 @@ async function handleAnalyse() {
   const formData = new FormData();
   formData.append("file", selectedFile);
   formData.append("crop", selectedCrop);
+
+  if (coords) {
+    formData.append("latitude", String(coords.latitude));
+    formData.append("longitude", String(coords.longitude));
+  }
 
   if (fieldLabel.trim()) {
     formData.append("field_label", fieldLabel.trim());
@@ -166,7 +276,7 @@ async function handleAnalyse() {
 
     if (!response.ok) {
       throw new Error(
-        result.detail || tr("Unable to analyse this image.", language)
+        result.detail || "Unable to analyse this image."
       );
     }
 
@@ -185,7 +295,7 @@ async function handleAnalyse() {
     const message =
       error instanceof Error
         ? error.message
-        : tr("Backend connection failed.", language);
+        : "Backend connection failed.";
 
     window.alert(message);
   } finally {
@@ -197,45 +307,54 @@ async function handleAnalyse() {
     <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
       <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-8 sm:min-h-[844px] sm:rounded-[36px]">
         <p className="text-sm font-semibold uppercase tracking-widest text-muted">
-          {tr("KrishiNayan AI Scan", language)}
+          KrishiNayan AI Scan
         </p>
 
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-forest">
-          {tr("Check Crop Health", language)}
+          Check Crop Health
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          {isGuest ? "Guest preview: image upload and analysis are disabled." : tr("Upload a clear leaf photo for disease analysis.", language)}
+          Upload a clear leaf photo for disease analysis.
         </p>
 
-        <label
-          htmlFor="leaf-image"
-          className={`mt-7 block overflow-hidden ${isGuest ? "cursor-not-allowed opacity-70" : "cursor-pointer"} rounded-[28px] border-2 border-dashed border-forest/20 bg-white p-3 transition hover:border-leaf`}
-        >
+        <div className="mt-7 overflow-hidden rounded-[28px] border-2 border-dashed border-forest/20 bg-white p-3">
           <input
             id="leaf-image"
             name="leaf-image"
             type="file"
             accept="image/png, image/jpeg"
             onChange={handleImageChange}
-            disabled={isGuest}
+            className="sr-only"
+          />
+
+          <input
+            id="leaf-image-camera"
+            name="leaf-image-camera"
+            type="file"
+            accept="image/png, image/jpeg"
+            capture="environment"
+            onChange={handleImageChange}
             className="sr-only"
           />
 
           {preview ? (
-            <div className="relative h-[340px] overflow-hidden rounded-[22px]">
+            <label
+              htmlFor="leaf-image"
+              className="relative block h-[340px] cursor-pointer overflow-hidden rounded-[22px]"
+            >
               <Image
                 src={preview}
-                alt={tr("Selected tomato leaf", language)}
+                alt="Selected tomato leaf"
                 fill
                 unoptimized
                 className="object-cover"
               />
 
               <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-forest-deep/80 px-4 py-3 text-center text-sm font-semibold text-white backdrop-blur">
-                {tr("Tap here to choose another photo", language)}
+                Tap here to choose another photo
               </div>
-            </div>
+            </label>
           ) : (
             <div className="flex min-h-[340px] flex-col items-center justify-center rounded-[22px] bg-forest/5 px-6 text-center">
               <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-forest text-leaf">
@@ -243,22 +362,34 @@ async function handleAnalyse() {
               </span>
 
               <h2 className="mt-5 text-lg font-bold text-forest">
-                {tr("Add tomato-leaf photo", language)}
+                Add tomato-leaf photo
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-muted">
-                {isGuest ? "Sign in as a farmer to choose a photo." : tr("Take a clear photo or select one from your device.", language)}
+                Take a clear photo or select one from your device.
               </p>
 
-              <span className="mt-5 rounded-full bg-leaf px-6 py-3 text-sm font-bold text-forest-deep">
-                {isGuest ? "Upload disabled in Guest mode" : tr("Choose Photo", language)}
-              </span>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <label
+                  htmlFor="leaf-image-camera"
+                  className="cursor-pointer rounded-full bg-forest px-6 py-3 text-sm font-bold text-white transition hover:opacity-90"
+                >
+                  Take Photo
+                </label>
+
+                <label
+                  htmlFor="leaf-image"
+                  className="cursor-pointer rounded-full bg-leaf px-6 py-3 text-sm font-bold text-forest-deep transition hover:opacity-90"
+                >
+                  Choose Photo
+                </label>
+              </div>
             </div>
           )}
-        </label>
+        </div>
 
         <div className="mt-5 rounded-2xl bg-white p-4">
-          <p className="text-sm font-bold text-forest">{tr("Crop", language)}</p>
+          <p className="text-sm font-bold text-forest">Crop</p>
 
           <select
             value={selectedCrop}
@@ -271,60 +402,66 @@ async function handleAnalyse() {
                 value={crop.id}
                 disabled={!crop.available}
               >
-                {tr(crop.label, language)}
-                {!crop.available ? ` (${tr("coming soon", language)})` : ""}
+                {crop.label}
+                {!crop.available ? " (coming soon)" : ""}
               </option>
             ))}
           </select>
 
           <label className="mt-3 block text-xs font-semibold text-muted">
-            {tr("Field name (optional)", language)}
+            Field name (optional)
             <input
               value={fieldLabel}
               onChange={(event) => setFieldLabel(event.target.value)}
-              placeholder={tr("e.g. North Plot", language)}
+              placeholder="e.g. North Plot"
               className="mt-1 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
             />
           </label>
           <p className="mt-1 text-xs text-muted">
-            {tr(
-              "Name your field if you track more than one plot of the same crop - your Crop Health history is grouped by this.",
-              language
-            )}
+            Name your field if you track more than one plot of the
+            same crop - your Crop Health history is grouped by this.
           </p>
 
           <div className="mt-3 flex flex-wrap gap-2">
-<label className="inline-flex items-center rounded-full border border-forest/10 bg-white px-3 py-2 text-sm font-semibold text-forest shadow-sm">
-              <span className="mr-1.5" aria-hidden="true">🌼</span>
-              <select
-                value={cropStage}
-                onChange={(event) => setCropStage(event.target.value)}
-                className="cursor-pointer bg-transparent pr-1 font-semibold text-forest outline-none"
-                aria-label={tr("Crop Stage", language)}
-              >
-                {["Seedling", "Vegetative", "Flowering", "Fruiting", "Maturity"].map((stage) => (
-                  <option key={stage} value={stage}>
-                    {tr(stage, language)}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">
+              🌼 Flowering
+            </span>
 
-            <LanguageSelector variant="light" />
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest transition hover:border-leaf"
+            >
+              🌐 {language === "en" ? "English" : "हिंदी"}
+            </button>
           </div>
         </div>
+
+        <p className="mt-3 flex items-center gap-1.5 text-xs text-muted">
+          <MapPin size={14} className="text-leaf" />
+          {locationStatus === "requesting" && "Detecting your location..."}
+          {locationStatus === "matching" &&
+            "Location found — matching to your state/district..."}
+          {locationStatus === "matched" &&
+            `Auto-detected: ${selectedDistrict}, ${selectedState}. Change below if needed.`}
+          {locationStatus === "no-match" &&
+            "Location detected, but we don't have soil data for your exact district yet — pick manually below."}
+          {locationStatus === "denied" &&
+            "Location access denied — you can still pick state/district manually."}
+          {locationStatus === "unsupported" &&
+            "Location isn't supported on this device — pick manually below."}
+        </p>
 
         <div className="mt-4 rounded-2xl bg-white p-4">
           <p className="flex items-center gap-2 text-sm font-bold text-forest">
             <MapPin size={18} className="text-leaf" />
-            {tr("Soil context (optional)", language)}
+            Soil context (optional)
           </p>
 
           <p className="mt-1 text-xs leading-5 text-muted">
-            {tr(
-              "Choose your state and district to see how local soil conditions may be affecting your crop, alongside the leaf diagnosis.",
-              language
-            )}
+            Choose your state and district to see how local soil
+            conditions may be affecting your crop, alongside the
+            leaf diagnosis.
           </p>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -333,10 +470,10 @@ async function handleAnalyse() {
               onChange={(event) => setSelectedState(event.target.value)}
               className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
             >
-              <option value="">{tr("State", language)}</option>
+              <option value="">State</option>
               {states.map((state) => (
                 <option key={state} value={state}>
-                  {tr(state, language)}
+                  {state}
                 </option>
               ))}
             </select>
@@ -350,11 +487,11 @@ async function handleAnalyse() {
               className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest disabled:opacity-50"
             >
               <option value="">
-                {isLoadingDistricts ? tr("Loading...", language) : tr("District", language)}
+                {isLoadingDistricts ? "Loading..." : "District"}
               </option>
               {districts.map((district) => (
                 <option key={district} value={district}>
-                  {tr(district, language)}
+                  {district}
                 </option>
               ))}
             </select>
@@ -362,31 +499,29 @@ async function handleAnalyse() {
 
           {states.length === 0 && (
             <p className="mt-2 text-xs text-muted">
-              {tr(
-                "Soil data is currently unavailable — diagnosis will still work without it.",
-                language
-              )}
+              Soil data is currently unavailable — diagnosis will
+              still work without it.
             </p>
           )}
         </div>
 
         <div className="mt-5 rounded-[24px] border border-forest/10 bg-white p-4">
-          <p className="font-bold text-forest">{tr("Scan quality checklist", language)}</p>
+          <p className="font-bold text-forest">Scan quality checklist</p>
 
           <div className="mt-3 grid gap-2 text-sm text-muted">
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              {tr("Keep the full leaf visible", language)}
+              Keep the full leaf visible
             </p>
 
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              {tr("Use natural or bright light", language)}
+              Use natural or bright light
             </p>
 
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              {tr("Avoid a blurry image", language)}
+              Avoid a blurry image
             </p>
           </div>
         </div>
@@ -394,11 +529,11 @@ async function handleAnalyse() {
         <button
           type="button"
           onClick={handleAnalyse}
-          disabled={isGuest || !preview || isAnalyzing}
+          disabled={!preview}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-5 py-4 font-bold text-forest-deep transition disabled:cursor-not-allowed disabled:opacity-40"
         >
         <ScanLine size={22} />
-          {isGuest ? "Analysis disabled in Guest mode" : isAnalyzing ? tr("Analysing Leaf...", language) : tr("Analyse Leaf", language)}
+          Analyse Leaf
         </button>
 
         <BottomNav />
