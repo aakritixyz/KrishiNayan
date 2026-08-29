@@ -323,11 +323,7 @@ def test_crops_endpoint_lists_all_crops():
 
     crop_ids = [c["id"] for c in response.json()["crops"]]
 
-    assert "tomato" in crop_ids
-    assert "maize" in crop_ids
-    assert "rice" in crop_ids
-    assert "wheat" in crop_ids
-    assert "potato" in crop_ids
+    assert crop_ids == ["tomato", "maize", "rice"]
 
 
 def test_predict_defaults_to_tomato_crop(monkeypatch):

@@ -292,7 +292,7 @@ export default function ChatbotPage() {
 function ChatbotPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isGuest } = useAuth();
+  const { isGuest } = useAuth();
   const { language, setLanguage } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: GREETING.en },

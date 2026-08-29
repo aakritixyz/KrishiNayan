@@ -14,7 +14,7 @@ import {
   ShieldCheck,
   UserRound,
 } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { tr } from "@/lib/static-translate";
 
@@ -70,7 +70,7 @@ function ProfileView() {
     irrigation_type: "drip",
   });
 
-  async function loadProfile() {
+  const loadProfile = useCallback(async function loadProfile() {
     setIsLoading(true);
     if (isGuest) {
       setProfile(GUEST_PROFILE);
@@ -101,7 +101,7 @@ function ProfileView() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [isGuest]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -109,7 +109,7 @@ function ProfileView() {
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, [isGuest]);
+  }, [loadProfile]);
 
   async function handleSave() {
     if (isGuest) { setError("Guest mode is read-only. Create a farmer profile to save changes."); return; }

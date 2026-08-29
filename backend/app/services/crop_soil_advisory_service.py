@@ -10,7 +10,6 @@ DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 # datasets are sourced.
 CROP_ADVISORY_FILES = {
     "maize": DATA_DIR / "maize" / "maize_bihar_soil_advisory.json",
-    "wheat": DATA_DIR / "wheat" / "wheat_punjab_soil_advisory.json",
     "rice": DATA_DIR / "rice" / "rice_telangana_soil_advisory.json",
 }
 
@@ -73,8 +72,8 @@ def get_supported_advisory_crops():
 def get_advisory_districts(crop: str):
     """
     Return the districts covered by the real advisory dataset for
-    a crop, e.g. all 38 Bihar districts for maize, 5 Punjab
-    districts for wheat, 5 Telangana districts for rice.
+    a crop, e.g. all 38 Bihar districts for maize and 5 Telangana
+    districts for rice.
     """
     entries = _load_crop_advisory(crop.lower())
     return sorted({entry["district"] for entry in entries})

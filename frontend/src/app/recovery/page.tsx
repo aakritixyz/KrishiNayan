@@ -16,7 +16,6 @@ import { useLanguage } from "@/lib/language-context";
 import {
   recoveryTitle,
   translateCrop,
-  translateDisease,
   tx,
 } from "@/lib/analysis-translations";
 

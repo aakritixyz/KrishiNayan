@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from pydantic import BaseModel, Field
 
-from app.core.deps import require_farmer
+from app.core.deps import get_current_user_optional
 from app.models.user import User
 
 from app.services.chatbot_service import ask
@@ -76,7 +76,7 @@ def _profile_defaults(user: User | None):
 @router.post("/chatbot/ask")
 def chatbot_ask(
     request: ChatRequest,
-    current_user: User = Depends(require_farmer)
+    current_user: User | None = Depends(get_current_user_optional)
 ):
     """
     Ask the AI farmer chatbot a question. Uses retrieval-augmented
@@ -85,10 +85,10 @@ def chatbot_ask(
     when supplied. Asks a clarifying question instead of guessing
     when the knowledge base has nothing confidently relevant.
 
-    Requires a farmer account. Any crop/location left out of the
-    request context is filled in from the saved farmer profile, and
-    the reply language falls
-    back to the farmer's saved language preference.
+    Anonymous questions are allowed. When a valid farmer token is
+    present, any crop/location left out of the request context is
+    filled in from the saved farmer profile, and the reply language
+    falls back to the farmer's saved language preference.
     """
     context = (
         request.context.model_dump(exclude_none=True)

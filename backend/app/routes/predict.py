@@ -23,7 +23,7 @@ from app.core.config import (
 )
 
 from app.core.database import get_db
-from app.core.deps import require_farmer
+from app.core.deps import get_current_user_optional
 from app.models.user import User
 
 from app.services import health_service
@@ -58,22 +58,22 @@ async def predict_image(
     district: str | None = Form(None),
     crop: str | None = Form("tomato"),
     field_label: str | None = Form(None),
-    current_user: User = Depends(require_farmer),
+    current_user: User | None = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
     """
-    Receive a tomato-leaf image and return
-    the predicted disease and confidence.
+    Receive a crop-leaf image and return the ML-predicted
+    disease and confidence.
 
-    Requires a farmer account. If state/district weren't
-    supplied, the request falls back to the logged-in farmer's
-    saved profile location instead of skipping soil context.
+    Anonymous scans are allowed. If the request includes a valid
+    farmer token and state/district weren't supplied, it falls back
+    to the logged-in farmer's saved profile location instead of
+    skipping soil context.
 
-    When the request is from a logged-in farmer, the scan is also
-    recorded into that farmer's Crop Health Memory (grouped by crop
-    and, optionally, field_label), and the response includes a real
-    before-vs-current health comparison against their previous scan
-    of the same crop/field, if one exists.
+    Farmer scans are also recorded into Crop Health Memory (grouped
+    by crop and, optionally, field_label), and the response includes
+    a real before-vs-current health comparison against their previous
+    scan of the same crop/field, if one exists.
     """
 
     if file.content_type not in ALLOWED_CONTENT_TYPES:
@@ -104,7 +104,13 @@ async def predict_image(
     image_bytes
     )
 
-    if current_user:
+    is_active_farmer = (
+        current_user is not None
+        and current_user.role == "farmer"
+        and current_user.is_active
+    )
+
+    if is_active_farmer:
         state = state or current_user.state
         district = district or current_user.district
 
@@ -119,12 +125,16 @@ async def predict_image(
             longitude=longitude
         )
 
+        rain_expected = bool(weather.get("rain_expected"))
+        wind_speed = weather.get("wind_speed") or 0
+        humidity = weather.get("humidity") or 0
+
         advisory = get_farmer_message(
             disease=prediction["disease"],
             confidence=prediction["confidence"],
-            rain_expected=weather["rain_expected"],
-            wind_speed=weather["wind_speed"],
-            humidity=weather["humidity"]
+            rain_expected=rain_expected,
+            wind_speed=wind_speed,
+            humidity=humidity
         )
 
         soil_context = None
@@ -136,8 +146,8 @@ async def predict_image(
                 disease=prediction["disease"],
                 confidence=prediction["confidence"],
                 soil_profile=soil_profile,
-                rain_expected=weather["rain_expected"],
-                humidity=weather["humidity"]
+                rain_expected=rain_expected,
+                humidity=humidity
             )
 
         gradcam_result = generate_gradcam_overlay(
@@ -166,7 +176,7 @@ async def predict_image(
 
     health_summary = None
 
-    if current_user:
+    if is_active_farmer:
         resolved_field_label = (
             field_label.strip() if field_label else crop_display_label
         )

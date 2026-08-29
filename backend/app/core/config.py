@@ -10,11 +10,9 @@ MODELS_DIR = BACKEND_DIR / "models"
 
 DEFAULT_CROP = "tomato"
 
-# Each crop points to its own model file + class names file.
-# Tomato keeps its original (pre-multi-crop) file locations so
-# nothing breaks for the existing model. New crops live in their
-# own subfolder under models/ — drop a trained .keras file and a
-# class_names.json there and it works automatically.
+# Each active crop points to its own model file + class names file.
+# Only crops with trained models that are part of the shipped app
+# belong here, so the frontend never advertises unfinished crops.
 CROP_CONFIG = {
     "tomato": {
         "label": "Tomato",
@@ -33,18 +31,6 @@ CROP_CONFIG = {
         "model_path": MODELS_DIR / "rice" / "KrishiNayan_Rice_EfficientNetB0.keras",
         "class_names_path": MODELS_DIR / "rice" / "class_names.json",
         "image_size": (300, 300),
-    },
-    "wheat": {
-        "label": "Wheat",
-        "model_path": MODELS_DIR / "wheat" / "KrishiNayan_Wheat_EfficientNetB0.keras",
-        "class_names_path": MODELS_DIR / "wheat" / "class_names.json",
-        "image_size": (224, 224),
-    },
-    "potato": {
-        "label": "Potato",
-        "model_path": MODELS_DIR / "potato" / "KrishiNayan_Potato_EfficientNetB0.keras",
-        "class_names_path": MODELS_DIR / "potato" / "class_names.json",
-        "image_size": (224, 224),
     },
 }
 

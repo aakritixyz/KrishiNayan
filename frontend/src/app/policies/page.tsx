@@ -279,8 +279,6 @@ const CROP_OPTIONS = [
   "Tomato",
   "Maize",
   "Rice",
-  "Wheat",
-  "Potato",
 ];
 
 function localizeValue(value: string, language: Language): string {
@@ -297,8 +295,6 @@ function localizeValue(value: string, language: Language): string {
     Tomato: { hi: "टमाटर", pa: "ਟਮਾਟਰ", mr: "टोमॅटो" },
     Maize: { hi: "मक्का", pa: "ਮੱਕੀ", mr: "मका" },
     Rice: { hi: "धान", pa: "ਧਾਨ", mr: "भात" },
-    Wheat: { hi: "गेहूँ", pa: "ਕਣਕ", mr: "गहू" },
-    Potato: { hi: "आलू", pa: "ਆਲੂ", mr: "बटाटा" },
 
     "Income Support": { hi: "आय सहायता", pa: "ਆਮਦਨ ਸਹਾਇਤਾ", mr: "उत्पन्न सहाय्य" },
     "Crop Insurance": { hi: "फसल बीमा", pa: "ਫਸਲ ਬੀਮਾ", mr: "पीक विमा" },

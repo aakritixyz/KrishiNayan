@@ -2,6 +2,7 @@
 
 import { apiJson, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   BarChart3,
@@ -52,6 +53,7 @@ type Advisory = {
 
 export default function OfficerPage() {
   const { user, logout } = useAuth();
+  const router = useRouter();
   const [overview, setOverview] = useState<Overview | null>(null);
   const [hotspots, setHotspots] = useState<Hotspot[]>([]);
   const [advisories, setAdvisories] = useState<Advisory[]>([]);
@@ -144,7 +146,7 @@ export default function OfficerPage() {
             type="button"
             onClick={() => {
               logout();
-              window.location.href = "/login";
+              router.push("/login");
             }}
             className="flex h-10 shrink-0 items-center gap-2 rounded-xl border border-white/15 px-3 text-sm font-semibold text-white/80 transition hover:bg-white/10"
             aria-label="Sign out"

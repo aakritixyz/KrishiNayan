@@ -13,7 +13,7 @@ router = APIRouter(prefix="/crop-soil-advisory", tags=["crop-soil-advisory"])
 def list_advisory_crops():
     """
     Which crops have real Soil Health Card-based advisory data
-    available (currently: Maize/Bihar, Wheat/Punjab, Rice/Telangana)
+    available (currently: Maize/Bihar and Rice/Telangana)
     — separate from the generic representative soil profiles used
     by /soil.
     """
