@@ -18,6 +18,9 @@ backend/models/*.keras
 # Virtual environments
 .venv/
 
+# Node dependencies
+node_modules/
+
 # Locally saved test images
 uploads/
 backend/uploads/
