@@ -1,4 +1,5 @@
 import os
+import logging
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
@@ -18,9 +19,19 @@ from app.routes.profile import router as profile_router
 from app.routes.crop_health import router as crop_health_router
 from app.routes.officer import router as officer_router
 from app.routes.advisories import router as advisories_router
+from app.routes.plots import router as plots_router
+from app.routes.recovery import router as recovery_router
+from app.routes.alerts import router as alerts_router
+from app.core.config import CROP_CONFIG
 
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.voice import router as voice_router
+
+logging.basicConfig(
+    level=os.getenv("KRISHINAYAN_LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+logger = logging.getLogger("krishinayan")
 
 
 def _get_allowed_origins():
@@ -34,6 +45,12 @@ def _get_allowed_origins():
         for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
         if origin.strip()
     ]
+
+    app_env = os.getenv("KRISHINAYAN_ENV", "development").strip().lower()
+    if app_env in {"production", "prod"} and not extra_origins:
+        raise RuntimeError(
+            "FRONTEND_ORIGINS must be set in production."
+        )
 
     return sorted(set(defaults + extra_origins))
 
@@ -73,6 +90,9 @@ app.include_router(crop_health_router)
 app.include_router(officer_router)
 app.include_router(advisories_router)
 app.include_router(voice_router)
+app.include_router(plots_router)
+app.include_router(recovery_router)
+app.include_router(alerts_router)
 
 @app.get("/")
 def root():
@@ -83,6 +103,31 @@ def root():
 
 @app.get("/health")
 def health_check():
+    db_ok = True
+    try:
+        from sqlalchemy import text
+        from app.core.database import SessionLocal
+
+        db = SessionLocal()
+        try:
+            db.execute(text("SELECT 1"))
+        finally:
+            db.close()
+    except Exception:
+        logger.exception("Health check database probe failed")
+        db_ok = False
+
+    models = {
+        crop: {
+            "label": settings["label"],
+            "model_available": settings["model_path"].exists(),
+            "classes_available": settings["class_names_path"].exists(),
+        }
+        for crop, settings in CROP_CONFIG.items()
+    }
+
     return {
-        "status": "healthy"
+        "status": "healthy" if db_ok else "degraded",
+        "database": "ok" if db_ok else "unavailable",
+        "models": models,
     }

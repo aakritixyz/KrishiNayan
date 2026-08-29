@@ -6,6 +6,7 @@ from app.core.deps import get_current_user_optional
 from app.models.user import User
 
 from app.services.chatbot_service import ask
+from app.services.rate_limit_service import rate_limit
 
 router = APIRouter()
 
@@ -76,7 +77,8 @@ def _profile_defaults(user: User | None):
 @router.post("/chatbot/ask")
 def chatbot_ask(
     request: ChatRequest,
-    current_user: User | None = Depends(get_current_user_optional)
+    current_user: User | None = Depends(get_current_user_optional),
+    _rate_limit: None = Depends(rate_limit(limit=20, window_seconds=60)),
 ):
     """
     Ask the AI farmer chatbot a question. Uses retrieval-augmented

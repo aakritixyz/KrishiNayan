@@ -21,6 +21,7 @@ from app.services.auth_service import (
     register_user,
     create_officer_registration_request
 )
+from app.services.rate_limit_service import rate_limit
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -30,7 +31,11 @@ router = APIRouter(prefix="/auth", tags=["auth"])
     response_model=TokenResponse,
     status_code=status.HTTP_201_CREATED
 )
-def register(payload: UserRegister, db: Session = Depends(get_db)):
+def register(
+    payload: UserRegister,
+    db: Session = Depends(get_db),
+    _rate_limit: None = Depends(rate_limit(limit=8, window_seconds=60)),
+):
     try:
         user = register_user(db, payload)
     except ValueError as error:
@@ -48,7 +53,11 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(payload: UserLogin, db: Session = Depends(get_db)):
+def login(
+    payload: UserLogin,
+    db: Session = Depends(get_db),
+    _rate_limit: None = Depends(rate_limit(limit=12, window_seconds=60)),
+):
     user = authenticate_user(
         db,
         payload.identifier,
@@ -95,7 +104,11 @@ def officer_register_request(
 
 
 @router.post("/officer-login", response_model=TokenResponse)
-def officer_login(payload: OfficerLogin, db: Session = Depends(get_db)):
+def officer_login(
+    payload: OfficerLogin,
+    db: Session = Depends(get_db),
+    _rate_limit: None = Depends(rate_limit(limit=12, window_seconds=60)),
+):
     officer = authenticate_officer(
         db, payload.institutional_id, payload.password
     )

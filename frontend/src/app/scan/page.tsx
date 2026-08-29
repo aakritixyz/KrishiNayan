@@ -9,7 +9,7 @@ import {
   MapPin,
   ScanLine,
 } from "lucide-react";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
 
@@ -141,12 +141,39 @@ export default function ScanPage() {
   }, []);
 
   type Crop = { id: string; label: string; available: boolean };
+  type Plot = {
+    id: number;
+    name: string;
+    crop: string;
+    state: string | null;
+    district: string | null;
+    latitude: number | null;
+    longitude: number | null;
+  };
 
   const [crops, setCrops] = useState<Crop[]>([
     { id: "tomato", label: "Tomato", available: true },
   ]);
   const [selectedCrop, setSelectedCrop] = useState<string>("tomato");
   const [fieldLabel, setFieldLabel] = useState<string>("");
+  const [plots, setPlots] = useState<Plot[]>([]);
+  const [selectedPlotId, setSelectedPlotId] = useState<string>("");
+
+  const selectPlot = useCallback(function selectPlot(plot: Plot | null) {
+    if (!plot) {
+      setSelectedPlotId("");
+      return;
+    }
+
+    setSelectedPlotId(String(plot.id));
+    setSelectedCrop(plot.crop);
+    setFieldLabel(plot.name);
+    if (plot.state) setSelectedState(plot.state);
+    if (plot.district) setSelectedDistrict(plot.district);
+    if (plot.latitude !== null && plot.longitude !== null) {
+      setCoords({ latitude: plot.latitude, longitude: plot.longitude });
+    }
+  }, []);
 
   useEffect(() => {
     async function loadCrops() {
@@ -164,6 +191,36 @@ export default function ScanPage() {
 
     loadCrops();
   }, []);
+
+  useEffect(() => {
+    async function loadPlots() {
+      const token = getStoredToken();
+      if (!token) return;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/plots`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        const loadedPlots: Plot[] = data.plots ?? [];
+        setPlots(loadedPlots);
+
+        const requestedPlotId = new URLSearchParams(
+          window.location.search
+        ).get("plotId");
+        const requested = loadedPlots.find(
+          (plot) => String(plot.id) === requestedPlotId
+        );
+        if (requested) {
+          selectPlot(requested);
+        }
+      } catch {
+        setPlots([]);
+      }
+    }
+
+    loadPlots();
+  }, [selectPlot]);
 
   useEffect(() => {
     async function loadStates() {
@@ -238,6 +295,10 @@ async function handleAnalyse() {
   const formData = new FormData();
   formData.append("file", selectedFile);
   formData.append("crop", selectedCrop);
+
+  if (selectedPlotId) {
+    formData.append("plot_id", selectedPlotId);
+  }
 
   if (coords) {
     formData.append("latitude", String(coords.latitude));
@@ -390,6 +451,29 @@ async function handleAnalyse() {
 
         <div className="mt-5 rounded-2xl bg-white p-4">
           <p className="text-sm font-bold text-forest">Crop</p>
+
+          {plots.length > 0 && (
+            <label className="mb-3 mt-2 block text-xs font-semibold text-muted">
+              Saved plot
+              <select
+                value={selectedPlotId}
+                onChange={(event) => {
+                  const plot = plots.find(
+                    (item) => String(item.id) === event.target.value
+                  );
+                  selectPlot(plot ?? null);
+                }}
+                className="mt-1 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
+              >
+                <option value="">No plot selected</option>
+                {plots.map((plot) => (
+                  <option key={plot.id} value={plot.id}>
+                    {plot.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <select
             value={selectedCrop}

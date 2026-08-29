@@ -6,11 +6,13 @@ from fastapi import (
     HTTPException,
     UploadFile
 )
+import logging
 
 from sqlalchemy.orm import Session
 
 from app.services.advisory_service import (
-    get_farmer_message
+    get_farmer_message,
+    get_treatment_cost_estimate,
 )
 
 from app.services.weather_service import (
@@ -27,6 +29,8 @@ from app.core.deps import get_current_user_optional
 from app.models.user import User
 
 from app.services import health_service
+from app.services import plot_service
+from app.services import recovery_service
 
 from app.services.ml_service import (
     generate_gradcam_overlay,
@@ -39,8 +43,10 @@ from app.services.soil_service import (
     get_soil_context,
     get_soil_profile
 )
+from app.services.rate_limit_service import rate_limit
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 ALLOWED_CONTENT_TYPES = {
     "image/jpeg",
@@ -58,8 +64,10 @@ async def predict_image(
     district: str | None = Form(None),
     crop: str | None = Form("tomato"),
     field_label: str | None = Form(None),
+    plot_id: int | None = Form(None),
     current_user: User | None = Depends(get_current_user_optional),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    _rate_limit: None = Depends(rate_limit(limit=12, window_seconds=60)),
 ):
     """
     Receive a crop-leaf image and return the ML-predicted
@@ -114,6 +122,18 @@ async def predict_image(
         state = state or current_user.state
         district = district or current_user.district
 
+    plot = None
+    if is_active_farmer and plot_id is not None:
+        plot = plot_service.get_plot(db, current_user.id, plot_id)
+        if not plot:
+            raise HTTPException(status_code=404, detail="Plot not found.")
+        crop = plot.crop
+        field_label = field_label or plot.name
+        state = state or plot.state
+        district = district or plot.district
+        latitude = latitude if latitude is not None else plot.latitude
+        longitude = longitude if longitude is not None else plot.longitude
+
     try:
         prediction = predict_disease(
             image_bytes,
@@ -137,6 +157,13 @@ async def predict_image(
             humidity=humidity
         )
 
+        area_acres = plot.area_acres if plot and plot.area_acres else 1
+        cost_estimate = get_treatment_cost_estimate(
+            prediction["disease"],
+            area_acres=area_acres,
+        )
+        advisory["cost_estimate"] = cost_estimate
+
         soil_context = None
 
         if state and district:
@@ -156,6 +183,7 @@ async def predict_image(
         )
 
     except FileNotFoundError as error:
+        logger.warning("Prediction unavailable: %s", error)
         raise HTTPException(
             status_code=503,
             detail=(
@@ -165,6 +193,7 @@ async def predict_image(
         ) from error
 
     except ValueError as error:
+        logger.warning("Prediction rejected: %s", error)
         raise HTTPException(
             status_code=400,
             detail=str(error)
@@ -198,7 +227,7 @@ async def predict_image(
             previous_scan.health_score if previous_scan else None
         )
 
-        health_service.record_scan(
+        scan_record = health_service.record_scan(
             db,
             user_id=current_user.id,
             crop=prediction["crop"],
@@ -208,7 +237,20 @@ async def predict_image(
             confidence=prediction["confidence"],
             prediction_status=prediction["status"],
             severity=advisory["severity"],
-            image_path=saved_image_path
+            image_path=saved_image_path,
+            plot_id=plot.id if plot else None,
+            state=state,
+            district=district,
+            latitude=latitude,
+            longitude=longitude,
+            treatment_cost_min=cost_estimate["min"],
+            treatment_cost_max=cost_estimate["max"],
+        )
+
+        recovery_plan, recovery_tasks = recovery_service.create_plan_for_scan(
+            db,
+            scan_record,
+            advisory["recommended_action"],
         )
 
         health_summary = {
@@ -221,6 +263,9 @@ async def predict_image(
             "percent_change": comparison["percent_change"],
             "trend": comparison["trend"]
         }
+    else:
+        recovery_plan = None
+        recovery_tasks = []
 
     return {
     "crop": crop_display_label,
@@ -233,9 +278,15 @@ async def predict_image(
     "severity": advisory["severity"],
     "weather_risk": advisory["weather_risk"],
     "recommended_action": advisory["recommended_action"],
+    "cost_estimate": advisory["cost_estimate"],
     "farmer_message": advisory["farmer_message"],
     "soil_context": soil_context,
     "health": health_summary,
+    "recovery": (
+        recovery_service.serialize_plan(recovery_plan, recovery_tasks)
+        if recovery_plan
+        else None
+    ),
     "gradcam_image": (
         gradcam_result["heatmap_image"] if gradcam_result else None
     )

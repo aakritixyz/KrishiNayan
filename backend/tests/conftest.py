@@ -20,3 +20,4 @@ os.environ.setdefault(
     "KRISHINAYAN_JWT_SECRET",
     "test-only-secret-key-do-not-use-in-production-32bytes"
 )
+os.environ["KRISHINAYAN_DISABLE_RATE_LIMIT"] = "true"

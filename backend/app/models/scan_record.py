@@ -47,6 +47,12 @@ class ScanRecord(Base):
     field_label: Mapped[str] = mapped_column(
         String, nullable=False, index=True
     )
+    plot_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("farm_plots.id"),
+        nullable=True,
+        index=True
+    )
 
     disease: Mapped[str] = mapped_column(String, nullable=False)
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
@@ -63,6 +69,24 @@ class ScanRecord(Base):
 
     image_path: Mapped[str | None] = mapped_column(
         String, nullable=True
+    )
+    state: Mapped[str | None] = mapped_column(
+        String, nullable=True, index=True
+    )
+    district: Mapped[str | None] = mapped_column(
+        String, nullable=True, index=True
+    )
+    latitude: Mapped[float | None] = mapped_column(
+        Float, nullable=True
+    )
+    longitude: Mapped[float | None] = mapped_column(
+        Float, nullable=True
+    )
+    treatment_cost_min: Mapped[float | None] = mapped_column(
+        Float, nullable=True
+    )
+    treatment_cost_max: Mapped[float | None] = mapped_column(
+        Float, nullable=True
     )
 
     created_at: Mapped[datetime] = mapped_column(

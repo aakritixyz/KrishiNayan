@@ -147,7 +147,14 @@ def record_scan(
     confidence,
     prediction_status,
     severity,
-    image_path
+    image_path,
+    plot_id=None,
+    state=None,
+    district=None,
+    latitude=None,
+    longitude=None,
+    treatment_cost_min=None,
+    treatment_cost_max=None,
 ):
     """
     Persist one completed scan as a new history point.
@@ -164,7 +171,14 @@ def record_scan(
         prediction_status=prediction_status,
         severity=severity,
         health_score=health_score,
-        image_path=image_path
+        image_path=image_path,
+        plot_id=plot_id,
+        state=state,
+        district=district,
+        latitude=latitude,
+        longitude=longitude,
+        treatment_cost_min=treatment_cost_min,
+        treatment_cost_max=treatment_cost_max,
     )
 
     db.add(record)
@@ -185,6 +199,13 @@ def _serialize(record: ScanRecord):
         "prediction_status": record.prediction_status,
         "severity": record.severity,
         "health_score": record.health_score,
+        "plot_id": record.plot_id,
+        "state": record.state,
+        "district": record.district,
+        "latitude": record.latitude,
+        "longitude": record.longitude,
+        "treatment_cost_min": record.treatment_cost_min,
+        "treatment_cost_max": record.treatment_cost_max,
         "created_at": record.created_at.isoformat()
     }
 

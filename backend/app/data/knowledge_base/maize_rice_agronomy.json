@@ -1,0 +1,32 @@
+{
+  "documents": [
+    {
+      "id": "maize_leaf_blight",
+      "title": "Leaf Blight in Maize",
+      "source_label": "General KVK maize disease advisory",
+      "tags": ["maize", "corn", "leaf blight", "fungal disease", "humidity"],
+      "content_en": "Maize leaf blight commonly appears as elongated tan or brown lesions on leaves and spreads faster in warm, humid conditions. Remove badly affected crop residue after harvest, avoid overhead irrigation where possible, keep balanced nutrition, and consult the local KVK or agriculture officer for a labelled fungicide when lesions are spreading quickly."
+    },
+    {
+      "id": "maize_common_rust",
+      "title": "Common Rust in Maize",
+      "source_label": "General KVK maize disease advisory",
+      "tags": ["maize", "corn common rust", "rust", "orange pustules"],
+      "content_en": "Common rust in maize forms small reddish-brown pustules on both sides of the leaf. It usually needs close monitoring first; if many leaves are affected before grain filling, farmers should contact an agriculture officer for locally approved fungicide guidance. Resistant hybrids and clean field sanitation reduce repeat risk."
+    },
+    {
+      "id": "rice_blast",
+      "title": "Rice Blast",
+      "source_label": "General KVK rice disease advisory",
+      "tags": ["rice", "paddy", "blast", "leaf blast", "neck blast", "humidity"],
+      "content_en": "Rice blast causes spindle-shaped leaf spots with grey centres and brown margins, and can also affect the neck of the panicle. High humidity, dense planting, and excess nitrogen increase risk. Avoid heavy single nitrogen doses, keep proper spacing, drain excess water when advised locally, and use locally recommended fungicide only after confirming symptoms."
+    },
+    {
+      "id": "rice_brown_spot",
+      "title": "Brown Spot in Rice",
+      "source_label": "General KVK rice disease advisory",
+      "tags": ["rice", "paddy", "brown spot", "nutrient stress"],
+      "content_en": "Rice brown spot appears as oval brown lesions and is often worse where crop nutrition or soil health is weak. Improve balanced fertilization based on soil testing, avoid plant stress, use quality seed in future seasons, and monitor the field after wet or humid weather."
+    }
+  ]
+}

@@ -36,6 +36,12 @@ type PredictionResult = {
   severity: string;
   weather_risk: string;
   recommended_action: string;
+  cost_estimate: {
+    min: number;
+    max: number;
+    unit: string;
+    note: string;
+  } | null;
   farmer_message: string;
   weather: {
     temperature: number;
@@ -68,6 +74,10 @@ type PredictionResult = {
     trend: string;
   } | null;
   gradcam_image: string | null;
+  recovery: {
+    id: number;
+    progress_percent: number;
+  } | null;
 };
 
 export default function ResultPage() {
@@ -288,6 +298,18 @@ export default function ResultPage() {
           </div>
         </div>
 
+        {prediction?.cost_estimate && (
+          <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+            <h3 className="font-bold text-forest">Estimated treatment cost</h3>
+            <p className="mt-1 text-2xl font-bold text-forest">
+              ₹{prediction.cost_estimate.min} - ₹{prediction.cost_estimate.max}
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              {prediction.cost_estimate.note}
+            </p>
+          </div>
+        )}
+
         {prediction?.soil_context && (
           <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
             <div className="flex gap-3">
@@ -473,7 +495,13 @@ export default function ResultPage() {
 
           <button
             type="button"
-            onClick={() => router.push("/recovery")}
+            onClick={() =>
+              router.push(
+                prediction?.recovery?.id
+                  ? `/recovery?planId=${prediction.recovery.id}`
+                  : "/recovery"
+              )
+            }
             className="flex items-center justify-center gap-2 rounded-2xl bg-leaf px-3 py-4 text-sm font-bold text-forest-deep"
           >
             <UserRound size={19} />

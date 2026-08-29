@@ -45,6 +45,8 @@ def init_db():
     from app.models import scan_record  # noqa: F401
     from app.models import officer_advisory  # noqa: F401
     from app.models import officer_registration_request  # noqa: F401
+    from app.models import farm_plot  # noqa: F401
+    from app.models import recovery  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 
@@ -72,6 +74,29 @@ def init_db():
             connection.execute(text(
                 "UPDATE users SET is_active=1 WHERE is_active IS NULL"
             ))
+
+        table_names = inspect(engine).get_table_names()
+        if "scan_records" in table_names:
+            scan_existing = {
+                c["name"] for c in inspect(engine).get_columns("scan_records")
+            }
+            scan_migrations = {
+                "plot_id": "ALTER TABLE scan_records ADD COLUMN plot_id INTEGER",
+                "state": "ALTER TABLE scan_records ADD COLUMN state VARCHAR",
+                "district": "ALTER TABLE scan_records ADD COLUMN district VARCHAR",
+                "latitude": "ALTER TABLE scan_records ADD COLUMN latitude FLOAT",
+                "longitude": "ALTER TABLE scan_records ADD COLUMN longitude FLOAT",
+                "treatment_cost_min": (
+                    "ALTER TABLE scan_records ADD COLUMN treatment_cost_min FLOAT"
+                ),
+                "treatment_cost_max": (
+                    "ALTER TABLE scan_records ADD COLUMN treatment_cost_max FLOAT"
+                ),
+            }
+            with engine.begin() as connection:
+                for column, statement in scan_migrations.items():
+                    if column not in scan_existing:
+                        connection.execute(text(statement))
 
     _seed_demo_officer()
 
