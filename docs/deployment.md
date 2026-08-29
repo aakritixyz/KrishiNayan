@@ -24,10 +24,16 @@ Optional environment variables:
 
 ```bash
 ANTHROPIC_API_KEY=<optional-llm-key>
-KRISHINAYAN_STORAGE_BACKEND=local
-KRISHINAYAN_UPLOAD_DIR=/var/data/uploads
+KRISHINAYAN_STORAGE_BACKEND=supabase
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<supabase-service-role-key>
+SUPABASE_STORAGE_BUCKET=crop-scans
+SUPABASE_STORAGE_PUBLIC=false
 KRISHINAYAN_MODEL_PATH=/var/data/models/KrishiNayan_Tomato_EfficientNetB0.keras
 ```
+
+For local-only runs, keep `KRISHINAYAN_STORAGE_BACKEND=local` and set
+`KRISHINAYAN_UPLOAD_DIR=/var/data/uploads` on a persistent disk.
 
 ## Frontend on Vercel
 
@@ -60,10 +66,33 @@ Expected model files:
 
 ## Production Notes
 
-- SQLite is fine for local demos. Use PostgreSQL for a shared deployment.
-- The app stores image paths through `storage_service.py`. Local storage is the
-  only configured adapter today; keep uploaded files on a persistent disk or add
-  an object-storage adapter before high-volume use.
+- SQLite is fine for local demos. Use Supabase PostgreSQL for a shared
+  deployment. The Supabase schema/index/RLS migration lives in
+  `supabase/migrations/202608290001_initial_schema_and_rls.sql`.
+- To push migrations through the CLI, run:
+
+```bash
+npx supabase link --project-ref tmsjzxzknfjcomivmpjk
+npx supabase db push
+```
+
+- If you need to migrate old local SQLite data into Supabase, run from
+  `backend/`:
+
+```bash
+KRISHINAYAN_SOURCE_SQLITE=./storage/krishinayan.db \
+KRISHINAYAN_DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST:5432/postgres?sslmode=require' \
+python scripts/migrate_sqlite_to_postgres.py
+```
+
+- Supabase Storage is supported by setting
+  `KRISHINAYAN_STORAGE_BACKEND=supabase`. Create a private bucket named
+  `crop-scans`, then provide `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and
+  `SUPABASE_STORAGE_BUCKET`.
 - Rate limiting is enabled in app code for auth, chatbot, and prediction routes.
-  Tests disable it with `KRISHINAYAN_DISABLE_RATE_LIMIT=true`.
+  Successful responses include `X-RateLimit-Limit`,
+  `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Limited responses include
+  `Retry-After`. Tests disable limiting with
+  `KRISHINAYAN_DISABLE_RATE_LIMIT=true`.
 - `/health` checks database connectivity and active model-file availability.
+  It also reports whether the configured storage backend is ready.

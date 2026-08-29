@@ -32,8 +32,9 @@ npm run dev
 
 For production frontend deployments, set `NEXT_PUBLIC_API_BASE_URL` to the deployed FastAPI backend URL. For production backend deployments, set `KRISHINAYAN_JWT_SECRET` and `FRONTEND_ORIGINS`.
 
-See `docs/deployment.md` for Render/Vercel deployment notes, Postgres config,
-storage settings, and the model-readiness checklist.
+See `docs/deployment.md` for Render/Vercel deployment notes, Supabase
+PostgreSQL migration, Supabase Storage settings, CI checks, rate-limit
+behavior, and the model-readiness checklist.
 
 ## Validation
 

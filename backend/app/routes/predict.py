@@ -108,8 +108,8 @@ async def predict_image(
         )
 
     saved_image_path = save_uploaded_image(
-    file.filename,
-    image_bytes
+        file.filename,
+        image_bytes
     )
 
     is_active_farmer = (
@@ -268,26 +268,26 @@ async def predict_image(
         recovery_tasks = []
 
     return {
-    "crop": crop_display_label,
-    "filename": file.filename,
-    "detected_issue": prediction["disease"],
-    "saved_image_path": saved_image_path,
-    "confidence": prediction["confidence"],
-    "prediction_status": prediction["status"],
-    "weather": weather,
-    "severity": advisory["severity"],
-    "weather_risk": advisory["weather_risk"],
-    "recommended_action": advisory["recommended_action"],
-    "cost_estimate": advisory["cost_estimate"],
-    "farmer_message": advisory["farmer_message"],
-    "soil_context": soil_context,
-    "health": health_summary,
-    "recovery": (
-        recovery_service.serialize_plan(recovery_plan, recovery_tasks)
-        if recovery_plan
-        else None
-    ),
-    "gradcam_image": (
-        gradcam_result["heatmap_image"] if gradcam_result else None
-    )
-}
+        "crop": crop_display_label,
+        "filename": file.filename,
+        "detected_issue": prediction["disease"],
+        "saved_image_path": saved_image_path,
+        "confidence": prediction["confidence"],
+        "prediction_status": prediction["status"],
+        "weather": weather,
+        "severity": advisory["severity"],
+        "weather_risk": advisory["weather_risk"],
+        "recommended_action": advisory["recommended_action"],
+        "cost_estimate": advisory["cost_estimate"],
+        "farmer_message": advisory["farmer_message"],
+        "soil_context": soil_context,
+        "health": health_summary,
+        "recovery": (
+            recovery_service.serialize_plan(recovery_plan, recovery_tasks)
+            if recovery_plan
+            else None
+        ),
+        "gradcam_image": (
+            gradcam_result["heatmap_image"] if gradcam_result else None
+        )
+    }

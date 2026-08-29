@@ -26,6 +26,7 @@ from app.core.config import CROP_CONFIG
 
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.voice import router as voice_router
+from app.services.storage_service import storage_status
 
 logging.basicConfig(
     level=os.getenv("KRISHINAYAN_LOG_LEVEL", "INFO").upper(),
@@ -129,5 +130,6 @@ def health_check():
     return {
         "status": "healthy" if db_ok else "degraded",
         "database": "ok" if db_ok else "unavailable",
+        "storage": storage_status(),
         "models": models,
     }
