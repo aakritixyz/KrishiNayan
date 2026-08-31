@@ -85,6 +85,13 @@ KRISHINAYAN_DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST:5432/postgres?
 python scripts/migrate_sqlite_to_postgres.py
 ```
 
+- For demo environments that start with an empty database, seed a few real
+  backend scan records for the Nearby Crop Alerts page:
+
+```bash
+python scripts/seed_demo_alerts.py
+```
+
 - Supabase Storage is supported by setting
   `KRISHINAYAN_STORAGE_BACKEND=supabase`. Create a private bucket named
   `crop-scans`, then provide `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and

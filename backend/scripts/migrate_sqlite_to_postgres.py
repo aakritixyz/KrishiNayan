@@ -9,8 +9,13 @@ Usage:
 
 import os
 from pathlib import Path
+import sys
 
 from sqlalchemy import create_engine, select, text
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.database import Base
 from app.models.farm_plot import FarmPlot

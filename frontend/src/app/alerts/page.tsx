@@ -43,21 +43,24 @@ export default function AlertsPage() {
   const [data, setData] = useState<AlertsResponse | null>(null);
   const [center, setCenter] = useState(DEFAULT_CENTER);
 
-  const loadAlerts = useCallback(async function loadAlerts(coords = DEFAULT_CENTER) {
+  const loadAlerts = useCallback(async function loadAlerts(coords?: typeof DEFAULT_CENTER) {
     const params = new URLSearchParams({
       radius_km: "25",
     });
-    if (coords.latitude && coords.longitude) {
+    if (coords?.latitude && coords?.longitude) {
       params.set("latitude", String(coords.latitude));
       params.set("longitude", String(coords.longitude));
     }
-    const response = await apiJson<AlertsResponse>(`/alerts/nearby?${params}`);
+    let response = await apiJson<AlertsResponse>(`/alerts/nearby?${params}`);
+    if (coords && response.summary.case_count === 0) {
+      response = await apiJson<AlertsResponse>("/alerts/nearby?radius_km=25");
+    }
     setData(response);
   }, []);
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      void loadAlerts();
+      void loadAlerts(undefined);
       return;
     }
 
@@ -70,7 +73,7 @@ export default function AlertsPage() {
         setCenter(next);
         void loadAlerts(next);
       },
-      () => void loadAlerts(),
+      () => void loadAlerts(undefined),
       { enableHighAccuracy: false, timeout: 8000 }
     );
   }, [loadAlerts]);
