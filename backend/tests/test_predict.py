@@ -181,6 +181,7 @@ def test_predict_without_soil_fields_returns_none_soil_context(
 
 
 def test_predict_includes_gradcam_image_when_available(monkeypatch):
+    monkeypatch.setattr(predict_route, "ENABLE_GRADCAM", True)
     monkeypatch.setattr(
         predict_route,
         "predict_disease",
@@ -249,6 +250,62 @@ def test_predict_includes_gradcam_image_when_available(monkeypatch):
     assert response.json()["gradcam_image"] == (
         "data:image/png;base64,FAKE"
     )
+
+
+def test_predict_skips_gradcam_when_disabled(monkeypatch):
+    monkeypatch.setattr(predict_route, "ENABLE_GRADCAM", False)
+    monkeypatch.setattr(
+        predict_route,
+        "predict_disease",
+        lambda image_bytes, crop="tomato": {
+            "crop": "tomato",
+            "disease": "Early Blight",
+            "confidence": 91.2,
+            "status": "supported",
+        },
+    )
+    monkeypatch.setattr(
+        predict_route,
+        "get_weather_data",
+        lambda latitude=None, longitude=None: {
+            "latitude": latitude,
+            "longitude": longitude,
+            "temperature": 26.0,
+            "humidity": 60,
+            "wind_speed": 10,
+            "rain": 0,
+            "rain_expected": False,
+            "source": "Open-Meteo",
+        },
+    )
+    monkeypatch.setattr(
+        predict_route,
+        "save_uploaded_image",
+        lambda filename, image_bytes: "backend/uploads/test_leaf.jpg",
+    )
+
+    def fail_gradcam(*args, **kwargs):
+        raise AssertionError("Grad-CAM should not run when disabled")
+
+    monkeypatch.setattr(
+        predict_route,
+        "generate_gradcam_overlay",
+        fail_gradcam,
+    )
+
+    response = client.post(
+        "/predict",
+        files={
+            "file": (
+                "test_leaf.jpg",
+                b"fake-image-bytes",
+                "image/jpeg",
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["gradcam_image"] is None
 
 
 def test_predict_gradcam_failure_returns_null_image(monkeypatch):

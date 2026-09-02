@@ -21,6 +21,7 @@ from app.services.weather_service import (
 
 from app.core.config import (
     CROP_CONFIG,
+    ENABLE_GRADCAM,
     MAX_IMAGE_SIZE_BYTES
 )
 
@@ -172,10 +173,12 @@ async def predict_image(
                 humidity=humidity
             )
 
-        gradcam_result = generate_gradcam_overlay(
-            image_bytes,
-            crop=crop
-        )
+        gradcam_result = None
+        if ENABLE_GRADCAM:
+            gradcam_result = generate_gradcam_overlay(
+                image_bytes,
+                crop=crop
+            )
 
     except FileNotFoundError as error:
         logger.warning("Prediction unavailable: %s", error)

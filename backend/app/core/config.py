@@ -53,6 +53,12 @@ CONFIDENCE_THRESHOLD = 0.70
 
 MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
 
+APP_ENV = os.getenv("KRISHINAYAN_ENV", "development").strip().lower()
+ENABLE_GRADCAM = os.getenv(
+    "KRISHINAYAN_ENABLE_GRADCAM",
+    "false" if APP_ENV in {"production", "prod"} else "true"
+).strip().lower() in {"1", "true", "yes", "on"}
+
 
 def get_crop_config(crop: str | None):
     """
@@ -139,7 +145,6 @@ DATABASE_URL = _normalize_database_url(os.getenv(
 # anywhere reachable outside your own machine.
 _DEFAULT_JWT_SECRET = "dev-only-insecure-secret-change-me-before-any-real-deployment"
 JWT_SECRET_KEY = os.getenv("KRISHINAYAN_JWT_SECRET", _DEFAULT_JWT_SECRET)
-APP_ENV = os.getenv("KRISHINAYAN_ENV", "development").strip().lower()
 
 if APP_ENV in {"production", "prod"} and JWT_SECRET_KEY == _DEFAULT_JWT_SECRET:
     raise RuntimeError(

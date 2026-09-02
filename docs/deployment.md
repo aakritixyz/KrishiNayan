@@ -30,6 +30,7 @@ SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=<supabase-service-role-key>
 SUPABASE_STORAGE_BUCKET=crop-scans
 SUPABASE_STORAGE_PUBLIC=false
+KRISHINAYAN_ENABLE_GRADCAM=false
 KRISHINAYAN_MODEL_PATH=/var/data/models/KrishiNayan_Tomato_EfficientNetB0.keras
 ```
 
@@ -100,6 +101,9 @@ python scripts/seed_demo_alerts.py
   `KRISHINAYAN_STORAGE_BACKEND=supabase`. Create a private bucket named
   `crop-scans`, then provide `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and
   `SUPABASE_STORAGE_BUCKET`.
+- Grad-CAM heatmaps are disabled by default in production because they add a
+  second expensive model pass on CPU-only hosts. Set
+  `KRISHINAYAN_ENABLE_GRADCAM=true` only when you specifically need heatmaps.
 - Rate limiting is enabled in app code for auth, chatbot, and prediction routes.
   Successful responses include `X-RateLimit-Limit`,
   `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Limited responses include
