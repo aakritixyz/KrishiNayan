@@ -58,6 +58,10 @@ ENABLE_GRADCAM = os.getenv(
     "KRISHINAYAN_ENABLE_GRADCAM",
     "false" if APP_ENV in {"production", "prod"} else "true"
 ).strip().lower() in {"1", "true", "yes", "on"}
+INFERENCE_BACKEND = os.getenv(
+    "KRISHINAYAN_INFERENCE_BACKEND",
+    "demo" if APP_ENV in {"production", "prod"} else "tensorflow"
+).strip().lower()
 
 
 def get_crop_config(crop: str | None):

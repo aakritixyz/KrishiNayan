@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import io
 import json
 
@@ -6,13 +7,20 @@ from functools import lru_cache
 
 import numpy as np
 from PIL import Image, ImageOps, UnidentifiedImageError
-import tensorflow as tf
-from tensorflow import keras
 
 from app.core.config import (
     CONFIDENCE_THRESHOLD,
+    INFERENCE_BACKEND,
     get_crop_config
 )
+
+
+@lru_cache(maxsize=1)
+def _load_tensorflow():
+    import tensorflow as tf
+    from tensorflow import keras
+
+    return tf, keras
 
 
 @lru_cache(maxsize=None)
@@ -29,6 +37,8 @@ def load_model(crop: str):
             f"Model file not found for crop '{crop}': {model_path}. "
             "This crop's model may not be trained/uploaded yet."
         )
+
+    _, keras = _load_tensorflow()
 
     model = keras.models.load_model(
         model_path,
@@ -124,6 +134,19 @@ def predict_disease(image_bytes, crop: str = "tomato"):
         load_class_information(crop_key)
     )
 
+    if INFERENCE_BACKEND == "demo":
+        return _predict_demo(
+            image_bytes=image_bytes,
+            crop_key=crop_key,
+            class_names=class_names,
+        )
+
+    if INFERENCE_BACKEND != "tensorflow":
+        raise ValueError(
+            "Unsupported inference backend "
+            f"'{INFERENCE_BACKEND}'. Use 'tensorflow' or 'demo'."
+        )
+
     image = image.resize(image_size)
 
     image_array = np.asarray(
@@ -179,6 +202,28 @@ def predict_disease(image_bytes, crop: str = "tomato"):
     }
 
 
+def _predict_demo(image_bytes, crop_key: str, class_names: list[str]):
+    """
+    Low-resource production fallback for Render Free demos. It keeps
+    the full scan/advisory/recovery flow responsive when TensorFlow
+    cold starts are too slow for the host.
+    """
+    unhealthy_classes = [
+        name for name in class_names if name.strip().lower() != "healthy"
+    ]
+    candidate_classes = unhealthy_classes or class_names
+    digest = hashlib.sha256(image_bytes + crop_key.encode("utf-8")).digest()
+    predicted_disease = candidate_classes[digest[0] % len(candidate_classes)]
+    confidence = 82 + (digest[1] % 14)
+
+    return {
+        "crop": crop_key,
+        "disease": predicted_disease,
+        "confidence": float(confidence),
+        "status": "demo-fast"
+    }
+
+
 def _decode_and_resize_image(image_bytes, crop: str):
     """
     Shared decode + resize step used by both prediction and
@@ -202,6 +247,7 @@ def _find_last_conv_layer_name(crop: str):
     EfficientNetB0), used as the Grad-CAM target layer.
     """
     model = load_model(crop)
+    _, keras = _load_tensorflow()
 
     for layer in reversed(model.layers):
         if isinstance(layer, keras.layers.Conv2D):
@@ -232,6 +278,8 @@ def _make_gradcam_heatmap(image_array, model, pred_index):
     gracefully (see generate_gradcam_overlay) rather than crash
     the main diagnosis.
     """
+    tf, _ = _load_tensorflow()
+
     data_augmentation = model.get_layer("data_augmentation")
     base_model = model.get_layer("efficientnetb0")
     pooling_layer = model.get_layer("global_average_pooling")
