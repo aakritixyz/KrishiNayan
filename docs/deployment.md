@@ -13,6 +13,7 @@ uvicorn main:app --host 0.0.0.0 --port $PORT
 Required environment variables:
 
 ```bash
+PYTHON_VERSION=3.11.11
 KRISHINAYAN_ENV=production
 KRISHINAYAN_JWT_SECRET=<long-random-secret>
 FRONTEND_ORIGINS=https://your-frontend.vercel.app
@@ -69,6 +70,9 @@ Expected model files:
 - SQLite is fine for local demos. Use Supabase PostgreSQL for a shared
   deployment. The Supabase schema/index/RLS migration lives in
   `supabase/migrations/202608290001_initial_schema_and_rls.sql`.
+- Render's Python default can move ahead of TensorFlow support. Keep
+  `PYTHON_VERSION=3.11.11` set on the backend service; `backend/.python-version`
+  is committed as a second guardrail.
 - To push migrations through the CLI, run:
 
 ```bash
