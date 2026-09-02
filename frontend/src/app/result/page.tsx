@@ -11,6 +11,7 @@ import {
   Headphones,
   Landmark,
   MessageCircle,
+  VolumeX,
   ShieldCheck,
   Sprout,
   UserRound,
@@ -86,6 +87,7 @@ export default function ResultPage() {
 
   const [scanImage, setScanImage] = useState("/images/tomato-field.png");
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -104,6 +106,14 @@ export default function ResultPage() {
     }, 0);
 
     return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, []);
 
   const disease = prediction
@@ -125,6 +135,12 @@ export default function ResultPage() {
   function speakAdvice() {
     if (!prediction || !window.speechSynthesis) return;
 
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
     const text = translateRecommendedAction(
       prediction.recommended_action,
       prediction.detected_issue,
@@ -141,7 +157,10 @@ export default function ResultPage() {
         : language === "mr"
         ? "mr-IN"
         : "en-IN";
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
 
+    setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
   }
 
@@ -487,10 +506,12 @@ export default function ResultPage() {
             type="button"
             onClick={speakAdvice}
             disabled={!prediction}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-forest px-3 py-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className={`flex items-center justify-center gap-2 rounded-2xl px-3 py-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 ${
+              isSpeaking ? "bg-danger" : "bg-forest"
+            }`}
           >
-            <Headphones size={19} />
-            {tx("Listen", language)}
+            {isSpeaking ? <VolumeX size={19} /> : <Headphones size={19} />}
+            {isSpeaking ? "Stop Listening" : tx("Listen", language)}
           </button>
 
           <button

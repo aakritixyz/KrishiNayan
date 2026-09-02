@@ -6,6 +6,7 @@ import Image from "next/image";
 import {
   CheckCircle2,
   ImagePlus,
+  Loader2,
   MapPin,
   ScanLine,
 } from "lucide-react";
@@ -17,6 +18,7 @@ export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [scanStepIndex, setScanStepIndex] = useState(0);
 
   const [language, setLanguage] = useState<Language>("en");
 
@@ -37,6 +39,29 @@ export default function ScanPage() {
     setLanguage(next);
     sessionStorage.setItem(LANGUAGE_STORAGE_KEY, next);
   }
+
+  const scanSteps = [
+    "Uploading leaf photo",
+    "Scanning crop",
+    "Analyzing disease patterns",
+    "Checking weather and soil context",
+    "Forming recovery report",
+  ];
+
+  useEffect(() => {
+    if (!isAnalyzing) {
+      setScanStepIndex(0);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setScanStepIndex((current) =>
+        Math.min(current + 1, scanSteps.length - 1)
+      );
+    }, 2200);
+
+    return () => window.clearInterval(interval);
+  }, [isAnalyzing, scanSteps.length]);
 
   const [states, setStates] = useState<string[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
@@ -291,6 +316,7 @@ async function handleAnalyse() {
   if (!preview || !selectedFile || isAnalyzing) return;
 
   setIsAnalyzing(true);
+  setScanStepIndex(0);
 
   const formData = new FormData();
   formData.append("file", selectedFile);
@@ -613,12 +639,43 @@ async function handleAnalyse() {
         <button
           type="button"
           onClick={handleAnalyse}
-          disabled={!preview}
+          disabled={!preview || isAnalyzing}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-5 py-4 font-bold text-forest-deep transition disabled:cursor-not-allowed disabled:opacity-40"
         >
-        <ScanLine size={22} />
-          Analyse Leaf
+          {isAnalyzing ? (
+            <Loader2 size={22} className="animate-spin" />
+          ) : (
+            <ScanLine size={22} />
+          )}
+          {isAnalyzing ? scanSteps[scanStepIndex] : "Analyse Leaf"}
         </button>
+
+        {isAnalyzing && (
+          <div className="mt-3 rounded-2xl border border-forest/10 bg-white p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-bold text-forest">
+                {scanSteps[scanStepIndex]}...
+              </p>
+              <span className="text-xs font-semibold text-muted">
+                Step {scanStepIndex + 1}/{scanSteps.length}
+              </span>
+            </div>
+            <div className="mt-3 grid grid-cols-5 gap-1.5">
+              {scanSteps.map((step, index) => (
+                <span
+                  key={step}
+                  className={`h-1.5 rounded-full ${
+                    index <= scanStepIndex ? "bg-leaf" : "bg-forest/10"
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="mt-3 text-xs leading-5 text-muted">
+              Render Free can take a little longer while the ML model wakes up.
+              Keep this page open.
+            </p>
+          </div>
+        )}
 
         <BottomNav />
       </section>
