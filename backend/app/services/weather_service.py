@@ -8,6 +8,10 @@ REQUEST_HEADERS = {
     "Accept": "application/json",
     "User-Agent": "KrishiNayan/1.0 (https://krishi-nayan.vercel.app)",
 }
+OPEN_METEO_CURRENT_FIELDS = (
+    "temperature_2m,relative_humidity_2m,rain,"
+    "precipitation,wind_speed_10m,weather_code"
+)
 
 SUPPORTED_LANGUAGES = {"en", "hi", "pa", "mr"}
 
@@ -157,6 +161,43 @@ def _get_location_name(
         return None
 
 
+def _fetch_open_meteo(latitude: float, longitude: float) -> dict:
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "current": OPEN_METEO_CURRENT_FIELDS,
+        "timezone": "auto",
+        "forecast_days": 1,
+    }
+    response = requests.get(
+        OPEN_METEO_URL,
+        params=params,
+        headers=REQUEST_HEADERS,
+        timeout=15,
+    )
+    response.raise_for_status()
+
+    data = response.json()
+    current = data.get("current") or {}
+    if not current:
+        raise requests.RequestException("Open-Meteo response had no current data")
+
+    rain_value = (
+        current.get("rain")
+        if current.get("rain") is not None
+        else current.get("precipitation", 0)
+    ) or 0
+
+    return {
+        "temperature": current.get("temperature_2m"),
+        "humidity": current.get("relative_humidity_2m"),
+        "wind_speed": current.get("wind_speed_10m"),
+        "rain": rain_value,
+        "rain_expected": rain_value > 0,
+        "weather_code": current.get("weather_code"),
+    }
+
+
 def get_weather_data(
     latitude=None,
     longitude=None,
@@ -183,37 +224,13 @@ def get_weather_data(
             "source": "Location unavailable",
         }
 
-    params = {
-        "latitude": latitude,
-        "longitude": longitude,
-        "current": (
-            "temperature_2m,relative_humidity_2m,precipitation,"
-            "wind_speed_10m,weather_code"
-        ),
-        "timezone": "auto",
-    }
-
     try:
-        response = requests.get(
-            OPEN_METEO_URL,
-            params=params,
-            timeout=10,
-        )
-        response.raise_for_status()
-
-        data = response.json()
-        current = data.get("current", {})
-        rain_value = current.get("precipitation", 0) or 0
+        live_weather = _fetch_open_meteo(latitude, longitude)
 
         return {
             "latitude": latitude,
             "longitude": longitude,
-            "temperature": current.get("temperature_2m"),
-            "humidity": current.get("relative_humidity_2m"),
-            "wind_speed": current.get("wind_speed_10m"),
-            "rain": rain_value,
-            "rain_expected": rain_value > 0,
-            "weather_code": current.get("weather_code"),
+            **live_weather,
             "location_name": _get_location_name(
                 latitude,
                 longitude,
@@ -223,9 +240,9 @@ def get_weather_data(
             "source": "Open-Meteo",
         }
 
-    except requests.RequestException as exc:
+    except requests.RequestException as error:
         import logging
-        logging.exception("OPEN-METEO ERROR: %s", exc)
+        logging.exception("Open-Meteo request failed: %s", error)
 
         estimated = _estimated_weather(latitude, longitude)
         return {
@@ -239,4 +256,5 @@ def get_weather_data(
             ),
             "language": language,
             "source": "Estimated weather",
+            "provider_error": str(error),
         }

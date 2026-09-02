@@ -15,6 +15,7 @@ def test_weather_falls_back_to_estimate_when_provider_fails(monkeypatch):
     assert data["temperature"] is not None
     assert data["humidity"] is not None
     assert data["wind_speed"] is not None
+    assert "provider_error" in data
 
 
 def test_weather_uses_open_meteo_current_parameter_shape(monkeypatch):
@@ -49,7 +50,7 @@ def test_weather_uses_open_meteo_current_parameter_shape(monkeypatch):
     assert captured["url"] == weather_service.OPEN_METEO_URL
     assert captured["params"]["current"] == (
         "temperature_2m,relative_humidity_2m,rain,"
-        "wind_speed_10m,weather_code"
+        "precipitation,wind_speed_10m,weather_code"
     )
     assert captured["headers"]["Accept"] == "application/json"
 
