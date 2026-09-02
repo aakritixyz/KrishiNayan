@@ -224,7 +224,8 @@ def get_weather_data(
         }
 
     except requests.RequestException as exc:
-        print(f"OPEN-METEO ERROR: {type(exc).__name__}: {exc}")
+        import logging
+        logging.exception("OPEN-METEO ERROR")
 
         estimated = _estimated_weather(latitude, longitude)
         return {
