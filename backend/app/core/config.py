@@ -116,10 +116,23 @@ SUPPORTED_CHAT_LANGUAGES = ("en", "hi")
 STORAGE_DIR = BACKEND_DIR / "storage"
 STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 
-DATABASE_URL = os.getenv(
+def _normalize_database_url(url: str) -> str:
+    """
+    Supabase often shows postgresql:// URLs, which make SQLAlchemy
+    default to psycopg2. The app ships psycopg v3, so normalize
+    generic Postgres URLs to the installed driver.
+    """
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+psycopg://", 1)
+    return url
+
+
+DATABASE_URL = _normalize_database_url(os.getenv(
     "KRISHINAYAN_DATABASE_URL",
     f"sqlite:///{STORAGE_DIR / 'krishinayan.db'}"
-)
+))
 
 # IMPORTANT: this default is for local development only. Always set
 # KRISHINAYAN_JWT_SECRET to a long random value before deploying
