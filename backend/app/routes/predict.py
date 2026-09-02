@@ -16,6 +16,7 @@ from app.services.advisory_service import (
 )
 
 from app.services.weather_service import (
+    get_known_coordinates,
     get_weather_data
 )
 
@@ -136,6 +137,11 @@ async def predict_image(
             image_bytes,
             crop=crop
         )
+
+        if latitude is None or longitude is None:
+            known_coordinates = get_known_coordinates(state, district)
+            if known_coordinates:
+                latitude, longitude = known_coordinates
         
         weather = get_weather_data(
             latitude=latitude,
