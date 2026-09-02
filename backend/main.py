@@ -1,7 +1,8 @@
-import os
 import logging
+import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from app.routes.weather import router as weather_router
 
@@ -56,6 +57,9 @@ def _get_allowed_origins():
     return sorted(set(defaults + extra_origins))
 
 
+ALLOWED_ORIGINS = _get_allowed_origins()
+
+
 app = FastAPI(
     title="KrishiNayan API",
     description="Backend API for crop disease detection and advisory",
@@ -66,11 +70,26 @@ app.include_router(weather_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_get_allowed_origins(),
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def unexpected_error_handler(request: Request, error: Exception):
+    logger.exception("Unhandled request error: %s %s", request.method, request.url)
+    response = JSONResponse(
+        status_code=500,
+        content={"detail": "Server error. Please try again."},
+    )
+    origin = request.headers.get("origin")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Vary"] = "Origin"
+    return response
 
 
 # Called eagerly (not just as a startup event) so tables exist as
