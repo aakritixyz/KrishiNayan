@@ -225,18 +225,18 @@ def get_weather_data(
 
     except requests.RequestException as exc:
         import logging
-        logging.exception("OPEN-METEO ERROR")
+        logging.exception("OPEN-METEO ERROR: %s", exc)
 
         estimated = _estimated_weather(latitude, longitude)
         return {
-        "latitude": latitude,
-        "longitude": longitude,
-        **estimated,
-        "location_name": _get_location_name(
-            latitude,
-            longitude,
-            language,
-        ),
-        "language": language,
-        "source": "Estimated weather",
+            "latitude": latitude,
+            "longitude": longitude,
+            **estimated,
+            "location_name": _get_location_name(
+                latitude,
+                longitude,
+                language,
+            ),
+            "language": language,
+            "source": "Estimated weather",
         }
