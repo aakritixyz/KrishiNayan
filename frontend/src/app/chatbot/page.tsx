@@ -667,9 +667,9 @@ function ChatbotPageInner() {
   }, []);
 
   return (
-    <main className="flex h-dvh items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative flex h-dvh w-full max-w-[430px] flex-col overflow-hidden bg-cream pb-32 pt-6 sm:h-[844px] sm:rounded-[36px]">
-        <header className="flex shrink-0 items-center justify-between px-5">
+    <main className="flex min-h-dvh items-center justify-center bg-forest-deep sm:p-6">
+      <section className="relative flex h-dvh max-h-dvh w-full max-w-[430px] flex-col overflow-hidden bg-cream pb-[calc(104px+env(safe-area-inset-bottom))] pt-4 sm:h-[844px] sm:max-h-[844px] sm:rounded-[36px] sm:pt-6">
+        <header className="flex shrink-0 items-center justify-between gap-2 px-4 sm:px-5">
           <button
             type="button"
             onClick={() => router.back()}
@@ -679,11 +679,11 @@ function ChatbotPageInner() {
             <ArrowLeft size={21} />
           </button>
 
-          <div className="text-center">
+          <div className="min-w-0 flex-1 text-center">
             <h1 className="text-lg font-bold text-forest">
               {tr("Ask KrishiNayan AI", language)}
             </h1>
-            <p className="text-[11px] text-muted">
+            <p className="truncate text-[11px] text-muted">
               {tr("Grounded in ICAR/KVK farming guidance", language)}
             </p>
           </div>
@@ -700,7 +700,7 @@ function ChatbotPageInner() {
         </header>
 
         {scanContext && (
-          <div className="mx-5 mt-4 flex shrink-0 items-center gap-3 rounded-2xl bg-forest p-3 text-white">
+          <div className="mx-4 mt-3 flex shrink-0 items-center gap-3 rounded-2xl bg-forest p-3 text-white sm:mx-5 sm:mt-4">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-leaf text-forest-deep">
               <Sprout size={17} />
             </span>
@@ -717,7 +717,7 @@ function ChatbotPageInner() {
         <div
           ref={messagesContainerRef}
           onScroll={handleMessagesScroll}
-          className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto px-5"
+          className="mt-3 min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-2 sm:mt-4 sm:px-5"
         >
           {messages.map((message, index) => (
             <ChatBubble key={index} message={message} />
@@ -732,7 +732,7 @@ function ChatbotPageInner() {
         </div>
 
         {(isListening || isVoiceStarting) && (
-          <div className="mx-5 mb-2 flex items-center justify-center gap-2">
+          <div className="mx-4 mb-2 flex shrink-0 items-center justify-center gap-2 sm:mx-5">
             <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
             <span className="text-xs font-semibold text-forest/70">
               {isVoiceStarting
@@ -743,18 +743,18 @@ function ChatbotPageInner() {
         )}
 
         {voiceError && (
-          <p className="mx-5 mb-2 text-xs text-red-600">{voiceError}</p>
+          <p className="mx-4 mb-2 shrink-0 text-xs text-red-600 sm:mx-5">{voiceError}</p>
         )}
 
         <form
           onSubmit={sendMessage}
-          className="z-10 mx-5 mt-4 flex shrink-0 items-center gap-2 rounded-full border border-forest/10 bg-white p-2 shadow-lg"
+          className="z-10 mx-4 mb-3 mt-3 flex shrink-0 items-center gap-2 rounded-full border border-forest/10 bg-white p-2 shadow-lg sm:mx-5 sm:mt-4"
         >
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder={tr("Type your farming question...", language)}
-            className="flex-1 bg-transparent px-3 text-sm text-forest outline-none placeholder:text-muted"
+            className="min-w-0 flex-1 bg-transparent px-3 text-sm text-forest outline-none placeholder:text-muted"
           />
 
           <button
