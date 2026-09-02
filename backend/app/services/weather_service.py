@@ -4,6 +4,10 @@ from datetime import datetime, timezone
 
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/reverse"
+REQUEST_HEADERS = {
+    "Accept": "application/json",
+    "User-Agent": "KrishiNayan/1.0 (https://krishi-nayan.vercel.app)",
+}
 
 SUPPORTED_LANGUAGES = {"en", "hi", "pa", "mr"}
 
@@ -182,13 +186,10 @@ def get_weather_data(
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "current": [
-            "temperature_2m",
-            "relative_humidity_2m",
-            "rain",
-            "wind_speed_10m",
-            "weather_code",
-        ],
+        "current": (
+            "temperature_2m,relative_humidity_2m,rain,"
+            "wind_speed_10m,weather_code"
+        ),
         "timezone": "auto",
     }
 
@@ -196,6 +197,7 @@ def get_weather_data(
         response = requests.get(
             OPEN_METEO_URL,
             params=params,
+            headers=REQUEST_HEADERS,
             timeout=10,
         )
         response.raise_for_status()
