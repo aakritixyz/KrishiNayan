@@ -187,7 +187,7 @@ def get_weather_data(
         "latitude": latitude,
         "longitude": longitude,
         "current": (
-            "temperature_2m,relative_humidity_2m,rain,"
+            "temperature_2m,relative_humidity_2m,precipitation,"
             "wind_speed_10m,weather_code"
         ),
         "timezone": "auto",
@@ -204,7 +204,7 @@ def get_weather_data(
 
         data = response.json()
         current = data.get("current", {})
-        rain_value = current.get("rain", 0) or 0
+        rain_value = current.get("precipitation", 0) or 0
 
         return {
             "latitude": latitude,
