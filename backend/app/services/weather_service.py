@@ -197,7 +197,6 @@ def get_weather_data(
         response = requests.get(
             OPEN_METEO_URL,
             params=params,
-            headers=REQUEST_HEADERS,
             timeout=10,
         )
         response.raise_for_status()
