@@ -223,17 +223,19 @@ def get_weather_data(
             "source": "Open-Meteo",
         }
 
-    except requests.RequestException:
+    except requests.RequestException as exc:
+        print(f"OPEN-METEO ERROR: {type(exc).__name__}: {exc}")
+
         estimated = _estimated_weather(latitude, longitude)
         return {
-            "latitude": latitude,
-            "longitude": longitude,
-            **estimated,
-            "location_name": _get_location_name(
-                latitude,
-                longitude,
-                language,
-            ),
-            "language": language,
-            "source": "Estimated weather",
+        "latitude": latitude,
+        "longitude": longitude,
+        **estimated,
+        "location_name": _get_location_name(
+            latitude,
+            longitude,
+            language,
+        ),
+        "language": language,
+        "source": "Estimated weather",
         }
