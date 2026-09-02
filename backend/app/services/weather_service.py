@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
@@ -12,6 +12,10 @@ OPEN_METEO_CURRENT_FIELDS = (
     "temperature_2m,relative_humidity_2m,rain,"
     "precipitation,wind_speed_10m,weather_code"
 )
+WEATHER_SERVICE_VERSION = "open-meteo-live-v3"
+LIVE_WEATHER_CACHE_TTL = timedelta(minutes=10)
+STALE_WEATHER_CACHE_TTL = timedelta(hours=2)
+LOCATION_CACHE_TTL = timedelta(days=7)
 
 SUPPORTED_LANGUAGES = {"en", "hi", "pa", "mr"}
 
@@ -33,6 +37,15 @@ DISTRICT_COORDINATES = {
     ("uttar pradesh", "lucknow"): (26.8467, 80.9462),
 }
 
+_LIVE_WEATHER_CACHE: dict[
+    tuple[float, float],
+    tuple[datetime, dict],
+] = {}
+_LOCATION_NAME_CACHE: dict[
+    tuple[float, float, str],
+    tuple[datetime, str | None],
+] = {}
+
 
 def _normalize_language(language: str | None) -> str:
     value = (language or "en").strip().lower()
@@ -44,6 +57,48 @@ def _first_nonempty(*values):
         if value:
             return value
     return None
+
+
+def _weather_cache_key(latitude: float, longitude: float) -> tuple[float, float]:
+    # Roughly 1 km precision; avoids repeated calls for tiny GPS jitter.
+    return (round(float(latitude), 2), round(float(longitude), 2))
+
+
+def _fresh_cached_weather(latitude: float, longitude: float) -> dict | None:
+    cached = _LIVE_WEATHER_CACHE.get(_weather_cache_key(latitude, longitude))
+    if not cached:
+        return None
+
+    fetched_at, payload = cached
+    if datetime.now(timezone.utc) - fetched_at <= LIVE_WEATHER_CACHE_TTL:
+        return {
+            **payload,
+            "cache_status": "fresh",
+            "cached_at": fetched_at.isoformat(),
+        }
+    return None
+
+
+def _stale_cached_weather(latitude: float, longitude: float) -> dict | None:
+    cached = _LIVE_WEATHER_CACHE.get(_weather_cache_key(latitude, longitude))
+    if not cached:
+        return None
+
+    fetched_at, payload = cached
+    if datetime.now(timezone.utc) - fetched_at <= STALE_WEATHER_CACHE_TTL:
+        return {
+            **payload,
+            "cache_status": "stale",
+            "cached_at": fetched_at.isoformat(),
+        }
+    return None
+
+
+def _cache_live_weather(latitude: float, longitude: float, payload: dict) -> None:
+    _LIVE_WEATHER_CACHE[_weather_cache_key(latitude, longitude)] = (
+        datetime.now(timezone.utc),
+        payload,
+    )
 
 
 def get_known_coordinates(
@@ -103,6 +158,12 @@ def _get_location_name(
     fields still come back in their default stored language.
     """
     language = _normalize_language(language)
+    cache_key = (*_weather_cache_key(latitude, longitude), language)
+    cached = _LOCATION_NAME_CACHE.get(cache_key)
+    if cached:
+        fetched_at, location_name = cached
+        if datetime.now(timezone.utc) - fetched_at <= LOCATION_CACHE_TTL:
+            return location_name
 
     try:
         response = requests.get(
@@ -151,11 +212,13 @@ def _get_location_name(
             data.get("name"),
         )
 
-        return _first_nonempty(
+        location_name = _first_nonempty(
             localized_name,
             address_name,
             default_name,
         )
+        _LOCATION_NAME_CACHE[cache_key] = (datetime.now(timezone.utc), location_name)
+        return location_name
 
     except requests.RequestException:
         return None
@@ -222,10 +285,28 @@ def get_weather_data(
             "location_name": None,
             "language": language,
             "source": "Location unavailable",
+            "weather_service_version": WEATHER_SERVICE_VERSION,
+        }
+
+    cached_weather = _fresh_cached_weather(latitude, longitude)
+    if cached_weather:
+        return {
+            "latitude": latitude,
+            "longitude": longitude,
+            **cached_weather,
+            "location_name": _get_location_name(
+                latitude,
+                longitude,
+                language,
+            ),
+            "language": language,
+            "source": "Open-Meteo",
+            "weather_service_version": WEATHER_SERVICE_VERSION,
         }
 
     try:
         live_weather = _fetch_open_meteo(latitude, longitude)
+        _cache_live_weather(latitude, longitude, live_weather)
 
         return {
             "latitude": latitude,
@@ -238,11 +319,30 @@ def get_weather_data(
             ),
             "language": language,
             "source": "Open-Meteo",
+            "cache_status": "live",
+            "weather_service_version": WEATHER_SERVICE_VERSION,
         }
 
     except requests.RequestException as error:
         import logging
         logging.exception("Open-Meteo request failed: %s", error)
+
+        stale_weather = _stale_cached_weather(latitude, longitude)
+        if stale_weather:
+            return {
+                "latitude": latitude,
+                "longitude": longitude,
+                **stale_weather,
+                "location_name": _get_location_name(
+                    latitude,
+                    longitude,
+                    language,
+                ),
+                "language": language,
+                "source": "Open-Meteo",
+                "provider_error": str(error),
+                "weather_service_version": WEATHER_SERVICE_VERSION,
+            }
 
         estimated = _estimated_weather(latitude, longitude)
         return {
@@ -257,4 +357,6 @@ def get_weather_data(
             "language": language,
             "source": "Estimated weather",
             "provider_error": str(error),
+            "cache_status": "estimate",
+            "weather_service_version": WEATHER_SERVICE_VERSION,
         }
