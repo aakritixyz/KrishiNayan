@@ -107,11 +107,6 @@ async def predict_image(
             detail="Image must be smaller than 10 MB."
         )
 
-    saved_image_path = save_uploaded_image(
-        file.filename,
-        image_bytes
-    )
-
     is_active_farmer = (
         current_user is not None
         and current_user.role == "farmer"
@@ -198,6 +193,22 @@ async def predict_image(
             status_code=400,
             detail=str(error)
         ) from error
+
+    except Exception as error:
+        logger.exception("Prediction request failed")
+        raise HTTPException(
+            status_code=500,
+            detail="Prediction failed. Please try again with a clearer image."
+        ) from error
+
+    saved_image_path = None
+    try:
+        saved_image_path = save_uploaded_image(
+            file.filename,
+            image_bytes
+        )
+    except Exception:
+        logger.exception("Image storage failed; continuing without saved image")
 
     crop_display_label = CROP_CONFIG.get(
         prediction["crop"], {}
