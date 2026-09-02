@@ -22,6 +22,10 @@ import GuestGateModal from "@/components/GuestGateModal";
 import { useAuth } from "@/lib/auth-context";
 import { apiJson } from "@/lib/api";
 import { useLanguage, type Language } from "@/lib/language-context";
+import {
+  fetchBrowserOpenMeteoWeather,
+  shouldUseBrowserWeatherFallback,
+} from "@/lib/live-weather";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -214,6 +218,27 @@ export default function Home() {
           const data = await apiJson<HomeWeather>(
             `/weather?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}&language=${language}`
           );
+
+          if (shouldUseBrowserWeatherFallback(data)) {
+            try {
+              const liveWeather = await fetchBrowserOpenMeteoWeather(
+                latitude,
+                longitude
+              );
+
+              setWeather({
+                ...data,
+                ...liveWeather,
+                latitude,
+                longitude,
+                location_name: data.location_name,
+              });
+              return;
+            } catch {
+              // Keep the backend response if the browser-side provider call
+              // is also unavailable.
+            }
+          }
 
           setWeather(data);
         } catch {

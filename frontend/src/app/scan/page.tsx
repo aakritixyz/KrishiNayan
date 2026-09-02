@@ -2,6 +2,10 @@
 
 import BottomNav from "@/components/BottomNav";
 import { API_BASE_URL, getStoredToken } from "@/lib/api";
+import {
+  fetchBrowserOpenMeteoWeather,
+  shouldUseBrowserWeatherFallback,
+} from "@/lib/live-weather";
 import Image from "next/image";
 import {
   CheckCircle2,
@@ -365,6 +369,25 @@ async function handleAnalyse() {
       throw new Error(
         result.detail || "Unable to analyse this image."
       );
+    }
+
+    if (coords && shouldUseBrowserWeatherFallback(result.weather)) {
+      try {
+        const liveWeather = await fetchBrowserOpenMeteoWeather(
+          coords.latitude,
+          coords.longitude
+        );
+
+        result.weather = {
+          ...result.weather,
+          ...liveWeather,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          location_name: result.weather?.location_name,
+        };
+      } catch {
+        // Prediction remains usable even if browser weather fallback fails.
+      }
     }
 
     sessionStorage.setItem(
