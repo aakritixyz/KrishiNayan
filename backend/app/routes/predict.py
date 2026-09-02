@@ -39,6 +39,7 @@ from app.services.ml_service import (
 )
 
 from app.services.storage_service import save_uploaded_image
+from app.services.startuped_service import send_startuped_signal
 
 from app.services.soil_service import (
     get_soil_context,
@@ -280,6 +281,14 @@ async def predict_image(
     else:
         recovery_plan = None
         recovery_tasks = []
+
+    await send_startuped_signal(
+        name="Crop Scan Completed",
+        description=f"User completed a {prediction['crop']} crop scan.",
+        signal_type="behavioral",
+        strength=80,
+        value="High",
+    )
 
     return {
         "crop": crop_display_label,
