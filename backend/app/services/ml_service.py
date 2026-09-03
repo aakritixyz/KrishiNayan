@@ -130,6 +130,13 @@ def predict_disease(image_bytes, crop: str = "tomato"):
             "The uploaded file is not a valid image."
         ) from error
 
+    leaf_quality = estimate_leaf_image_quality(image)
+    if not leaf_quality["is_likely_leaf"]:
+        raise ValueError(
+            "This does not look like a crop leaf photo. Upload a clear image "
+            "where one leaf fills most of the frame."
+        )
+
     class_names, image_size = (
         load_class_information(crop_key)
     )
@@ -199,6 +206,71 @@ def predict_disease(image_bytes, crop: str = "tomato"):
             2
         ),
         "status": status
+    }
+
+
+def estimate_leaf_image_quality(image: Image.Image):
+    """
+    Lightweight pre-inference guard for obvious non-leaf uploads.
+
+    This is intentionally conservative: it checks for vegetation-like green,
+    yellow and brown pixels rather than trying to classify the object. It should
+    reject faces/screens/documents while still allowing diseased leaves that are
+    partly yellow or brown.
+    """
+    sample = image.resize((160, 160))
+    rgb = np.asarray(sample, dtype=np.float32) / 255.0
+    red = rgb[:, :, 0]
+    green = rgb[:, :, 1]
+    blue = rgb[:, :, 2]
+
+    max_channel = np.max(rgb, axis=2)
+    min_channel = np.min(rgb, axis=2)
+    saturation = max_channel - min_channel
+
+    green_pixels = (
+        (green > 0.22)
+        & (green >= red * 0.85)
+        & (green >= blue * 1.05)
+        & (saturation > 0.08)
+    )
+    yellow_brown_pixels = (
+        (red > 0.22)
+        & (green > 0.16)
+        & (blue < green * 0.85)
+        & (saturation > 0.10)
+    )
+    skin_like_pixels = (
+        (red > 0.35)
+        & (green > 0.20)
+        & (blue > 0.12)
+        & (red > green)
+        & (green > blue)
+        & ((red - green) < 0.35)
+        & ((green - blue) < 0.25)
+        & (saturation < 0.45)
+    )
+
+    vegetation_ratio = float(
+        np.mean(green_pixels | yellow_brown_pixels)
+    )
+    green_ratio = float(np.mean(green_pixels))
+    skin_like_ratio = float(np.mean(skin_like_pixels))
+    average_saturation = float(np.mean(saturation))
+    is_likely_leaf = (
+        (
+            vegetation_ratio >= 0.08
+            or (vegetation_ratio >= 0.045 and average_saturation >= 0.16)
+        )
+        and not (skin_like_ratio >= 0.45 and green_ratio < 0.08)
+    )
+
+    return {
+        "is_likely_leaf": bool(is_likely_leaf),
+        "vegetation_ratio": round(vegetation_ratio, 4),
+        "green_ratio": round(green_ratio, 4),
+        "skin_like_ratio": round(skin_like_ratio, 4),
+        "average_saturation": round(average_saturation, 4),
     }
 
 

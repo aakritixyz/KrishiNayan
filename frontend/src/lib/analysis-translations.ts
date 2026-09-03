@@ -39,17 +39,17 @@ const TEXT: Record<string, Translation> = {
     pa: "ਅਨੁਮਾਨ ਸਥਿਤੀ",
     mr: "अंदाज स्थिती",
   },
-  "AI prediction generated from uploaded leaf image": {
-    en: "AI prediction generated from uploaded leaf image",
-    hi: "अपलोड की गई पत्ती की तस्वीर से एआई पूर्वानुमान तैयार किया गया",
-    pa: "ਅੱਪਲੋਡ ਕੀਤੀ ਪੱਤੀ ਦੀ ਤਸਵੀਰ ਤੋਂ ਏਆਈ ਅਨੁਮਾਨ ਤਿਆਰ ਕੀਤਾ ਗਿਆ",
-    mr: "अपलोड केलेल्या पानाच्या प्रतिमेतून एआय अंदाज तयार केला",
+  "Model finding generated from uploaded leaf image": {
+    en: "Model finding generated from uploaded leaf image",
+    hi: "अपलोड की गई पत्ती की तस्वीर से मॉडल निष्कर्ष तैयार किया गया",
+    pa: "ਅੱਪਲੋਡ ਕੀਤੀ ਪੱਤੀ ਦੀ ਤਸਵੀਰ ਤੋਂ ਮਾਡਲ ਨਤੀਜਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ",
+    mr: "अपलोड केलेल्या पानाच्या प्रतिमेतून मॉडेल निष्कर्ष तयार केला",
   },
-  "Why the AI thinks this": {
-    en: "Why the AI thinks this",
-    hi: "एआई ने यह निष्कर्ष क्यों निकाला",
-    pa: "ਏਆਈ ਨੇ ਇਹ ਨਤੀਜਾ ਕਿਉਂ ਕੱਢਿਆ",
-    mr: "एआयने हा निष्कर्ष का काढला",
+  "Why this result was flagged": {
+    en: "Why this result was flagged",
+    hi: "यह परिणाम क्यों चिन्हित हुआ",
+    pa: "ਇਹ ਨਤੀਜਾ ਕਿਉਂ ਚਿੰਨ੍ਹਿਤ ਹੋਇਆ",
+    mr: "हा निकाल का चिन्हांकित झाला",
   },
   "The highlighted region shows which part of the leaf most influenced this diagnosis.": {
     en: "The highlighted region shows which part of the leaf most influenced this diagnosis.",

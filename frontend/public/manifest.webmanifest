@@ -1,0 +1,18 @@
+{
+  "name": "KrishiNayan",
+  "short_name": "KrishiNayan",
+  "description": "Farmer-first crop care with scan history, recovery tasks, weather and mandi signals.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f6ef",
+  "theme_color": "#063b2a",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

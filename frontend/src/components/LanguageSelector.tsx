@@ -10,6 +10,13 @@ const OPTIONS: { value: Language; label: string }[] = [
   { value: "mr", label: "मराठी" },
 ];
 
+const LABEL_TEXT: Record<Language, string> = {
+  en: "Select language",
+  hi: "भाषा चुनें",
+  pa: "ਭਾਸ਼ਾ ਚੁਣੋ",
+  mr: "भाषा निवडा",
+};
+
 export default function LanguageSelector({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { language, setLanguage } = useLanguage();
   const isLight = variant === "light";
@@ -20,7 +27,7 @@ export default function LanguageSelector({ variant = "dark" }: { variant?: "dark
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value as Language)}
-        aria-label="Select language"
+        aria-label={LABEL_TEXT[language]}
         className={`appearance-none rounded-full py-2 pl-9 pr-8 text-sm font-medium outline-none backdrop-blur-sm ${isLight ? "border border-forest/15 bg-white text-forest hover:bg-forest/5" : "border border-white/25 bg-white/10 text-white hover:bg-white/20"}`}
       >
         {OPTIONS.map((option) => (

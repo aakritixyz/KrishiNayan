@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#063b2a" />
+    <title>KrishiNayan Offline</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #063b2a;
+        color: #f7f6ef;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      main {
+        width: min(90vw, 430px);
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 28px;
+      }
+      .mark {
+        width: 58px;
+        height: 58px;
+        display: grid;
+        place-items: center;
+      }
+      .mark svg {
+        width: 58px;
+        height: 58px;
+      }
+      h1 {
+        margin: 22px 0 8px;
+        font-size: 28px;
+      }
+      p {
+        margin: 0;
+        color: rgba(247, 246, 239, 0.76);
+        line-height: 1.6;
+      }
+      a {
+        display: inline-flex;
+        margin-top: 22px;
+        border-radius: 16px;
+        background: #b7e300;
+        color: #03271f;
+        padding: 12px 16px;
+        text-decoration: none;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="mark">
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="KrishiNayan">
+          <rect width="512" height="512" rx="128" fill="#b7e300" />
+          <path d="M92 256 Q256 132 420 256 Q256 380 92 256 Z" fill="none" stroke="#03271f" stroke-width="26" stroke-linejoin="round" />
+          <path d="M256 196 C212 233 212 301 256 340 C300 301 300 233 256 196 Z" fill="#03271f" />
+          <path d="M256 222 V322" stroke="#b7e300" stroke-width="14" stroke-linecap="round" />
+        </svg>
+      </div>
+      <h1>KrishiNayan is offline</h1>
+      <p>
+        Saved pages, recent farm records and the last loaded app shell are still
+        available. New scans and fresh weather need the network.
+      </p>
+      <a href="/">Try again</a>
+    </main>
+  </body>
+</html>

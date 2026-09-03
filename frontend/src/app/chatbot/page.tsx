@@ -667,8 +667,8 @@ function ChatbotPageInner() {
   }, []);
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative flex h-dvh max-h-dvh w-full max-w-[430px] flex-col overflow-hidden bg-cream pb-[calc(104px+env(safe-area-inset-bottom))] pt-4 sm:h-[844px] sm:max-h-[844px] sm:rounded-[36px] sm:pt-6">
+    <main className="app-main flex min-h-dvh items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative flex h-dvh max-h-dvh w-full max-w-[430px] flex-col overflow-hidden bg-cream pb-[calc(104px+env(safe-area-inset-bottom))] pt-4 sm:h-[844px] sm:max-h-[844px] sm:rounded-[36px] sm:pt-6 lg:h-dvh lg:max-h-none app-frame app-frame--chat lg:pb-0">
         <header className="flex shrink-0 items-center justify-between gap-2 px-4 sm:px-5">
           <button
             type="button"
@@ -681,7 +681,7 @@ function ChatbotPageInner() {
 
           <div className="min-w-0 flex-1 text-center">
             <h1 className="text-lg font-bold text-forest">
-              {tr("Ask KrishiNayan AI", language)}
+              {tr("Ask KrishiNayan", language)}
             </h1>
             <p className="truncate text-[11px] text-muted">
               {tr("Grounded in ICAR/KVK farming guidance", language)}

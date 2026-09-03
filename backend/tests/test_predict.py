@@ -1,6 +1,8 @@
 from fastapi.testclient import TestClient
+from PIL import Image
 
 import app.routes.predict as predict_route
+from app.services.ml_service import estimate_leaf_image_quality
 from main import app
 
 
@@ -117,6 +119,22 @@ def test_predict_rejects_unsupported_file():
     )
 
     assert response.status_code == 415
+
+
+def test_leaf_quality_guard_rejects_non_leaf_photo():
+    image = Image.new("RGB", (220, 220), (214, 164, 126))
+
+    quality = estimate_leaf_image_quality(image)
+
+    assert quality["is_likely_leaf"] is False
+
+
+def test_leaf_quality_guard_accepts_leaf_like_photo():
+    image = Image.new("RGB", (220, 220), (58, 132, 47))
+
+    quality = estimate_leaf_image_quality(image)
+
+    assert quality["is_likely_leaf"] is True
 
 
 def test_predict_without_soil_fields_returns_none_soil_context(

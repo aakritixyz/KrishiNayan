@@ -93,8 +93,6 @@ def _crop_name(crop, language):
         "tomato": {"en": "Tomato", "hi": "टमाटर", "pa": "ਟਮਾਟਰ", "mr": "टोमॅटो"},
         "maize": {"en": "Maize", "hi": "मक्का", "pa": "ਮੱਕੀ", "mr": "मका"},
         "rice": {"en": "Rice", "hi": "धान", "pa": "ਧਾਨ", "mr": "भात"},
-        "wheat": {"en": "Wheat", "hi": "गेहूँ", "pa": "ਕਣਕ", "mr": "गहू"},
-        "potato": {"en": "Potato", "hi": "आलू", "pa": "ਆਲੂ", "mr": "बटाटा"},
     }
     key = (crop or "").strip().lower()
     return names.get(key, {}).get(_language(language), crop or "")

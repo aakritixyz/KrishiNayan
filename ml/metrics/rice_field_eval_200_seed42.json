@@ -1,0 +1,31 @@
+{
+  "dataset": "ml/data/rice_field",
+  "crop": "rice",
+  "sample_strategy": "balanced random sample, 50 per class",
+  "sample_size": 200,
+  "accuracy_all_images": 90.5,
+  "confidence_threshold": 70,
+  "answered_share": 86.0,
+  "by_class": {
+    "Leaf Blast": {
+      "total": 50,
+      "correct": 49,
+      "answered": 49
+    },
+    "Narrow Brown Leaf Spot": {
+      "total": 50,
+      "correct": 37,
+      "answered": 38
+    },
+    "Healthy Rice Leaf": {
+      "total": 50,
+      "correct": 49,
+      "answered": 45
+    },
+    "Sheath Blight": {
+      "total": 50,
+      "correct": 46,
+      "answered": 40
+    }
+  }
+}

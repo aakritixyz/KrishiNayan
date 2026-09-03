@@ -108,8 +108,8 @@ export default function RecoveryPage() {
   const nextTask = tasks.find((task) => !task.completed) ?? tasks[tasks.length - 1];
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
         <header className="flex items-center justify-between">
           <button type="button" onClick={() => router.back()} className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-forest" aria-label={tx("Go back", language)}>
             <ArrowLeft size={21} />

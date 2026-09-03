@@ -16,8 +16,9 @@ import {
   Loader2,
   Pencil,
   SlidersHorizontal,
+  WalletCards,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 
 type Scheme = {
   id: string;
@@ -595,8 +596,8 @@ export default function PoliciesPage() {
   );
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame app-frame--wide bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
         <header className="flex items-center justify-between">
           <button
             type="button"
@@ -633,13 +634,32 @@ export default function PoliciesPage() {
           </button>
         </header>
 
-        <p className="mt-4 text-sm leading-6 text-muted">
+        <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-muted lg:text-center">
           {usingSavedProfile
             ? String(t.descriptionSaved)
             : String(t.descriptionDefault)}
         </p>
 
-        <div className="mt-4 flex items-center gap-3 rounded-[22px] bg-forest p-4 text-white">
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <PolicyMetric
+            icon={<Landmark size={21} />}
+            label="Likely eligible"
+            value={isLoading ? "..." : eligibleCount}
+            tone="dark"
+          />
+          <PolicyMetric
+            icon={<FileCheck2 size={21} />}
+            label="Documents tracked"
+            value="Aadhaar + bank"
+          />
+          <PolicyMetric
+            icon={<WalletCards size={21} />}
+            label="Ranked for"
+            value={localizeValue(profile.crop, language)}
+          />
+        </div>
+
+        <div className="mt-4 flex items-center gap-3 rounded-[22px] bg-forest p-4 text-white lg:mx-auto lg:max-w-3xl">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-leaf text-forest-deep">
             <Landmark size={22} />
           </span>
@@ -672,7 +692,7 @@ export default function PoliciesPage() {
         )}
 
         {showFilters && !user && !isGuest && (
-          <div className="mt-4 rounded-[24px] border border-forest/10 bg-white p-4">
+          <div className="mt-4 rounded-[24px] border border-forest/10 bg-white p-4 lg:mx-auto lg:max-w-3xl">
             <p className="font-bold text-forest">{String(t.yourProfile)}</p>
             <p className="mt-1 text-xs text-muted">{String(t.profileHint)}</p>
 
@@ -803,7 +823,7 @@ export default function PoliciesPage() {
           </div>
         )}
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
           {isLoading && !displayResults ? (
             <div className="flex items-center justify-center gap-2 rounded-[24px] border border-forest/10 bg-white p-8 text-sm font-semibold text-muted">
               <Loader2 size={18} className="animate-spin" />
@@ -823,6 +843,44 @@ export default function PoliciesPage() {
         <BottomNav />
       </section>
     </main>
+  );
+}
+
+function PolicyMetric({
+  icon,
+  label,
+  value,
+  tone = "light",
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string | number;
+  tone?: "light" | "dark";
+}) {
+  const dark = tone === "dark";
+
+  return (
+    <div
+      className={`rounded-[24px] p-4 ${
+        dark ? "bg-forest text-white" : "border border-forest/10 bg-white text-forest"
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <span
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
+            dark ? "bg-leaf text-forest-deep" : "bg-leaf/25 text-forest"
+          }`}
+        >
+          {icon}
+        </span>
+        <div>
+          <p className={`text-xs font-semibold ${dark ? "text-white/55" : "text-muted"}`}>
+            {label}
+          </p>
+          <p className="mt-1 text-lg font-bold">{value}</p>
+        </div>
+      </div>
+    </div>
   );
 }
 

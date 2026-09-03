@@ -8,10 +8,12 @@ import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   CloudOff,
+  HeartPulse,
   LogOut,
   MapPin,
   Pencil,
   ShieldCheck,
+  Sprout,
   UserRound,
 } from "lucide-react";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
@@ -212,8 +214,8 @@ function ProfileView() {
     .join(", ");
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-8 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame bg-cream px-5 pb-32 pt-8 sm:min-h-[844px] sm:rounded-[36px]">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-muted">
@@ -234,7 +236,7 @@ function ProfileView() {
           </button>
         </div>
 
-        <div className="mt-6 rounded-[28px] bg-forest p-5 text-white">
+        <div className="mt-6 rounded-[28px] bg-forest p-5 text-white lg:p-6">
           <div className="flex items-center gap-4">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-leaf text-forest-deep">
               <UserRound size={32} />
@@ -277,7 +279,9 @@ function ProfileView() {
           </p>
         )}
 
-        <div className="mt-5 flex items-center gap-3 rounded-[22px] bg-white p-4">
+        <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(300px,0.9fr)]">
+          <div className="space-y-3">
+        <div className="flex items-center gap-3 rounded-[22px] bg-white p-4">
           <ShieldCheck
             size={23}
             className={
@@ -311,7 +315,7 @@ function ProfileView() {
           )}
         </div>
 
-        <div className="mt-3 flex items-center gap-3 rounded-[22px] bg-white p-4">
+        <div className="flex items-center gap-3 rounded-[22px] bg-white p-4">
           <CloudOff size={23} className="text-forest" />
 
           <div className="flex-1">
@@ -464,16 +468,64 @@ function ProfileView() {
           </div>
         )}
 
-        <div className="mt-5 rounded-[22px] bg-white p-4 text-center">
-          <p className="font-bold text-forest">KrishiNayan</p>
-          <p className="mt-1 text-xs text-muted">
-            {tr("AI Farming Copilot", language)} &bull; Prototype v1.0
-          </p>
+          </div>
+
+          <aside className="space-y-3">
+            <div className="rounded-[26px] border border-forest/10 bg-white p-5">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted">
+                Farm readiness
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <ProfileMetric label="Plots" value={profile.crops.length || 0} />
+                <ProfileMetric
+                  label="Acres"
+                  value={profile.farm_size_acres ?? "--"}
+                />
+              </div>
+            </div>
+
+            <div className="rounded-[26px] bg-forest p-5 text-white">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/55">
+                <HeartPulse size={17} className="text-leaf" />
+                Care loop
+              </p>
+              <h2 className="mt-3 text-xl font-bold">
+                Profile feeds every decision
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-white/65">
+                Crop, location and irrigation context improve scan advice,
+                scheme ranking, recovery reminders and outbreak alerts.
+              </p>
+            </div>
+
+            <div className="rounded-[22px] bg-white p-4 text-center">
+              <Sprout className="mx-auto text-leaf" size={26} />
+              <p className="mt-2 font-bold text-forest">KrishiNayan</p>
+              <p className="mt-1 text-xs text-muted">
+                {tr("Farmer Care Companion", language)} &bull; Tomato, Maize, Rice
+              </p>
+            </div>
+          </aside>
         </div>
 
         <BottomNav />
       </section>
     </main>
+  );
+}
+
+function ProfileMetric({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) {
+  return (
+    <div className="rounded-2xl bg-forest/5 p-4">
+      <p className="text-xs font-semibold text-muted">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-forest">{value}</p>
+    </div>
   );
 }
 

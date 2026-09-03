@@ -14,43 +14,45 @@ import {
   MapPin,
   ScanLine,
 } from "lucide-react";
-import { useCallback, useEffect, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { LANGUAGE_STORAGE_KEY, type Language } from "@/lib/hindiTranslations";
+import { useLanguage, type Language } from "@/lib/language-context";
+import { tr } from "@/lib/static-translate";
+
+const LANGUAGE_LABEL: Record<Language, string> = {
+  en: "English",
+  hi: "हिंदी",
+  pa: "ਪੰਜਾਬੀ",
+  mr: "मराठी",
+};
+
+const LANGUAGE_ORDER: Language[] = ["en", "hi", "pa", "mr"];
 
 export default function ScanPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [scanStepIndex, setScanStepIndex] = useState(0);
+  const [isOffline, setIsOffline] = useState(false);
 
-  const [language, setLanguage] = useState<Language>("en");
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const stored = sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
-
-      if (stored === "en" || stored === "hi") {
-        setLanguage(stored);
-      }
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, []);
+  const { language, setLanguage } = useLanguage();
 
   function toggleLanguage() {
-    const next: Language = language === "en" ? "hi" : "en";
+    const currentIndex = LANGUAGE_ORDER.indexOf(language);
+    const next = LANGUAGE_ORDER[(currentIndex + 1) % LANGUAGE_ORDER.length];
     setLanguage(next);
-    sessionStorage.setItem(LANGUAGE_STORAGE_KEY, next);
   }
 
-  const scanSteps = [
-    "Uploading leaf photo",
-    "Scanning crop",
-    "Analyzing disease patterns",
-    "Checking weather and soil context",
-    "Forming recovery report",
-  ];
+  const scanSteps = useMemo(
+    () => [
+      tr("Uploading leaf photo", language),
+      tr("Scanning crop", language),
+      tr("Analyzing disease patterns", language),
+      tr("Checking weather and soil context", language),
+      tr("Forming recovery report", language),
+    ],
+    [language]
+  );
 
   useEffect(() => {
     if (!isAnalyzing) {
@@ -66,6 +68,19 @@ export default function ScanPage() {
 
     return () => window.clearInterval(interval);
   }, [isAnalyzing, scanSteps.length]);
+
+  useEffect(() => {
+    const updateStatus = () => setIsOffline(!navigator.onLine);
+
+    updateStatus();
+    window.addEventListener("online", updateStatus);
+    window.addEventListener("offline", updateStatus);
+
+    return () => {
+      window.removeEventListener("online", updateStatus);
+      window.removeEventListener("offline", updateStatus);
+    };
+  }, []);
 
   const [states, setStates] = useState<string[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
@@ -319,6 +334,16 @@ export default function ScanPage() {
 async function handleAnalyse() {
   if (!preview || !selectedFile || isAnalyzing) return;
 
+  if (isOffline) {
+    window.alert(
+      tr(
+        "You are offline. The app shell and saved records are available, but a new disease scan needs network.",
+        language
+      )
+    );
+    return;
+  }
+
   setIsAnalyzing(true);
   setScanStepIndex(0);
 
@@ -405,7 +430,7 @@ async function handleAnalyse() {
     const message =
       error instanceof Error
         ? error.message
-        : "Backend connection failed.";
+        : tr("Backend connection failed.", language);
 
     window.alert(message);
   } finally {
@@ -414,19 +439,29 @@ async function handleAnalyse() {
 }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-8 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame bg-cream px-5 pb-32 pt-8 sm:min-h-[844px] sm:rounded-[36px]">
         <p className="text-sm font-semibold uppercase tracking-widest text-muted">
-          KrishiNayan AI Scan
+          {tr("KrishiNayan Crop Scan", language)}
         </p>
 
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-forest">
-          Check Crop Health
+          {tr("Check Crop Health", language)}
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-muted">
-          Upload a clear leaf photo for disease analysis.
+          {tr("Upload a clear leaf photo for disease analysis.", language)}
         </p>
+
+        {isOffline && (
+          <div className="mt-4 rounded-2xl border border-warning/30 bg-warning/10 p-4 text-sm leading-6 text-forest">
+            <strong>{tr("Offline mode:", language)}</strong>{" "}
+            {tr(
+              "saved pages and recent records are available, but new disease scans need network.",
+              language
+            )}
+          </div>
+        )}
 
         <div className="mt-7 overflow-hidden rounded-[28px] border-2 border-dashed border-forest/20 bg-white p-3">
           <input
@@ -455,14 +490,14 @@ async function handleAnalyse() {
             >
               <Image
                 src={preview}
-                alt="Selected tomato leaf"
+                alt={tr("Selected leaf photo", language)}
                 fill
                 unoptimized
                 className="object-cover"
               />
 
               <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-forest-deep/80 px-4 py-3 text-center text-sm font-semibold text-white backdrop-blur">
-                Tap here to choose another photo
+                {tr("Tap here to choose another photo", language)}
               </div>
             </label>
           ) : (
@@ -472,11 +507,11 @@ async function handleAnalyse() {
               </span>
 
               <h2 className="mt-5 text-lg font-bold text-forest">
-                Add tomato-leaf photo
+                {tr("Add leaf photo", language)}
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-muted">
-                Take a clear photo or select one from your device.
+                {tr("Take a clear photo or select one from your device.", language)}
               </p>
 
               <div className="mt-5 flex flex-wrap justify-center gap-3">
@@ -484,14 +519,14 @@ async function handleAnalyse() {
                   htmlFor="leaf-image-camera"
                   className="cursor-pointer rounded-full bg-forest px-6 py-3 text-sm font-bold text-white transition hover:opacity-90"
                 >
-                  Take Photo
+                  {tr("Take Photo", language)}
                 </label>
 
                 <label
                   htmlFor="leaf-image"
                   className="cursor-pointer rounded-full bg-leaf px-6 py-3 text-sm font-bold text-forest-deep transition hover:opacity-90"
                 >
-                  Choose Photo
+                  {tr("Choose Photo", language)}
                 </label>
               </div>
             </div>
@@ -499,11 +534,11 @@ async function handleAnalyse() {
         </div>
 
         <div className="mt-5 rounded-2xl bg-white p-4">
-          <p className="text-sm font-bold text-forest">Crop</p>
+          <p className="text-sm font-bold text-forest">{tr("Crop", language)}</p>
 
           {plots.length > 0 && (
             <label className="mb-3 mt-2 block text-xs font-semibold text-muted">
-              Saved plot
+              {tr("Saved plot", language)}
               <select
                 value={selectedPlotId}
                 onChange={(event) => {
@@ -514,7 +549,7 @@ async function handleAnalyse() {
                 }}
                 className="mt-1 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
               >
-                <option value="">No plot selected</option>
+                <option value="">{tr("No plot selected", language)}</option>
                 {plots.map((plot) => (
                   <option key={plot.id} value={plot.id}>
                     {plot.name}
@@ -536,28 +571,30 @@ async function handleAnalyse() {
                 disabled={!crop.available}
               >
                 {crop.label}
-                {!crop.available ? " (coming soon)" : ""}
+                {!crop.available ? ` (${tr("coming soon", language)})` : ""}
               </option>
             ))}
           </select>
 
           <label className="mt-3 block text-xs font-semibold text-muted">
-            Field name (optional)
+            {tr("Field name (optional)", language)}
             <input
               value={fieldLabel}
               onChange={(event) => setFieldLabel(event.target.value)}
-              placeholder="e.g. North Plot"
+              placeholder={tr("e.g. North Plot", language)}
               className="mt-1 w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
             />
           </label>
           <p className="mt-1 text-xs text-muted">
-            Name your field if you track more than one plot of the
-            same crop - your Crop Health history is grouped by this.
+            {tr(
+              "Name your field if you track more than one plot of the same crop - your Crop Health history is grouped by this.",
+              language
+            )}
           </p>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest">
-              🌼 Flowering
+              🌼 {tr("Flowering", language)}
             </span>
 
             <button
@@ -565,36 +602,38 @@ async function handleAnalyse() {
               onClick={toggleLanguage}
               className="rounded-full border border-forest/10 bg-cream px-4 py-2 text-sm font-semibold text-forest transition hover:border-leaf"
             >
-              🌐 {language === "en" ? "English" : "हिंदी"}
+              🌐 {LANGUAGE_LABEL[language]}
             </button>
           </div>
         </div>
 
         <p className="mt-3 flex items-center gap-1.5 text-xs text-muted">
           <MapPin size={14} className="text-leaf" />
-          {locationStatus === "requesting" && "Detecting your location..."}
+          {locationStatus === "requesting" &&
+            tr("Detecting your location...", language)}
           {locationStatus === "matching" &&
-            "Location found — matching to your state/district..."}
+            tr("Location found — matching to your state/district...", language)}
           {locationStatus === "matched" &&
-            `Auto-detected: ${selectedDistrict}, ${selectedState}. Change below if needed.`}
+            `${tr("Auto-detected:", language)} ${selectedDistrict}, ${selectedState}. ${tr("Change below if needed.", language)}`}
           {locationStatus === "no-match" &&
-            "Location detected, but we don't have soil data for your exact district yet — pick manually below."}
+            tr("Location detected, but we don't have soil data for your exact district yet — pick manually below.", language)}
           {locationStatus === "denied" &&
-            "Location access denied — you can still pick state/district manually."}
+            tr("Location access denied — you can still pick state/district manually.", language)}
           {locationStatus === "unsupported" &&
-            "Location isn't supported on this device — pick manually below."}
+            tr("Location isn't supported on this device — pick manually below.", language)}
         </p>
 
         <div className="mt-4 rounded-2xl bg-white p-4">
           <p className="flex items-center gap-2 text-sm font-bold text-forest">
             <MapPin size={18} className="text-leaf" />
-            Soil context (optional)
+            {tr("Soil context (optional)", language)}
           </p>
 
           <p className="mt-1 text-xs leading-5 text-muted">
-            Choose your state and district to see how local soil
-            conditions may be affecting your crop, alongside the
-            leaf diagnosis.
+            {tr(
+              "Choose your state and district to see how local soil conditions may be affecting your crop, alongside the leaf diagnosis.",
+              language
+            )}
           </p>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -603,7 +642,7 @@ async function handleAnalyse() {
               onChange={(event) => setSelectedState(event.target.value)}
               className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest"
             >
-              <option value="">State</option>
+              <option value="">{tr("State", language)}</option>
               {states.map((state) => (
                 <option key={state} value={state}>
                   {state}
@@ -620,7 +659,7 @@ async function handleAnalyse() {
               className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm font-medium text-forest disabled:opacity-50"
             >
               <option value="">
-                {isLoadingDistricts ? "Loading..." : "District"}
+                {isLoadingDistricts ? tr("Loading...", language) : tr("District", language)}
               </option>
               {districts.map((district) => (
                 <option key={district} value={district}>
@@ -632,29 +671,31 @@ async function handleAnalyse() {
 
           {states.length === 0 && (
             <p className="mt-2 text-xs text-muted">
-              Soil data is currently unavailable — diagnosis will
-              still work without it.
+              {tr(
+                "Soil data is currently unavailable — diagnosis will still work without it.",
+                language
+              )}
             </p>
           )}
         </div>
 
         <div className="mt-5 rounded-[24px] border border-forest/10 bg-white p-4">
-          <p className="font-bold text-forest">Scan quality checklist</p>
+          <p className="font-bold text-forest">{tr("Scan quality checklist", language)}</p>
 
           <div className="mt-3 grid gap-2 text-sm text-muted">
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              Keep the full leaf visible
+              {tr("Keep the full leaf visible", language)}
             </p>
 
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              Use natural or bright light
+              {tr("Use natural or bright light", language)}
             </p>
 
             <p className="flex items-center gap-2">
               <CheckCircle2 size={17} className="text-forest" />
-              Avoid a blurry image
+              {tr("Avoid a blurry image", language)}
             </p>
           </div>
         </div>
@@ -662,7 +703,7 @@ async function handleAnalyse() {
         <button
           type="button"
           onClick={handleAnalyse}
-          disabled={!preview || isAnalyzing}
+          disabled={!preview || isAnalyzing || isOffline}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-5 py-4 font-bold text-forest-deep transition disabled:cursor-not-allowed disabled:opacity-40"
         >
           {isAnalyzing ? (
@@ -670,7 +711,11 @@ async function handleAnalyse() {
           ) : (
             <ScanLine size={22} />
           )}
-          {isAnalyzing ? scanSteps[scanStepIndex] : "Analyse Leaf"}
+          {isAnalyzing
+            ? scanSteps[scanStepIndex]
+            : isOffline
+            ? tr("Scan needs network", language)
+            : tr("Analyse Leaf", language)}
         </button>
 
         {isAnalyzing && (
@@ -680,7 +725,7 @@ async function handleAnalyse() {
                 {scanSteps[scanStepIndex]}...
               </p>
               <span className="text-xs font-semibold text-muted">
-                Step {scanStepIndex + 1}/{scanSteps.length}
+                {tr("Step", language)} {scanStepIndex + 1}/{scanSteps.length}
               </span>
             </div>
             <div className="mt-3 grid grid-cols-5 gap-1.5">
@@ -694,8 +739,10 @@ async function handleAnalyse() {
               ))}
             </div>
             <p className="mt-3 text-xs leading-5 text-muted">
-              Render Free can take a little longer while the ML model wakes up.
-              Keep this page open.
+              {tr(
+                "Render Free can take a little longer while the ML model wakes up. Keep this page open.",
+                language
+              )}
             </p>
           </div>
         )}

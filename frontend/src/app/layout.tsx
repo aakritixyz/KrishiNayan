@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/auth-context";
 import AccessBoundary from "@/components/AccessBoundary";
+import DesktopSidebar from "@/components/DesktopSidebar";
 import { LanguageProvider } from "@/lib/language-context";
+import OfflineStatus from "@/components/OfflineStatus";
+import PwaRegister from "@/components/PwaRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KrishiNayan - AI Farming Copilot",
+  title: "KrishiNayan - Farmer-first crop care",
   description:
-    "From crop photo to clear action - AI disease detection, weather-aware advice, government scheme eligibility, and an AI farmer chatbot for Indian farmers.",
+    "From crop photo to clear action - disease detection, weather-aware advice, recovery tracking, and officer alerts for Indian farmers.",
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
@@ -20,6 +24,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <LanguageProvider>
+            <PwaRegister />
+            <DesktopSidebar />
+            <OfflineStatus />
             <AccessBoundary>{children}</AccessBoundary>
           </LanguageProvider>
         </AuthProvider>

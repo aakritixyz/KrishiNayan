@@ -165,8 +165,8 @@ export default function ResultPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
         <header className="flex items-center justify-between">
           <button
             type="button"
@@ -186,7 +186,8 @@ export default function ResultPage() {
           </span>
         </header>
 
-        <div className="mt-6 flex items-center gap-5">
+        <div className="mt-6 grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+        <div className="flex items-center gap-5 rounded-[26px] border border-forest/10 bg-white p-4">
           <div
             className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full"
             style={{
@@ -214,16 +215,28 @@ export default function ResultPage() {
 
             <h2 className="mt-3 text-2xl font-bold text-forest">{disease}</h2>
 
-            <p className="mt-1 text-sm italic text-muted">
+              <p className="mt-1 text-sm font-semibold text-muted">
               {tx("Prediction status", language)}:{" "}
               {prediction
                 ? translateValue(prediction.prediction_status, language)
                 : "--"}
             </p>
+
+            {prediction && (
+              <p className={`mt-2 rounded-2xl px-3 py-2 text-xs font-semibold leading-5 ${
+                prediction.prediction_status === "uncertain"
+                  ? "bg-warning/25 text-forest"
+                  : "bg-leaf/25 text-forest"
+              }`}>
+                {prediction.prediction_status === "uncertain"
+                  ? "Below the 70% confidence threshold, so KrishiNayan asks for review instead of guessing."
+                  : "Above the 70% confidence threshold. Low-confidence scans are marked uncertain."}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="relative mt-6 h-[260px] overflow-hidden rounded-[26px] bg-forest/10">
+        <div className="relative h-[260px] overflow-hidden rounded-[26px] bg-forest/10 lg:h-[330px]">
           <Image
             src={scanImage}
             alt="Analysed leaf"
@@ -236,14 +249,15 @@ export default function ResultPage() {
           <span className="absolute right-[20%] top-[48%] h-9 w-9 rounded-full border-2 border-danger bg-danger/30 shadow-[0_0_0_8px_rgba(216,58,50,0.18)]" />
 
           <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-forest-deep/85 px-4 py-3 text-sm font-semibold text-white backdrop-blur">
-            {tx("AI prediction generated from uploaded leaf image", language)}
+            {tx("Model finding generated from uploaded leaf image", language)}
           </div>
+        </div>
         </div>
 
         {prediction?.gradcam_image && (
           <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
             <h3 className="font-bold text-forest">
-              {tx("Why the AI thinks this", language)}
+              {tx("Why this result was flagged", language)}
             </h3>
 
             <p className="mt-1 text-sm leading-5 text-muted">
@@ -265,7 +279,8 @@ export default function ResultPage() {
           </div>
         )}
 
-        <div className="mt-4 flex items-center gap-4 rounded-[22px] bg-warning p-4 text-forest-deep">
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="flex items-center gap-4 rounded-[22px] bg-warning p-4 text-forest-deep">
           <CloudRain size={34} className="shrink-0" />
           <div>
             <p className="font-bold">
@@ -283,7 +298,7 @@ export default function ResultPage() {
           </div>
         </div>
 
-        <div className="mt-4 rounded-[22px] border border-forest/15 bg-white p-4">
+        <div className="rounded-[22px] border border-forest/15 bg-white p-4">
           <div className="flex gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest text-leaf">
               <ShieldCheck size={23} />
@@ -315,6 +330,7 @@ export default function ResultPage() {
               </p>
             </div>
           </div>
+        </div>
         </div>
 
         {prediction?.cost_estimate && (

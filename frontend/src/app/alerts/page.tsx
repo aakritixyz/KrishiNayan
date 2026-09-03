@@ -86,8 +86,8 @@ export default function AlertsPage() {
   const maxDailyCount = Math.max(1, ...dailyCounts.map((day) => day.count));
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
         <header className="flex items-center justify-between">
           <button type="button" onClick={() => router.back()} className="flex h-11 w-11 items-center justify-center rounded-full border border-forest/10 bg-white text-forest">
             <ArrowLeft size={21} />

@@ -28,7 +28,7 @@ export default function BottomNav() {
 
   return (
     <>
-      <nav aria-label="Primary navigation" className="absolute inset-x-0 bottom-0 z-20 grid grid-cols-5 items-end border-t border-white/10 bg-forest-deep/95 px-2 pb-4 pt-3 backdrop-blur">
+      <nav aria-label="Primary navigation" className="absolute inset-x-0 bottom-0 z-20 grid grid-cols-5 items-end border-t border-white/10 bg-forest-deep/95 px-2 pb-4 pt-3 backdrop-blur lg:hidden">
         <Link href="/" className={`flex flex-col items-center gap-1 ${navColor("/")}`}><House size={20} /><span className="text-xs font-medium">{t.home}</span></Link>
         <NavButton onClick={() => go("/farm", t.farm)} active={pathname === "/farm"} icon={<Map size={20} />} label={t.farm} locked={!user && !isGuest} />
         <button type="button" onClick={() => go("/scan", t.cropScanning)} className="mt-[-28px] flex flex-col items-center gap-1 text-leaf"><span className="relative flex h-14 w-14 items-center justify-center rounded-full border-4 border-forest-deep bg-leaf text-forest-deep shadow-lg"><Camera size={25} strokeWidth={2.4} />{!user && !isGuest && <LockKeyhole size={12} className="absolute -right-1 -top-1 rounded-full bg-forest p-0.5 text-leaf" />}</span><span className="text-xs font-semibold">{t.scan}</span></button>

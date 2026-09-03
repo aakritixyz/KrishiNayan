@@ -30,7 +30,9 @@ SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=<supabase-service-role-key>
 SUPABASE_STORAGE_BUCKET=crop-scans
 SUPABASE_STORAGE_PUBLIC=false
-KRISHINAYAN_INFERENCE_BACKEND=demo
+# For judging or technical review, prefer tensorflow on a host with enough CPU/RAM.
+# Use demo only when you are explicitly presenting a fast workflow demo.
+KRISHINAYAN_INFERENCE_BACKEND=tensorflow
 KRISHINAYAN_ENABLE_GRADCAM=false
 KRISHINAYAN_MODEL_PATH=/var/data/models/KrishiNayan_Tomato_EfficientNetB0.keras
 ```
@@ -105,14 +107,19 @@ python scripts/seed_demo_alerts.py
 - Grad-CAM heatmaps are disabled by default in production because they add a
   second expensive model pass on CPU-only hosts. Set
   `KRISHINAYAN_ENABLE_GRADCAM=true` only when you specifically need heatmaps.
-- Render Free can be too slow for TensorFlow cold starts. Production defaults
-  to `KRISHINAYAN_INFERENCE_BACKEND=demo` for responsive hackathon demos. Set
-  `KRISHINAYAN_INFERENCE_BACKEND=tensorflow` on a stronger instance when you
-  want full model inference.
+- Render Free can be too slow for TensorFlow cold starts. The app supports
+  `KRISHINAYAN_INFERENCE_BACKEND=demo` for a clearly disclosed workflow demo,
+  but judging/technical review should run `tensorflow` so predictions come from
+  the actual crop models. If a hosted free-tier demo is left on `demo`, say so
+  proactively and show local TensorFlow inference as the model proof.
 - Rate limiting is enabled in app code for auth, chatbot, and prediction routes.
   Successful responses include `X-RateLimit-Limit`,
   `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Limited responses include
   `Retry-After`. Tests disable limiting with
   `KRISHINAYAN_DISABLE_RATE_LIMIT=true`.
+- The frontend PWA service worker is enabled automatically in production. For a
+  local offline demo, set `NEXT_PUBLIC_ENABLE_OFFLINE_SW=true`, open the app
+  once online, then test cached pages with the browser set offline. New disease
+  scans still require the backend model.
 - `/health` checks database connectivity and active model-file availability.
   It also reports whether the configured storage backend is ready.

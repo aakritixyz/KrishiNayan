@@ -126,8 +126,8 @@ export default function OfficerPage() {
   const scopeState = overview?.scope.state || user?.access_state || "Assigned state";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-x-hidden bg-[#eef2ec] text-forest sm:min-h-[844px] sm:rounded-[32px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-x-hidden bg-[#eef2ec] text-forest sm:min-h-[844px] sm:rounded-[32px] app-frame app-frame--officer">
       <header className="sticky top-0 z-20 border-b border-white/10 bg-forest-deep text-white shadow-sm">
         <div className="flex w-full items-center justify-between gap-2 px-4 py-3 sm:px-5 sm:py-4">
           <div className="flex min-w-0 items-center gap-3">

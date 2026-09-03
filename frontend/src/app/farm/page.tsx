@@ -1,6 +1,7 @@
 "use client";
 
 import BottomNav from "@/components/BottomNav";
+import FarmPlotMap, { type FarmMapPlot } from "@/components/FarmPlotMap";
 import { apiJson, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/lib/language-context";
@@ -48,6 +49,8 @@ const EMPTY_FORM = {
   state: "",
   district: "",
   village: "",
+  latitude: "",
+  longitude: "",
 };
 
 export default function FarmPage() {
@@ -102,6 +105,8 @@ export default function FarmPage() {
           ...form,
           sowing_date: form.sowing_date || null,
           area_acres: form.area_acres ? Number(form.area_acres) : null,
+          latitude: form.latitude ? Number(form.latitude) : null,
+          longitude: form.longitude ? Number(form.longitude) : null,
         }),
       });
       setPlots((current) => [data.plot, ...current]);
@@ -129,10 +134,18 @@ export default function FarmPage() {
   }
 
   const selected = plots.find((plot) => plot.id === selectedId) ?? plots[0];
+  const mapPlots: FarmMapPlot[] = plots.map((plot) => ({
+    id: plot.id,
+    name: plot.name,
+    crop_label: plot.crop_label,
+    health_score: plot.latest_scan?.health_score ?? null,
+    latitude: plot.latitude,
+    longitude: plot.longitude,
+  }));
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-forest-deep sm:p-6">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
+    <main className="app-main flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
+      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame bg-cream px-5 pb-32 pt-6 sm:min-h-[844px] sm:rounded-[36px]">
         <header className="flex items-center justify-between">
           <button type="button" onClick={() => router.back()} className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-forest" aria-label={tr("Go back", language)}>
             <ArrowLeft size={21} />
@@ -164,6 +177,8 @@ export default function FarmPage() {
             <input value={form.district} onChange={(event) => setForm({ ...form, district: event.target.value })} placeholder="District" className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm" />
             <input value={form.state} onChange={(event) => setForm({ ...form, state: event.target.value })} placeholder="State" className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm" />
             <input value={form.village} onChange={(event) => setForm({ ...form, village: event.target.value })} placeholder="Village" className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm" />
+            <input type="number" min="-90" max="90" step="0.000001" value={form.latitude} onChange={(event) => setForm({ ...form, latitude: event.target.value })} placeholder="Latitude" className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm" />
+            <input type="number" min="-180" max="180" step="0.000001" value={form.longitude} onChange={(event) => setForm({ ...form, longitude: event.target.value })} placeholder="Longitude" className="rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm" />
           </div>
 
           <button type="submit" disabled={isSaving} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-4 py-3 font-bold text-forest-deep disabled:opacity-50">
@@ -171,6 +186,13 @@ export default function FarmPage() {
             {isSaving ? "Saving..." : "Save Plot"}
           </button>
         </form>
+
+        <div className="mt-5 rounded-[24px] border border-forest/10 bg-white p-2">
+          <FarmPlotMap plots={mapPlots} selectedId={selected?.id ?? null} />
+          <p className="px-3 pb-2 pt-3 text-xs font-semibold text-muted">
+            GPS coordinates stay inside KrishiNayan; this private map does not send field locations to an external tile service.
+          </p>
+        </div>
 
         <div className="mt-5 space-y-3">
           {plots.length === 0 ? (

@@ -153,7 +153,7 @@ function OnboardingWizard() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-forest-deep px-5 py-10">
-      <section className="w-full max-w-[430px] rounded-[32px] bg-cream p-6">
+      <section className="w-full max-w-[430px] rounded-[32px] lg:max-w-3xl bg-cream p-6">
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-forest text-leaf">
           <Leaf size={22} />
         </span>

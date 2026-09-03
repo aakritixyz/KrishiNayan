@@ -108,6 +108,16 @@ export async function apiFetch(
       );
     }
 
+    if (
+      typeof navigator !== "undefined" &&
+      !navigator.onLine
+    ) {
+      throw new ApiError(
+        "You are offline. Saved data is available only after it has loaded once.",
+        503
+      );
+    }
+
     throw error;
   } finally {
     clearTimeout(timeout);

@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque-600.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque-800.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #f7f6ef;
   --foreground: #163b2b;
@@ -17,7 +49,8 @@
   --color-danger: #d83a32;
   --color-muted: #66756d;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+  --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gurmukhi",
     Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas,
     monospace;
@@ -132,5 +165,67 @@ textarea:focus-visible {
 @media (max-width: 639px) {
   body {
     overflow-x: hidden;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(183, 227, 0, 0.12), transparent 26rem),
+      #edf1e7;
+    padding: 32px 32px 32px 320px;
+  }
+
+  .app-frame {
+    width: min(100%, 1080px);
+    max-width: none;
+    min-height: calc(100vh - 64px);
+    border: 1px solid rgba(6, 59, 42, 0.08);
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgba(3, 39, 31, 0.12);
+  }
+
+  .app-frame:not(.app-frame--home):not(.app-frame--chat):not(.app-frame--officer) {
+    padding: 32px;
+    padding-bottom: 32px;
+  }
+
+  .app-frame > header {
+    max-width: 980px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .app-frame--wide {
+    width: min(100%, 1240px);
+  }
+
+  .app-frame--chat {
+    width: min(100%, 860px);
+    max-width: none;
+    height: calc(100vh - 64px);
+    max-height: calc(100vh - 64px);
+  }
+
+  .app-frame--home {
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    min-height: 720px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+  }
+
+  .app-main--home {
+    padding: 0 0 0 288px;
+    background: #03271f;
+  }
+
+  .app-frame--officer {
+    width: min(100%, 1240px);
+    max-width: none;
   }
 }
