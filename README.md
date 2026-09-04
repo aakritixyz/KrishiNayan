@@ -90,7 +90,7 @@ disease signals for institutional response.**
 | Crops supported | **3** |
 | Disease/health classes across supported crops | **19** |
 | Confidence threshold | **70%** |
-| Rice independent field sample | **200 images** |
+| Rice independent field sample | **200 images** | + 780 images from the PlantVillage Dataset
 | Maize real-world farm evaluation | **1,109 images** |
 | Tomato real-world farm evaluation | **1,048 images** |
 
@@ -118,10 +118,10 @@ KrishiNayan intentionally distinguishes between **shipped software**,
 
 | Surface | Link |
 |---|---|
-| Frontend | Add deployed Vercel URL |
-| Backend health | Add deployed Render `/health` URL |
+| Frontend | https://krishi-nayan.vercel.app/ |
+| Backend health |  |
 | Demo video | Add Drive, Loom or YouTube URL |
-| Presentation | Add PPT/PDF URL |
+| Presentation | https://www.canva.com/design/DAHT-dyWvv4/FypK-KgclvUWSUmZQmUVxA/edit |
 | Repository | `https://github.com/aakritixyz/KrishiNayan` |
 
 ------------------------------------------------------------------------
