@@ -43,8 +43,12 @@
 
   --color-forest: #063b2a;
   --color-forest-deep: #03271f;
+  --color-forest-light: #0f5c3f;
+  --color-charcoal: #12211b;
   --color-leaf: #b7e300;
+  --color-leaf-soft: #dcf27a;
   --color-cream: #f7f6ef;
+  --color-sand: #efe9da;
   --color-warning: #f5a800;
   --color-danger: #d83a32;
   --color-muted: #66756d;
@@ -52,6 +56,10 @@
   --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gurmukhi",
     Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gurmukhi", Roboto,
+    Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas,
     monospace;
 }
@@ -165,6 +173,117 @@ textarea:focus-visible {
 @media (max-width: 639px) {
   body {
     overflow-x: hidden;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Premium surface language: grain texture, glass, editorial utilities    */
+/* ---------------------------------------------------------------------- */
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Subtle film-grain overlay used on dark/hero surfaces for a premium,
+   non-flat finish. Pure CSS, no image asset required. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.glass-panel {
+  background: rgba(247, 246, 239, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(6, 59, 42, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.section-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Organic, slow motion — used for ambient field/atmosphere elements */
+@keyframes drift-slow {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(1deg); }
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.85); opacity: 0.55; }
+  70% { transform: scale(1.9); opacity: 0; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes float-particle {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.5; }
+  100% { transform: translate3d(0, -120px, 0); opacity: 0; }
+}
+
+.animate-drift-slow { animation: drift-slow 9s ease-in-out infinite; }
+.animate-sway { animation: sway 6s ease-in-out infinite; transform-origin: bottom center; }
+.animate-shimmer { animation: shimmer-sweep 2.6s ease-in-out infinite; }
+
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(183, 227, 0, 0.55);
+  animation: float-particle linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

@@ -141,45 +141,75 @@ export default function DesktopSidebar() {
   const t = SIDEBAR_TEXT[language];
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-white/10 bg-forest-deep px-4 py-5 text-white lg:flex">
-      <Link href="/" className="flex items-center gap-3 rounded-2xl p-2">
-        <BrandMark className="h-12 w-12 shrink-0" />
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-hidden border-r border-white/[0.06] bg-forest-deep px-4 py-6 text-white lg:flex">
+      {/* Ambient backdrop: soft radial glow + hairline texture, no motion */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-90"
+        style={{
+          background:
+            "radial-gradient(120% 60% at 0% 0%, rgba(183,227,0,0.10), transparent 60%), radial-gradient(80% 50% at 100% 100%, rgba(15,92,63,0.35), transparent 60%)",
+        }}
+      />
+
+      <Link
+        href="/"
+        className="relative z-10 flex items-center gap-3 rounded-2xl p-2 no-global-hover"
+      >
+        <BrandMark className="h-11 w-11 shrink-0 drop-shadow-[0_4px_18px_rgba(183,227,0,0.25)]" />
         <span>
-          <span className="block text-lg font-bold">KrishiNayan</span>
-          <span className="block text-xs font-medium text-white/55">
+          <span className="block font-display text-lg font-bold tracking-tight">
+            KrishiNayan
+          </span>
+          <span className="block text-[11px] font-medium uppercase tracking-[0.14em] text-white/45">
             {t.tagline}
           </span>
         </span>
       </Link>
 
-      <nav aria-label={t.desktopNavigation} className="mt-6 flex-1 space-y-1">
+      <div className="relative z-10 my-5 h-px bg-gradient-to-r from-transparent via-white/12 to-transparent" />
+
+      <nav
+        aria-label={t.desktopNavigation}
+        className="relative z-10 flex-1 space-y-1"
+      >
         {NAV_ITEMS.map(({ href, key, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold ${
+              className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
                 active
-                  ? "bg-leaf text-forest-deep"
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
+                  ? "bg-white/[0.06] text-leaf"
+                  : "text-white/60 hover:bg-white/[0.04] hover:text-white"
               }`}
             >
-              <Icon size={19} />
-              {t[key]}
+              <span
+                aria-hidden="true"
+                className={`absolute left-0 top-1/2 h-5 -translate-y-1/2 rounded-full bg-leaf transition-all duration-300 ${
+                  active ? "w-[3px] opacity-100" : "w-0 opacity-0"
+                }`}
+              />
+              <Icon
+                size={18}
+                strokeWidth={active ? 2.3 : 1.9}
+                className={active ? "text-leaf" : "text-white/50 group-hover:text-white/80"}
+              />
+              <span className="font-body tracking-tight">{t[key]}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-white/45">
+      <div className="relative z-10 rounded-2xl border border-white/[0.08] bg-white/[0.035] p-4">
+        <p className="section-eyebrow text-white/35">
           {user ? t.signedInAs : t.browsingAs}
         </p>
-        <p className="mt-1 font-bold">
+        <p className="mt-1.5 font-display font-bold text-white">
           {user ? user.full_name : isGuest ? t.guestFarmer : t.visitor}
         </p>
-        <p className="mt-1 text-xs leading-5 text-white/55">
+        <p className="mt-1.5 text-xs leading-5 text-white/50">
           {t.accountNote}
         </p>
         {user && (
@@ -189,7 +219,7 @@ export default function DesktopSidebar() {
               logout();
               router.push("/login");
             }}
-            className="mt-3 rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white/75"
+            className="mt-3 rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-white/70 hover:border-white/25 hover:text-white"
           >
             {t.signOut}
           </button>

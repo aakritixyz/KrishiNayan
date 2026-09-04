@@ -4,18 +4,28 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ActivitySquare,
+  ArrowRight,
+  BrainCircuit,
   Camera,
   CloudOff,
   CloudSun,
   Headphones,
+  HeartPulse,
   Landmark,
+  Layers,
   LockKeyhole,
   LogIn,
   MapPinned,
+  Radar,
+  ScanLine,
   ShieldCheck,
   Siren,
+  Sparkles,
+  Sprout,
   UserRound,
+  Wrench,
 } from "lucide-react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 import BrandMark from "@/components/BrandMark";
 import BottomNav from "@/components/BottomNav";
@@ -272,6 +282,94 @@ const HOME_TEXT: Record<
   },
 };
 
+/**
+ * Copy for the new storytelling sections below the hero (flow, field
+ * intelligence, field memory, outbreak intelligence, closing CTA).
+ * These sections are presented in English for now — the hero, nav and
+ * every functional screen remain fully localized via HOME_TEXT above.
+ * No new statistics are introduced here; every number reused below
+ * already exists in HOME_TEXT and is sourced in `sourcesLine`.
+ */
+const STORY_TEXT = {
+  flowEyebrow: "How it works",
+  flowTitle: "A photograph becomes field intelligence.",
+  flowBody:
+    "Every scan moves through the same clear path — from what's growing in your field to a next step you can act on today.",
+  flowSteps: [
+    {
+      label: "Field",
+      title: "Your crop, as it stands",
+      body: "A photo from your phone, taken right where the plant is growing.",
+    },
+    {
+      label: "Scan",
+      title: "Captured in seconds",
+      body: "The photo is checked against crop stage, recent weather and plot history.",
+    },
+    {
+      label: "Understand",
+      title: "A clear read, not a guess",
+      body: "KrishiNayan names what it sees — and says \"uncertain\" below its confidence gate rather than risk a wrong call.",
+    },
+    {
+      label: "Act",
+      title: "A next step you can take",
+      body: "Treatment, timing and cost guidance suited to your crop and your plot.",
+    },
+    {
+      label: "Recover",
+      title: "Followed through to the end",
+      body: "Recovery tasks and a recheck scan keep the plot's story connected.",
+    },
+  ],
+  fieldEyebrow: "Field intelligence",
+  fieldTitle: "Every plot, remembered.",
+  fieldBody:
+    "Each scan is saved against the plot it came from, so patterns across your field become visible over time — not just one photo in isolation.",
+  fieldNote: "Illustrative preview",
+  fieldCta: "Open My Farm",
+  fieldPlots: [
+    { name: "Plot A", crop: "Rice", status: "Healthy", tone: "good" as const, x: 22, y: 32 },
+    { name: "Plot B", crop: "Tomato", status: "Watch: early blight", tone: "watch" as const, x: 64, y: 22 },
+    { name: "Plot C", crop: "Wheat", status: "Healthy", tone: "good" as const, x: 40, y: 62 },
+    { name: "Plot D", crop: "Cotton", status: "Needs review", tone: "alert" as const, x: 78, y: 68 },
+  ],
+  memoryEyebrow: "Field memory",
+  memoryTitle: "Recovery, tracked day by day.",
+  memoryBody:
+    "From the moment an issue is found, KrishiNayan lays out a recovery plan and keeps score as each step is completed — the same plan you'll find on the Recovery page.",
+  memoryCta: "View recovery plans",
+  memorySteps: [
+    { day: "Day 0", title: "Issue identified", desc: "Scan result saved to the plot's record." },
+    { day: "Day 1", title: "Recommended action", desc: "Treatment and timing suited to the crop stage." },
+    { day: "Day 3", title: "Treatment applied", desc: "Task marked complete on the recovery plan." },
+    { day: "Day 7", title: "Recheck scan", desc: "A follow-up photo compares progress against Day 0." },
+    { day: "Day 14", title: "Plot recovered", desc: "Health score and history stay on file for next season." },
+  ],
+  outbreakEyebrow: "Outbreak intelligence",
+  outbreakCta: "See nearby alerts",
+  storyEyebrow: "Why this matters",
+  storyCta: "Read the field proof",
+  finalEyebrow: "Ready when your field is",
+  finalTitle: "See what your field is telling you.",
+  finalBody:
+    "Point your camera at the plant. KrishiNayan handles the rest — diagnosis, next steps and a plan to recover.",
+  finalCta: "Scan your crop",
+};
+
+/** Fixed (non-random) seeds for the hero's ambient particles, so
+ * server-rendered and client-rendered markup always match. */
+const PARTICLE_SEEDS = [
+  { left: 8, bottom: 10, size: "4px", duration: 11, delay: 0 },
+  { left: 18, bottom: 4, size: "3px", duration: 13, delay: 2 },
+  { left: 30, bottom: 18, size: "5px", duration: 10, delay: 4 },
+  { left: 46, bottom: 8, size: "3px", duration: 14, delay: 1 },
+  { left: 58, bottom: 22, size: "4px", duration: 12, delay: 5 },
+  { left: 70, bottom: 6, size: "3px", duration: 15, delay: 3 },
+  { left: 82, bottom: 16, size: "5px", duration: 11, delay: 6 },
+  { left: 92, bottom: 2, size: "3px", duration: 13, delay: 2.5 },
+];
+
 const LOCATION_TRANSLATIONS: Record<
   string,
   Record<Language, string>
@@ -332,6 +430,7 @@ export default function Home() {
   const t = HOME_TEXT[language];
 
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   const [guestFeature, setGuestFeature] = useState<string | null>(null);
   const [weather, setWeather] = useState<HomeWeather | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
@@ -405,9 +504,47 @@ export default function Home() {
 
   return (
     <main className="app-main app-main--home flex min-h-screen items-center justify-center bg-forest-deep sm:p-6 lg:items-start lg:justify-center">
-      <section className="relative min-h-screen w-full max-w-[430px] overflow-hidden app-frame app-frame--home bg-forest-deep sm:min-h-[844px] sm:rounded-[32px]">
+      <section className="relative w-full max-w-[430px] overflow-hidden app-frame app-frame--home bg-forest-deep sm:rounded-[32px] lg:max-w-none">
+        {/* ---------------------------------------------------------- */}
+        {/* HERO — first screen of the story: "From crop photo to      */}
+        {/* clear action."                                             */}
+        {/* ---------------------------------------------------------- */}
+        <div className="relative min-h-screen w-full overflow-hidden grain">
         <Image src="/images/farmers-field.jpg" alt={t.imageAlt} fill priority sizes="(min-width: 1024px) 1120px, (max-width: 640px) 100vw, 430px" className="object-cover" />
-        <div aria-hidden="true" className="absolute inset-0 bg-forest-deep/58" />
+        {/* Base scrim — always dark enough for white text to read, on
+            every breakpoint. Kept as one flat layer so there's no bright
+            "gap" anywhere behind the copy. */}
+        <div aria-hidden="true" className="absolute inset-0 bg-forest-deep/72" />
+        {/* Extra depth: a soft vignette that deepens toward the bottom
+            and left, never fading below the base scrim above. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-t from-forest-deep/60 via-transparent to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-gradient-to-r from-forest-deep/45 via-transparent to-transparent lg:block"
+        />
+
+        {/* Atmospheric particles — pure CSS, respects reduced motion */}
+        {!reduceMotion && (
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+            {PARTICLE_SEEDS.map((p, i) => (
+              <span
+                key={i}
+                className="particle"
+                style={{
+                  left: `${p.left}%`,
+                  bottom: `${p.bottom}%`,
+                  width: p.size,
+                  height: p.size,
+                  animationDuration: `${p.duration}s`,
+                  animationDelay: `${p.delay}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="home-content relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-6 pb-28 pt-8 text-center lg:grid lg:min-h-full lg:grid-cols-[minmax(460px,0.95fr)_minmax(500px,1.05fr)] lg:items-center lg:gap-10 lg:px-16 lg:py-8 lg:text-left xl:gap-16 xl:px-20">
           {/* Left: identity, hero copy, primary action */}
@@ -568,8 +705,37 @@ export default function Home() {
           </div>
         </div>
 
-        <BottomNav />
+        {/* Scroll cue — hidden once motion is reduced */}
+        {!reduceMotion && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-24 z-10 hidden justify-center lg:flex"
+          >
+            <div className="flex animate-drift-slow flex-col items-center gap-1 text-white/45">
+              <span className="section-eyebrow">Scroll</span>
+              <span className="h-8 w-px bg-gradient-to-b from-white/50 to-transparent" />
+            </div>
+          </div>
+        )}
+        </div>
+        {/* ---------------------------------------------------------- */}
+        {/* END HERO                                                   */}
+        {/* ---------------------------------------------------------- */}
+
+        <FlowSection reduceMotion={Boolean(reduceMotion)} />
+        <FieldIntelligenceSection onOpenFarm={() => gated("/farm", t.farmFeature)} />
+        <FieldMemorySection onOpenRecovery={() => gated("/recovery", t.healthFeature)} />
+        <OutbreakSection body={t.outbreakBody} onOpenAlerts={() => gated("/alerts", "nearby outbreak alerts")} />
+        <StorySection t={t} />
+        <FinalCtaSection onScan={() => gated("/scan", t.scanFeature)} />
       </section>
+
+      {/* Fixed wrapper keeps the mobile tab bar pinned to the viewport
+          across the whole scrollable story, without altering BottomNav's
+          own (shared, `absolute`) positioning used on every other page. */}
+      <div className="fixed inset-x-0 bottom-0 z-30 lg:hidden">
+        <BottomNav />
+      </div>
 
       <GuestGateModal
         open={Boolean(guestFeature)}
@@ -610,6 +776,441 @@ function TrustRow({
         <p className="mt-0.5 text-xs leading-5 text-white/60">{body}</p>
       </div>
     </li>
+  );
+}
+
+/* ============================================================== */
+/* STORYTELLING SECTIONS — Field → Scan → Understand → Act →       */
+/* Recover. Rendered below the hero, inside the same scrollable    */
+/* app-frame. Dark/cream sections alternate for editorial rhythm.  */
+/* ============================================================== */
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const stagger: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+const FLOW_ICONS = [Sprout, ScanLine, BrainCircuit, Wrench, HeartPulse];
+
+function FlowSection({ reduceMotion }: { reduceMotion: boolean }) {
+  const s = STORY_TEXT;
+  return (
+    <section className="relative bg-cream px-6 py-20 text-forest-deep sm:px-10 lg:px-16 xl:px-20 xl:py-28">
+      <motion.div
+        initial={reduceMotion ? undefined : "hidden"}
+        whileInView={reduceMotion ? undefined : "show"}
+        viewport={{ once: true, amount: 0.3 }}
+        variants={fadeUp}
+        className="mx-auto max-w-2xl text-center"
+      >
+        <p className="section-eyebrow text-forest-light">{s.flowEyebrow}</p>
+        <h2 className="mt-3 font-display text-3xl font-bold text-balance leading-[1.1] sm:text-4xl xl:text-[2.75rem]">
+          {s.flowTitle}
+        </h2>
+        <p className="mt-4 text-base leading-7 text-forest-deep/65">{s.flowBody}</p>
+      </motion.div>
+
+      <motion.div
+        initial={reduceMotion ? undefined : "hidden"}
+        whileInView={reduceMotion ? undefined : "show"}
+        viewport={{ once: true, amount: 0.15 }}
+        variants={stagger}
+        className="relative mx-auto mt-14 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-3"
+      >
+        {/* connecting line, desktop only */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 right-0 top-9 hidden h-px bg-gradient-to-r from-transparent via-forest-deep/15 to-transparent lg:block"
+        />
+        {s.flowSteps.map((step, i) => {
+          const Icon = FLOW_ICONS[i];
+          const isScanStep = i === 1;
+          return (
+            <motion.div
+              key={step.label}
+              variants={fadeUp}
+              className="relative flex flex-col rounded-2xl border border-forest-deep/8 bg-white/70 p-5"
+            >
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-forest-deep text-leaf">
+                  <Icon size={16} strokeWidth={2.2} />
+                </span>
+                <span className="section-eyebrow text-forest-deep/40">
+                  0{i + 1} · {step.label}
+                </span>
+              </div>
+              <h3 className="mt-4 font-display text-base font-bold leading-snug">{step.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-forest-deep/60">{step.body}</p>
+
+              {isScanStep && <ScanVisual />}
+            </motion.div>
+          );
+        })}
+      </motion.div>
+    </section>
+  );
+}
+
+/** Small futuristic scan animation: a sweeping scan-line and AI-style
+ * detection brackets over a crop photo. Pure CSS keyframes; respects
+ * prefers-reduced-motion globally via globals.css. */
+function ScanVisual() {
+  return (
+    <div className="relative mt-4 aspect-[4/3] w-full overflow-hidden rounded-xl border border-forest-deep/10">
+      <Image
+        src="/images/tomato-field.png"
+        alt="Close-up of a tomato plant leaf, illustrating a crop scan"
+        fill
+        sizes="280px"
+        className="object-cover"
+      />
+      <div aria-hidden="true" className="absolute inset-0 bg-forest-deep/25" />
+      {/* detection brackets */}
+      <span className="absolute left-[18%] top-[22%] h-8 w-10 rounded-[3px] border border-leaf/80" />
+      <span className="absolute left-[52%] top-[46%] h-9 w-9 rounded-[3px] border border-leaf/80" />
+      {/* scan sweep */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-leaf/0 via-leaf/35 to-leaf/0 animate-shimmer"
+        style={{ animationDirection: "alternate" }}
+      />
+    </div>
+  );
+}
+
+function FieldIntelligenceSection({ onOpenFarm }: { onOpenFarm: () => void }) {
+  const s = STORY_TEXT;
+  const toneStyles: Record<string, string> = {
+    good: "bg-leaf text-leaf",
+    watch: "bg-warning text-warning",
+    alert: "bg-danger text-danger",
+  };
+
+  return (
+    <section className="relative overflow-hidden bg-forest-deep px-6 py-20 text-white sm:px-10 lg:px-16 xl:px-20 xl:py-28">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 85% 0%, rgba(183,227,0,0.10), transparent 60%)",
+        }}
+      />
+      <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+        >
+          <p className="section-eyebrow text-leaf/80">{s.fieldEyebrow}</p>
+          <h2 className="mt-3 font-display text-3xl font-bold text-balance leading-[1.1] sm:text-4xl">
+            {s.fieldTitle}
+          </h2>
+          <p className="mt-4 max-w-md text-base leading-7 text-white/65">{s.fieldBody}</p>
+          <button
+            type="button"
+            onClick={onOpenFarm}
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-forest-deep"
+          >
+            <Layers size={16} />
+            {s.fieldCta}
+            <ArrowRight size={15} />
+          </button>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+          className="relative"
+        >
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-white/10 bg-forest">
+            {/* stylised field rows, pure SVG */}
+            <svg viewBox="0 0 400 300" className="absolute inset-0 h-full w-full" aria-hidden="true">
+              <rect width="400" height="300" fill="#0a3327" />
+              {Array.from({ length: 10 }).map((_, i) => (
+                <path
+                  key={i}
+                  d={`M ${i * 42 - 40} 300 L ${i * 42 + 40} 0`}
+                  stroke="rgba(183,227,0,0.08)"
+                  strokeWidth="14"
+                />
+              ))}
+            </svg>
+
+            {s.fieldPlots.map((plot) => (
+              <div
+                key={plot.name}
+                className="group absolute -translate-x-1/2 -translate-y-1/2"
+                style={{ left: `${plot.x}%`, top: `${plot.y}%` }}
+              >
+                <span className={`relative flex h-3.5 w-3.5 items-center justify-center rounded-full pulse-ring ${toneStyles[plot.tone]}`}>
+                  <span className="relative z-10 h-full w-full rounded-full" />
+                </span>
+                <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 w-max -translate-x-1/2 rounded-lg border border-white/10 bg-forest-deep/95 px-3 py-2 text-left opacity-0 shadow-xl backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+                  <p className="text-xs font-bold text-white">{plot.name} · {plot.crop}</p>
+                  <p className="text-[11px] text-white/60">{plot.status}</p>
+                </div>
+              </div>
+            ))}
+
+            <span className="absolute bottom-3 left-3 rounded-full border border-white/15 bg-forest-deep/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/55 backdrop-blur-sm">
+              {s.fieldNote}
+            </span>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function FieldMemorySection({ onOpenRecovery }: { onOpenRecovery: () => void }) {
+  const s = STORY_TEXT;
+  return (
+    <section className="relative bg-sand px-6 py-20 text-forest-deep sm:px-10 lg:px-16 xl:px-20 xl:py-28">
+      <div className="mx-auto max-w-6xl">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+          className="max-w-xl"
+        >
+          <p className="section-eyebrow text-forest-light">{s.memoryEyebrow}</p>
+          <h2 className="mt-3 font-display text-3xl font-bold text-balance leading-[1.1] sm:text-4xl">
+            {s.memoryTitle}
+          </h2>
+          <p className="mt-4 text-base leading-7 text-forest-deep/65">{s.memoryBody}</p>
+          <button
+            type="button"
+            onClick={onOpenRecovery}
+            className="mt-7 inline-flex items-center gap-2 rounded-full border-2 border-forest-deep px-5 py-3 text-sm font-bold text-forest-deep"
+          >
+            <HeartPulse size={16} />
+            {s.memoryCta}
+            <ArrowRight size={15} />
+          </button>
+        </motion.div>
+
+        <motion.ol
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={stagger}
+          className="relative mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4"
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-0 right-0 top-4 hidden h-px bg-forest-deep/12 lg:block"
+          />
+          {s.memorySteps.map((step, i) => (
+            <motion.li key={step.day} variants={fadeUp} className="relative">
+              <div className="flex items-center gap-2 lg:block">
+                <span
+                  className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    i === s.memorySteps.length - 1
+                      ? "bg-leaf text-forest-deep"
+                      : "border-2 border-forest-deep bg-sand text-forest-deep"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <p className="section-eyebrow text-forest-deep/45 lg:mt-3">{step.day}</p>
+              </div>
+              <h3 className="mt-2 font-display text-sm font-bold leading-snug lg:mt-1">{step.title}</h3>
+              <p className="mt-1.5 text-xs leading-5 text-forest-deep/60">{step.desc}</p>
+            </motion.li>
+          ))}
+        </motion.ol>
+      </div>
+    </section>
+  );
+}
+
+function OutbreakSection({
+  body,
+  onOpenAlerts,
+}: {
+  body: string;
+  onOpenAlerts: () => void;
+}) {
+  const s = STORY_TEXT;
+  // Fixed illustrative intensity grid — not live data. Denser near the
+  // centre to suggest a regional cluster, exactly as described in `body`.
+  const grid = [
+    [0, 0, 1, 1, 0, 0, 0, 0],
+    [0, 1, 2, 2, 1, 0, 0, 0],
+    [1, 2, 3, 3, 2, 1, 0, 0],
+    [0, 1, 2, 2, 1, 0, 1, 0],
+    [0, 0, 1, 1, 0, 0, 0, 0],
+  ];
+  const dotTone = [
+    "bg-white/8",
+    "bg-warning/40 text-warning",
+    "bg-warning/75 text-warning",
+    "bg-danger text-danger",
+  ];
+
+  return (
+    <section className="relative overflow-hidden bg-forest px-6 py-20 text-white sm:px-10 lg:px-16 xl:px-20 xl:py-28">
+      <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+          className="lg:order-2"
+        >
+          <p className="section-eyebrow text-leaf/80">{s.outbreakEyebrow}</p>
+          <h2 className="mt-3 font-display text-3xl font-bold text-balance leading-[1.1] sm:text-4xl">
+            Signals your neighbours are seeing too.
+          </h2>
+          <p className="mt-4 max-w-md text-base leading-7 text-white/65">{body}</p>
+          <button
+            type="button"
+            onClick={onOpenAlerts}
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-3 text-sm font-bold text-forest-deep"
+          >
+            <Siren size={16} />
+            {s.outbreakCta}
+            <ArrowRight size={15} />
+          </button>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+          className="lg:order-1"
+        >
+          <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-forest-deep/60 p-6">
+            <div className="flex items-center gap-2 text-white/45">
+              <Radar size={16} className="text-leaf" />
+              <span className="section-eyebrow">Illustrative preview</span>
+            </div>
+            <div className="mt-5 grid grid-cols-8 gap-2">
+              {grid.flat().map((intensity, i) => (
+                <span
+                  key={i}
+                  className={`aspect-square rounded-sm ${dotTone[intensity]} ${
+                    intensity >= 2 ? "pulse-ring" : ""
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function StorySection({ t }: { t: (typeof HOME_TEXT)["en"] }) {
+  const s = STORY_TEXT;
+  return (
+    <section className="relative bg-cream px-6 py-20 text-forest-deep sm:px-10 lg:px-16 xl:px-20 xl:py-28">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={fadeUp}
+        className="mx-auto max-w-2xl text-center"
+      >
+        <p className="section-eyebrow text-forest-light">{s.storyEyebrow}</p>
+        <h2 className="mt-3 font-display text-3xl font-bold text-balance leading-[1.1] sm:text-4xl">
+          {t.impactTitle}
+        </h2>
+        <p className="mt-4 text-base leading-7 text-forest-deep/65">{t.impactBody}</p>
+      </motion.div>
+
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={stagger}
+        className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-4"
+      >
+        {[
+          { value: "146M", label: t.farmersLabel },
+          { value: "86%", label: t.smallFarmersLabel },
+          { value: "10K", label: t.fpoLabel },
+          { value: "20-40%", label: t.lossLabel },
+        ].map((m) => (
+          <motion.div
+            key={m.label}
+            variants={fadeUp}
+            className="rounded-2xl border border-forest-deep/10 bg-white/70 px-4 py-6 text-center"
+          >
+            <p className="font-display text-3xl font-extrabold leading-none">{m.value}</p>
+            <p className="mt-2 text-[11px] font-semibold uppercase leading-4 tracking-wide text-forest-deep/45">
+              {m.label}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={fadeUp}
+        className="mx-auto mt-6 max-w-4xl rounded-2xl border border-forest-deep/10 bg-forest-deep px-6 py-4 text-center text-white sm:flex sm:items-center sm:justify-between sm:text-left"
+      >
+        <div>
+          <p className="section-eyebrow text-leaf/80">{t.fieldProof}</p>
+          <p className="mt-1 text-sm font-semibold leading-6 text-white/85">{t.proofLine}</p>
+        </div>
+        <p className="mt-3 text-[11px] leading-4 text-white/40 sm:mt-0 sm:max-w-[220px] sm:text-right">
+          {t.sourcesLine}
+        </p>
+      </motion.div>
+    </section>
+  );
+}
+
+function FinalCtaSection({ onScan }: { onScan: () => void }) {
+  const s = STORY_TEXT;
+  return (
+    <section className="relative overflow-hidden bg-forest-deep px-6 pb-32 pt-24 text-center text-white sm:px-10 lg:px-16 lg:pb-24 xl:py-32">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(50% 60% at 50% 30%, rgba(183,227,0,0.14), transparent 65%)",
+        }}
+      />
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.4 }}
+        variants={fadeUp}
+        className="relative mx-auto max-w-2xl"
+      >
+        <p className="section-eyebrow text-leaf/80">{s.finalEyebrow}</p>
+        <h2 className="mt-4 font-display text-3xl font-bold text-balance leading-[1.08] sm:text-5xl">
+          {s.finalTitle}
+        </h2>
+        <p className="mx-auto mt-5 max-w-md text-base leading-7 text-white/65">{s.finalBody}</p>
+        <button
+          type="button"
+          onClick={onScan}
+          className="mx-auto mt-9 inline-flex items-center gap-3 rounded-full bg-leaf px-8 py-4 text-base font-bold text-forest-deep shadow-[0_20px_50px_rgba(183,227,0,0.25)]"
+        >
+          <Camera size={20} strokeWidth={2.2} />
+          {s.finalCta}
+          <Sparkles size={16} />
+        </button>
+      </motion.div>
+    </section>
   );
 }
 
