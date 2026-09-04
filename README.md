@@ -119,8 +119,8 @@ KrishiNayan intentionally distinguishes between **shipped software**,
 | Surface | Link |
 |---|---|
 | Frontend | https://krishi-nayan.vercel.app/ |
-| Backend health |  |
-| Demo video | Add Drive, Loom or YouTube URL |
+| Backend health | https://krishinayan.onrender.com/health |
+| Demo video | https://youtu.be/A-TaCK4mhWs |
 | Presentation | https://www.canva.com/design/DAHT-dyWvv4/FypK-KgclvUWSUmZQmUVxA/edit |
 | Repository | `https://github.com/aakritixyz/KrishiNayan` |
 
