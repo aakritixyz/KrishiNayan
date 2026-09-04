@@ -141,7 +141,7 @@ export default function DesktopSidebar() {
   const t = SIDEBAR_TEXT[language];
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-hidden border-r border-white/[0.06] bg-forest-deep px-4 py-6 text-white lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-white/[0.06] bg-forest-deep px-4 py-6 text-white lg:flex">
       {/* Ambient backdrop: soft radial glow + hairline texture, no motion */}
       <div
         aria-hidden="true"
