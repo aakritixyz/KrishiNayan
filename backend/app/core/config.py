@@ -20,18 +20,6 @@ CROP_CONFIG = {
         "class_names_path": MODELS_DIR / "class_names.json",
         "image_size": (224, 224),
     },
-    "maize": {
-        "label": "Maize",
-        "model_path": MODELS_DIR / "maize" / "KrishiNayan_Maize_EfficientNetB0.keras",
-        "class_names_path": MODELS_DIR / "maize" / "class_names.json",
-        "image_size": (224, 224),
-    },
-    "rice": {
-        "label": "Rice",
-        "model_path": MODELS_DIR / "rice" / "KrishiNayan_Rice_EfficientNetB0.keras",
-        "class_names_path": MODELS_DIR / "rice" / "class_names.json",
-        "image_size": (300, 300),
-    },
 }
 
 # Allow an env var override for the tomato model path specifically,
