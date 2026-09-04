@@ -511,19 +511,21 @@ export default function Home() {
         {/* ---------------------------------------------------------- */}
         <div className="relative min-h-screen w-full overflow-hidden grain">
         <Image src="/images/farmers-field.jpg" alt={t.imageAlt} fill priority sizes="(min-width: 1024px) 1120px, (max-width: 640px) 100vw, 430px" className="object-cover" />
-        {/* Base scrim — always dark enough for white text to read, on
-            every breakpoint. Kept as one flat layer so there's no bright
-            "gap" anywhere behind the copy. */}
-        <div aria-hidden="true" className="absolute inset-0 bg-forest-deep/72" />
-        {/* Extra depth: a soft vignette that deepens toward the bottom
-            and left, never fading below the base scrim above. */}
+        {/* Light image overlay — keeps the field visible while maintaining
+            enough contrast for the white text. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-forest-deep/60 via-transparent to-transparent"
+          className="absolute inset-0 bg-forest-deep/35"
         />
+        {/* Soft bottom vignette for text readability */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 hidden bg-gradient-to-r from-forest-deep/45 via-transparent to-transparent lg:block"
+          className="absolute inset-0 bg-gradient-to-t from-forest-deep/35 via-transparent to-transparent"
+        />
+        {/* Very subtle left-side depth on desktop */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-gradient-to-r from-forest-deep/20 via-transparent to-transparent lg:block"
         />
 
         {/* Atmospheric particles — pure CSS, respects reduced motion */}
@@ -610,7 +612,7 @@ export default function Home() {
           <div className="mt-6 w-full lg:mt-0">
             {/* Desktop: one cohesive panel — the sidebar already handles navigation */}
             <aside className="hidden w-full max-w-[560px] lg:ml-auto lg:block">
-              <div className="max-h-[calc(100vh-56px)] overflow-hidden rounded-[28px] border border-white/12 bg-forest-deep/70 p-5 text-white shadow-[0_24px_70px_rgba(3,39,31,0.45)] backdrop-blur-md xl:p-6">
+              <div className="max-h-[calc(100vh-56px)] overflow-hidden rounded-[28px] border border-white/20 bg-forest-deep/55 p-5 text-white shadow-[0_24px_70px_rgba(3,39,31,0.30)] backdrop-blur-md xl:p-6">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-leaf/90">{t.impactEyebrow}</p>
                 <h2 className="mt-3 text-[1.45rem] font-extrabold leading-tight text-white xl:text-2xl">
                   {t.impactTitle}
