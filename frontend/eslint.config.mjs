@@ -8,6 +8,11 @@ const eslintConfig = defineConfig([
   {
     rules: {
       "react-hooks/set-state-in-effect": "off",
+      "react-hooks/rules-of-hooks": "error",
+      "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "react/no-find-dom-node": "warn",
     },
   },
   // Override default ignores of eslint-config-next.
@@ -17,6 +22,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ignore frontend/frontend directory (duplicate build artifacts)
+    "frontend/frontend/**",
   ]),
 ]);
 
