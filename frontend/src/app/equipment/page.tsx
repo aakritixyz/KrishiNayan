@@ -29,6 +29,7 @@ type EquipmentListing = {
   rental_price_per_hour: number | null;
   distance_km: number;
   primary_photo: string | null;
+  description: string | null;
   location: {
     state: string;
     district: string;
@@ -135,6 +136,7 @@ export default function EquipmentPage() {
           rental_price_per_hour: item.rental_price_per_hour,
           distance_km: item.distance_km,
           primary_photo: item.photos[0] ?? null,
+          description: item.description,
           location: {
             state: item.location.state,
             district: item.location.district,
@@ -352,6 +354,11 @@ export default function EquipmentPage() {
                           {listing.distance_km} km
                         </span>
                       </div>
+                      {listing.description && (
+                        <p className="mt-1 line-clamp-2 text-xs text-muted">
+                          {listing.description}
+                        </p>
+                      )}
                       <div className="mt-2 flex items-center gap-2 text-sm">
                         <span className="font-bold text-forest">
                           ₹{listing.rental_price_per_day}/day

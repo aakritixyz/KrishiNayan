@@ -25,6 +25,7 @@ type EquipmentListing = {
   id: number;
   equipment_name: string;
   equipment_type: string;
+  description: string | null;
   rental_price_per_day: number;
   rental_price_per_hour: number | null;
   security_deposit: number;
@@ -93,6 +94,7 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
           id: sample.id,
           equipment_name: sample.equipment_name,
           equipment_type: sample.equipment_type,
+          description: sample.description,
           rental_price_per_day: sample.rental_price_per_day,
           rental_price_per_hour: sample.rental_price_per_hour,
           security_deposit: sample.security_deposit,
@@ -327,6 +329,9 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
               <p className="mt-1 text-sm text-muted">
                 {listing.equipment_type} • {listing.location.district}, {listing.location.state}
               </p>
+              {listing.description && (
+                <p className="mt-2 text-xs text-muted">{listing.description}</p>
+              )}
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-xl font-bold text-forest">
                   ₹{listing.rental_price_per_day}
