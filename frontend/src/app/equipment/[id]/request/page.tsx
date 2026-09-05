@@ -15,7 +15,7 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { getEquipmentById, type BookedRange } from "@/lib/equipment-sample-data";
 import DateStrip from "@/components/equipment/DateStrip";
@@ -64,7 +64,7 @@ const EMPTY_FORM = {
   pickup_location: "",
 };
 
-export default function RentalRequestPage({ params }: { params: { id: string } }) {
+export default function RentalRequestPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { language } = useLanguage();
   const { isGuest } = useAuth();
@@ -75,6 +75,8 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
   const [error, setError] = useState<string | null>(null);
   const [requestSent, setRequestSent] = useState(false);
   const [createdRequest, setCreatedRequest] = useState<RentalRequest | null>(null);
+  
+  const { id } = use(params);
 
   const loadListing = useCallback(async function loadListing() {
     setLoading(true);
@@ -82,13 +84,13 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
 
     try {
       const data = await apiJson<{ listing: EquipmentListing }>(
-        `/equipment/listings/${params.id}`
+        `/equipment/listings/${id}`
       );
       setListing(data.listing);
     } catch (loadError) {
       // If the API isn't available yet, fall back to sample data (matched
       // by id) so date/slot selection can still be tried in the prototype.
-      const sample = getEquipmentById(params.id);
+      const sample = getEquipmentById(id);
       if (sample) {
         setListing({
           id: sample.id,
@@ -112,7 +114,7 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
     } finally {
       setLoading(false);
     }
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -157,7 +159,7 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
       const data = await apiJson<{ request: RentalRequest }>("/equipment/rental-requests", {
         method: "POST",
         body: JSON.stringify({
-          listing_id: Number(params.id),
+          listing_id: Number(id),
           requested_start_date: form.requested_start_date,
           requested_end_date: form.requested_end_date,
           pickup_time: form.pickup_time,
