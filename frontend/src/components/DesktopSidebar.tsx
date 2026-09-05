@@ -11,6 +11,7 @@ import {
   Map,
   MessageCircle,
   UserRound,
+  Tractor,
 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import { useAuth } from "@/lib/auth-context";
@@ -34,7 +35,8 @@ const SIDEBAR_TEXT: Record<
     | "visitor"
     | "accountNote"
     | "signOut"
-    | "desktopNavigation",
+    | "desktopNavigation"
+    | "equipment",
     string
   >
 > = {
@@ -43,6 +45,7 @@ const SIDEBAR_TEXT: Record<
     home: "Home",
     scanCrop: "Scan crop",
     myFarm: "My farm",
+    equipment: "Equipment rental",
     outbreaks: "Outbreaks",
     recovery: "Recovery",
     askExpert: "Ask expert",
@@ -62,6 +65,7 @@ const SIDEBAR_TEXT: Record<
     home: "होम",
     scanCrop: "फसल स्कैन",
     myFarm: "मेरा खेत",
+    equipment: "उपकरण किराया",
     outbreaks: "प्रकोप",
     recovery: "रिकवरी",
     askExpert: "विशेषज्ञ से पूछें",
@@ -81,6 +85,7 @@ const SIDEBAR_TEXT: Record<
     home: "ਹੋਮ",
     scanCrop: "ਫਸਲ ਸਕੈਨ",
     myFarm: "ਮੇਰਾ ਖੇਤ",
+    equipment: "ਉਪਕਰਣ ਕਿਰਾਇਆ",
     outbreaks: "ਫੈਲਾਅ",
     recovery: "ਰਿਕਵਰੀ",
     askExpert: "ਮਾਹਿਰ ਨੂੰ ਪੁੱਛੋ",
@@ -100,6 +105,7 @@ const SIDEBAR_TEXT: Record<
     home: "होम",
     scanCrop: "पीक स्कॅन",
     myFarm: "माझे शेत",
+    equipment: "उपकरणे भाडे",
     outbreaks: "प्रादुर्भाव",
     recovery: "पुनर्प्राप्ती",
     askExpert: "तज्ज्ञाला विचारा",
@@ -126,6 +132,7 @@ const NAV_ITEMS: Array<{
   { href: "/", key: "home", icon: Home },
   { href: "/scan", key: "scanCrop", icon: Camera },
   { href: "/farm", key: "myFarm", icon: Map },
+  { href: "/equipment", key: "equipment", icon: Tractor },
   { href: "/alerts", key: "outbreaks", icon: Bell },
   { href: "/recovery", key: "recovery", icon: HeartPulse },
   { href: "/chatbot", key: "askExpert", icon: MessageCircle },
