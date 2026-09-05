@@ -1,3 +1,5 @@
+import logging
+
 import requests
 
 from app.core.config import (
@@ -7,6 +9,8 @@ from app.core.config import (
     SARVAM_API_KEY,
     SARVAM_MODEL
 )
+
+logger = logging.getLogger("krishinayan.llm")
 
 
 def is_available():
@@ -50,7 +54,16 @@ def _try_groq(system_prompt, user_prompt, max_tokens=600):
 
         return answer or None
 
-    except (requests.RequestException, ValueError, KeyError, IndexError):
+    except requests.RequestException as error:
+        body = getattr(error.response, "text", "")
+        logger.error("Groq call failed: %s | response: %s", error, body[:500])
+        return None
+    except (ValueError, KeyError, IndexError) as error:
+        logger.error(
+            "Groq response parsing failed: %s | raw: %s",
+            error,
+            data if "data" in locals() else "?",
+        )
         return None
 
 
@@ -80,9 +93,10 @@ def _try_sarvam(system_prompt, user_prompt, max_tokens=600):
         return answer or None
 
     except ImportError:
-        # Sarvam package not installed
+        logger.error("sarvamai package not installed")
         return None
-    except Exception:
+    except Exception as error:
+        logger.error("Sarvam call failed: %s", error, exc_info=True)
         return None
 
 
