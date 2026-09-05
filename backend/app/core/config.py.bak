@@ -105,6 +105,19 @@ RAG_CONFIDENCE_THRESHOLD = 0.12
 
 RAG_TOP_K = 3
 
+# Optional: if set, the chatbot uses the Anthropic API to compose a
+# farmer-friendly answer grounded in the retrieved knowledge base
+# passages. If unset, the chatbot falls back to a template-based
+# answer built directly from the retrieved passages (no external
+# API call, works fully offline).
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+
+ANTHROPIC_MODEL = os.getenv(
+    "KRISHINAYAN_ANTHROPIC_MODEL",
+    "claude-sonnet-4-5"
+)
+
+ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 
 SUPPORTED_CHAT_LANGUAGES = ("en", "hi")
 
@@ -177,27 +190,3 @@ REQUIRED_PROFILE_FIELDS = (
     "irrigation_type",
     "language"
 )
-
-# Optional: if set, the chatbot uses the Groq API (Llama models) to compose a
-# farmer-friendly answer grounded in the retrieved knowledge base
-# passages. If unset, the chatbot falls back to a template-based
-# answer built directly from the retrieved passages (no external
-# API call, works fully offline).
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-GROQ_MODEL = os.getenv(
-    "KRISHINAYAN_GROQ_MODEL",
-    "llama3-70b-8192"
-)
-
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-
-# Legacy Anthropic support (kept for backward compatibility)
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-
-ANTHROPIC_MODEL = os.getenv(
-    "KRISHINAYAN_ANTHROPIC_MODEL",
-    "claude-sonnet-4-5"
-)
-
-ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
