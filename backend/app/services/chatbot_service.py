@@ -21,6 +21,28 @@ CLARIFYING_QUESTIONS = {
     )
 }
 
+KNOWN_CROPS = [
+    "rice",
+    "tomato",
+    "maize",
+    "wheat",
+    "cotton",
+    "potato",
+    "onion",
+    "chilli",
+    "sugarcane",
+]
+
+
+def _query_mentions_other_crop(query, context_crop):
+    query_text = query.lower()
+    current_crop = (context_crop or "").lower()
+
+    return any(
+        crop in query_text and crop != current_crop
+        for crop in KNOWN_CROPS
+    )
+
 
 def _format_context_line(context):
     if not context:
@@ -143,6 +165,9 @@ def _build_retrieval_query(query, context):
     always comes first; this only adds real terms already present
     in their own analysis, never invented ones.
     """
+    if _query_mentions_other_crop(query, (context or {}).get("crop")):
+        return query
+
     extra_terms = []
 
     diagnosis = (context or {}).get("diagnosis") or {}
@@ -361,8 +386,9 @@ def ask(query, language="en", context=None):
 
     llm_answer = None
 
-    has_diagnosis = bool(
-        (context.get("diagnosis") or {}).get("disease")
+    has_diagnosis = (
+        bool((context.get("diagnosis") or {}).get("disease"))
+        and not _query_mentions_other_crop(query, context.get("crop"))
     )
 
     if llm_service.is_available():
