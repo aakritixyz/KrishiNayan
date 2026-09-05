@@ -19,7 +19,7 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { getEquipmentById } from "@/lib/equipment-sample-data";
 import PhotoGallery from "@/components/equipment/PhotoGallery";
@@ -77,7 +77,7 @@ type EquipmentListing = {
   created_at: string;
 };
 
-export default function EquipmentDetailPage({ params }: { params: { id: string } }) {
+export default function EquipmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { language } = useLanguage();
   const { isGuest } = useAuth();
@@ -86,6 +86,8 @@ export default function EquipmentDetailPage({ params }: { params: { id: string }
   const [error, setError] = useState<string | null>(null);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  
+  const { id } = use(params);
 
   const loadListing = useCallback(async function loadListing() {
     setLoading(true);
@@ -93,7 +95,7 @@ export default function EquipmentDetailPage({ params }: { params: { id: string }
 
     try {
       const data = await apiJson<{ listing: EquipmentListing }>(
-        `/equipment/listings/${params.id}`
+        `/equipment/listings/${id}`
       );
       setListing(data.listing);
     } catch (loadError) {
@@ -101,7 +103,7 @@ export default function EquipmentDetailPage({ params }: { params: { id: string }
       // matched by id so every listing shows its own real details/photos.
       console.log("Equipment detail API not available yet, using sample data");
 
-      const sample = getEquipmentById(params.id);
+      const sample = getEquipmentById(id);
 
       if (!sample) {
         setError("Equipment not found");
@@ -138,7 +140,7 @@ export default function EquipmentDetailPage({ params }: { params: { id: string }
     } finally {
       setLoading(false);
     }
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
