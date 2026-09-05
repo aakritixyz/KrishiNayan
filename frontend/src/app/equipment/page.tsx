@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SAMPLE_EQUIPMENT, EQUIPMENT_CATEGORY_SUMMARY } from "@/lib/equipment-sample-data";
 
 type EquipmentListing = {
   id: number;
@@ -123,241 +124,31 @@ export default function EquipmentPage() {
       } catch (apiError) {
         // If API endpoint doesn't exist yet, use sample data for prototype
         console.log("Equipment API not available yet, using sample data");
-        
-        // Sample equipment data for prototype with multiple regions and photos
-        const sampleListings: EquipmentListing[] = [
-          {
-            id: 1,
-            equipment_name: "Mahindra Tractor 575",
-            equipment_type: "tractor",
-            brand: "Mahindra",
-            condition: "good",
-            rental_price_per_day: 800,
-            rental_price_per_hour: 120,
-            distance_km: 8.5,
-            primary_photo: "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Ludhiana",
-              village: "Doraha"
-            },
-            availability: {
-              available_from: "2025-01-15",
-              available_until: "2025-06-30"
-            },
-            owner_id: 1,
-            verification_status: "verified",
-            view_count: 45
+
+        const sampleListings: EquipmentListing[] = SAMPLE_EQUIPMENT.map((item) => ({
+          id: item.id,
+          equipment_name: item.equipment_name,
+          equipment_type: item.equipment_type,
+          brand: item.brand,
+          condition: item.condition,
+          rental_price_per_day: item.rental_price_per_day,
+          rental_price_per_hour: item.rental_price_per_hour,
+          distance_km: item.distance_km,
+          primary_photo: item.photos[0] ?? null,
+          location: {
+            state: item.location.state,
+            district: item.location.district,
+            village: item.location.village,
           },
-          {
-            id: 2,
-            equipment_name: "Power Sprayer 100L",
-            equipment_type: "sprayer",
-            brand: "Honda",
-            condition: "excellent",
-            rental_price_per_day: 400,
-            rental_price_per_hour: 60,
-            distance_km: 12.3,
-            primary_photo: "https://images.unsplash.com/photo-1563215426-72e26e37685e?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Ludhiana",
-              village: "Khanna"
-            },
-            availability: {
-              available_from: "2025-01-10",
-              available_until: "2025-05-15"
-            },
-            owner_id: 2,
-            verification_status: "verified",
-            view_count: 32
+          availability: {
+            available_from: item.availability.available_from,
+            available_until: item.availability.available_until,
           },
-          {
-            id: 3,
-            equipment_name: "Wheat Harvester",
-            equipment_type: "harvester",
-            brand: "Kubota",
-            condition: "good",
-            rental_price_per_day: 1500,
-            rental_price_per_hour: 200,
-            distance_km: 15.7,
-            primary_photo: "https://images.unsplash.com/photo-1574943328924-22af80b0c453?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Ludhiana",
-              village: "Jagraon"
-            },
-            availability: {
-              available_from: "2025-04-01",
-              available_until: "2025-05-30"
-            },
-            owner_id: 3,
-            verification_status: "pending",
-            view_count: 28
-          },
-          {
-            id: 4,
-            equipment_name: "John Deere Tractor",
-            equipment_type: "tractor",
-            brand: "John Deere",
-            condition: "excellent",
-            rental_price_per_day: 1200,
-            rental_price_per_hour: 180,
-            distance_km: 22.1,
-            primary_photo: "https://images.unsplash.com/photo-1591955663780-acdd4047513f?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Ludhiana",
-              village: "Machhiwara"
-            },
-            availability: {
-              available_from: "2025-01-20",
-              available_until: "2025-07-15"
-            },
-            owner_id: 4,
-            verification_status: "verified",
-            view_count: 67
-          },
-          {
-            id: 5,
-            equipment_name: "Manual Sprayer 20L",
-            equipment_type: "sprayer",
-            brand: "Swaraj",
-            condition: "good",
-            rental_price_per_day: 150,
-            rental_price_per_hour: 25,
-            distance_km: 5.8,
-            primary_photo: "https://images.unsplash.com/photo-1591410474859-1e2cd2c3e63a?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Ludhiana",
-              village: "Doraha"
-            },
-            availability: {
-              available_from: "2025-01-05",
-              available_until: "2025-04-20"
-            },
-            owner_id: 5,
-            verification_status: "verified",
-            view_count: 23
-          },
-          {
-            id: 6,
-            equipment_name: "Eicher Tractor 380",
-            equipment_type: "tractor",
-            brand: "Eicher",
-            condition: "good",
-            rental_price_per_day: 600,
-            rental_price_per_hour: 90,
-            distance_km: 18.4,
-            primary_photo: "https://images.unsplash.com/photo-1594886671724-2c8b7a23f7a0?w=400&q=80",
-            location: {
-              state: "Haryana",
-              district: "Karnal",
-              village: "Assandh"
-            },
-            availability: {
-              available_from: "2025-02-01",
-              available_until: "2025-08-15"
-            },
-            owner_id: 6,
-            verification_status: "verified",
-            view_count: 31
-          },
-          {
-            id: 7,
-            equipment_name: "Rice Transplanter",
-            equipment_type: "harvester",
-            brand: "Yanmar",
-            condition: "excellent",
-            rental_price_per_day: 1800,
-            rental_price_per_hour: 250,
-            distance_km: 35.2,
-            primary_photo: "https://images.unsplash.com/photo-1628151016163-464b995d8e5f?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Amritsar",
-              village: "Tarn Taran"
-            },
-            availability: {
-              available_from: "2025-06-01",
-              available_until: "2025-07-30"
-            },
-            owner_id: 7,
-            verification_status: "verified",
-            view_count: 19
-          },
-          {
-            id: 8,
-            equipment_name: "Water Pump 5HP",
-            equipment_type: "pump",
-            brand: "Kirloskar",
-            condition: "good",
-            rental_price_per_day: 200,
-            rental_price_per_hour: 30,
-            distance_km: 7.9,
-            primary_photo: "https://images.unsplash.com/photo-1598558940770-4d67b8a86523?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Ludhiana",
-              village: "Samrala"
-            },
-            availability: {
-              available_from: "2025-01-01",
-              available_until: "2025-12-31"
-            },
-            owner_id: 8,
-            verification_status: "verified",
-            view_count: 56
-          },
-          {
-            id: 9,
-            equipment_name: "Rotavator 6ft",
-            equipment_type: "plow",
-            brand: "Fieldking",
-            condition: "excellent",
-            rental_price_per_day: 350,
-            rental_price_per_hour: 50,
-            distance_km: 14.6,
-            primary_photo: "https://images.unsplash.com/photo-1581092921461-eab62e97a880?w=400&q=80",
-            location: {
-              state: "Punjab",
-              district: "Jalandhar",
-              village: "Nakodar"
-            },
-            availability: {
-              available_from: "2025-03-01",
-              available_until: "2025-10-30"
-            },
-            owner_id: 9,
-            verification_status: "verified",
-            view_count: 41
-          },
-          {
-            id: 10,
-            equipment_name: "Swaraj Tractor 855",
-            equipment_type: "tractor",
-            brand: "Swaraj",
-            condition: "good",
-            rental_price_per_day: 750,
-            rental_price_per_hour: 110,
-            distance_km: 28.3,
-            primary_photo: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80",
-            location: {
-              state: "Haryana",
-              district: "Panipat",
-              village: "Israna"
-            },
-            availability: {
-              available_from: "2025-01-25",
-              available_until: "2025-09-20"
-            },
-            owner_id: 10,
-            verification_status: "pending",
-            view_count: 22
-          }
-        ];
-        
+          owner_id: item.owner.id,
+          verification_status: item.verification_status,
+          view_count: item.view_count,
+        }));
+
         // Filter by category if selected
         const filteredListings = selectedCategory 
           ? sampleListings.filter(listing => listing.equipment_type === selectedCategory)
@@ -375,13 +166,7 @@ export default function EquipmentPage() {
       } catch (categoryError) {
         // If categories API doesn't exist, use sample data with updated counts
         console.log("Categories API not available yet, using sample data");
-        setCategories([
-          { name: "tractor", icon: "🚜", count: 4, min_price: 600, max_price: 1200 },
-          { name: "sprayer", icon: "🧴", count: 2, min_price: 150, max_price: 400 },
-          { name: "harvester", icon: "🌾", count: 2, min_price: 1500, max_price: 1800 },
-          { name: "pump", icon: "💧", count: 1, min_price: 200, max_price: 200 },
-          { name: "plow", icon: "🔨", count: 1, min_price: 350, max_price: 350 },
-        ]);
+        setCategories(EQUIPMENT_CATEGORY_SUMMARY);
       }
 
     } catch (loadError) {

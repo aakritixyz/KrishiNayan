@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getEquipmentById } from "@/lib/equipment-sample-data";
+import PhotoGallery from "@/components/equipment/PhotoGallery";
 
 type EquipmentListing = {
   id: number;
@@ -95,84 +97,44 @@ export default function EquipmentDetailPage({ params }: { params: { id: string }
       );
       setListing(data.listing);
     } catch (loadError) {
-      // If API endpoint doesn't exist yet, use sample data for prototype
+      // If API endpoint doesn't exist yet, use sample data for prototype,
+      // matched by id so every listing shows its own real details/photos.
       console.log("Equipment detail API not available yet, using sample data");
-      
-      const sampleListing: EquipmentListing = {
-        id: Number(params.id),
-        equipment_name: "Mahindra Tractor 575",
-        equipment_type: "tractor",
-        brand: "Mahindra",
-        model: "575 DI",
-        year_manufactured: 2020,
-        condition: "good",
-        rental_price_per_day: 800,
-        rental_price_per_hour: 120,
-        security_deposit: 2000,
-        location: {
-          state: "Punjab",
-          district: "Ludhiana",
-          village: "Doraha",
-          latitude: 30.9330,
-          longitude: 75.8527,
-          description: "Near village temple, main road"
-        },
+
+      const sample = getEquipmentById(params.id);
+
+      if (!sample) {
+        setError("Equipment not found");
+        setListing(null);
+        return;
+      }
+
+      setListing({
+        id: sample.id,
+        equipment_name: sample.equipment_name,
+        equipment_type: sample.equipment_type,
+        brand: sample.brand,
+        model: sample.model,
+        year_manufactured: sample.year_manufactured,
+        condition: sample.condition,
+        rental_price_per_day: sample.rental_price_per_day,
+        rental_price_per_hour: sample.rental_price_per_hour,
+        security_deposit: sample.security_deposit,
+        location: sample.location,
         availability: {
-          is_available: true,
-          available_from: "2025-01-15",
-          available_until: "2025-06-30",
-          booked_dates: []
+          is_available: sample.availability.is_available,
+          available_from: sample.availability.available_from,
+          available_until: sample.availability.available_until,
+          booked_dates: sample.availability.booked_dates,
         },
-        photos: [
-          "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=800&q=80",
-          "https://images.unsplash.com/photo-1591955663780-acdd4047513f?w=800&q=80",
-          "https://images.unsplash.com/photo-1594886671724-2c8b7a23f7a0?w=800&q=80"
-        ],
-        primary_photo: "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=800&q=80",
-        description: "Well-maintained Mahindra tractor, perfect for wheat and rice cultivation. Recently serviced with new tires. Available for daily or hourly rental.",
-        specifications: {
-          power: "47 HP",
-          engine: "4-cylinder",
-          fuel_capacity: "60L",
-          lifting_capacity: "1700 kg",
-          tires: "New rear tires",
-          service: "Recently serviced"
-        },
-        owner: {
-          id: 1,
-          name: "Rajesh Kumar",
-          trust_score: 85,
-          phone_verified: true,
-          response_time_hours: 2,
-          total_listings: 8,
-          successful_rentals: 25
-        },
-        reviews: {
-          average_rating: 4.5,
-          total_reviews: 18,
-          recent_reviews: [
-            {
-              id: 1,
-              reviewer_name: "Amit Singh",
-              overall_rating: 5,
-              title: "Excellent tractor",
-              comment: "Well maintained, worked perfectly for my wheat field.",
-              created_at: "2025-01-10T10:00:00Z"
-            },
-            {
-              id: 2,
-              reviewer_name: "Gurpreet Kaur",
-              overall_rating: 4,
-              title: "Good condition",
-              comment: "Tractor was in good shape, owner was cooperative.",
-              created_at: "2025-01-05T14:30:00Z"
-            }
-          ]
-        },
-        created_at: "2025-01-01T10:00:00Z"
-      };
-      
-      setListing(sampleListing);
+        photos: sample.photos,
+        primary_photo: sample.photos[0] ?? null,
+        description: sample.description,
+        specifications: sample.specifications,
+        owner: sample.owner,
+        reviews: sample.reviews,
+        created_at: sample.created_at,
+      });
     } finally {
       setLoading(false);
     }
@@ -266,33 +228,7 @@ export default function EquipmentDetailPage({ params }: { params: { id: string }
         </header>
 
         {/* Photo Gallery */}
-        <div className="mt-5 rounded-[22px] bg-white p-2">
-          <div className="aspect-video w-full overflow-hidden rounded-xl bg-forest/5">
-            {listing.primary_photo ? (
-              <img
-                src={listing.primary_photo}
-                alt={listing.equipment_name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-muted">
-                <AlertCircle size={48} />
-              </div>
-            )}
-          </div>
-          {listing.photos.length > 1 && (
-            <div className="mt-2 flex gap-2 overflow-x-auto">
-              {listing.photos.slice(1).map((photo, index) => (
-                <img
-                  key={index}
-                  src={photo}
-                  alt={`Photo ${index + 2}`}
-                  className="h-16 w-16 flex-shrink-0 rounded-lg object-cover"
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <PhotoGallery photos={listing.photos} alt={listing.equipment_name} />
 
         {/* Price & Rating */}
         <div className="mt-4 flex items-center justify-between rounded-[22px] bg-white p-4">

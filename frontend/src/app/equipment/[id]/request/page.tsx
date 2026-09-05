@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getEquipmentById, type BookedRange } from "@/lib/equipment-sample-data";
+import DateStrip from "@/components/equipment/DateStrip";
+import TimeSlotGrid from "@/components/equipment/TimeSlotGrid";
 
 type EquipmentListing = {
   id: number;
@@ -35,6 +38,7 @@ type EquipmentListing = {
     name: string;
     phone: string | null;
   };
+  booked_dates: BookedRange[];
 };
 
 type RentalRequest = {
@@ -59,11 +63,6 @@ const EMPTY_FORM = {
   pickup_location: "",
 };
 
-const TIME_SLOTS = [
-  "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
-  "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"
-];
-
 export default function RentalRequestPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { language } = useLanguage();
@@ -75,7 +74,6 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
   const [error, setError] = useState<string | null>(null);
   const [requestSent, setRequestSent] = useState(false);
   const [createdRequest, setCreatedRequest] = useState<RentalRequest | null>(null);
-  const [showTimeSlots, setShowTimeSlots] = useState(false);
 
   const loadListing = useCallback(async function loadListing() {
     setLoading(true);
@@ -87,11 +85,28 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
       );
       setListing(data.listing);
     } catch (loadError) {
-      setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : "Couldn't load equipment details."
-      );
+      // If the API isn't available yet, fall back to sample data (matched
+      // by id) so date/slot selection can still be tried in the prototype.
+      const sample = getEquipmentById(params.id);
+      if (sample) {
+        setListing({
+          id: sample.id,
+          equipment_name: sample.equipment_name,
+          equipment_type: sample.equipment_type,
+          rental_price_per_day: sample.rental_price_per_day,
+          rental_price_per_hour: sample.rental_price_per_hour,
+          security_deposit: sample.security_deposit,
+          location: sample.location,
+          owner: { id: sample.owner.id, name: sample.owner.name, phone: sample.owner.phone },
+          booked_dates: sample.availability.booked_dates,
+        });
+      } else {
+        setError(
+          loadError instanceof ApiError
+            ? loadError.message
+            : "Couldn't load equipment details."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -121,17 +136,30 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
       return;
     }
 
+    if (
+      !form.requested_start_date ||
+      !form.requested_end_date ||
+      !form.pickup_time ||
+      !form.return_time
+    ) {
+      setError("Please select a start date, end date, pickup time, and return time.");
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
+    const totalCost = calculateTotalCost();
+
     try {
-      const totalCost = calculateTotalCost();
       const data = await apiJson<{ request: RentalRequest }>("/equipment/rental-requests", {
         method: "POST",
         body: JSON.stringify({
           listing_id: Number(params.id),
           requested_start_date: form.requested_start_date,
           requested_end_date: form.requested_end_date,
+          pickup_time: form.pickup_time,
+          return_time: form.return_time,
           message: form.message,
           pickup_location: form.pickup_location,
           total_cost: totalCost,
@@ -142,11 +170,25 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
       setCreatedRequest(data.request);
       setRequestSent(true);
     } catch (submitError) {
-      setError(
-        submitError instanceof ApiError
-          ? submitError.message
-          : "Couldn't submit rental request."
-      );
+      // If the backend endpoint isn't available yet, simulate a successful
+      // request locally so the full flow can still be tried in the prototype.
+      if (listing) {
+        setCreatedRequest({
+          id: Date.now(),
+          status: "pending",
+          total_cost: totalCost,
+          security_deposit_amount: listing.security_deposit,
+          owner: listing.owner,
+          created_at: new Date().toISOString(),
+        });
+        setRequestSent(true);
+      } else {
+        setError(
+          submitError instanceof ApiError
+            ? submitError.message
+            : "Couldn't submit rental request."
+        );
+      }
     } finally {
       setSubmitting(false);
     }
@@ -299,58 +341,66 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
                 <Calendar size={18} className="text-leaf" />
                 {tr("Select Dates", language)}
               </h3>
-              <div className="mt-3 space-y-3">
-                <div>
-                  <label className="text-xs text-muted">Start Date</label>
-                  <input
-                    type="date"
+
+              <div className="mt-3">
+                <label className="text-xs text-muted">{tr("Start Date", language)}</label>
+                <div className="mt-1.5">
+                  <DateStrip
                     value={form.requested_start_date}
-                    onChange={(e) => setForm({ ...form, requested_start_date: e.target.value })}
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm"
+                    minDate={new Date().toISOString().split("T")[0]}
+                    bookedDates={listing.booked_dates}
+                    onChange={(date) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        requested_start_date: date,
+                        // Reset end date if it's now before the new start date
+                        requested_end_date:
+                          prev.requested_end_date && prev.requested_end_date < date
+                            ? ""
+                            : prev.requested_end_date,
+                      }))
+                    }
                   />
-                </div>
-                <div>
-                  <label className="text-xs text-muted">Pickup Time</label>
-                  <select
-                    value={form.pickup_time}
-                    onChange={(e) => setForm({ ...form, pickup_time: e.target.value })}
-                    required
-                    className="w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm"
-                  >
-                    <option value="">Select time</option>
-                    {TIME_SLOTS.map(slot => (
-                      <option key={slot} value={slot}>{slot}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-muted">End Date</label>
-                  <input
-                    type="date"
-                    value={form.requested_end_date}
-                    onChange={(e) => setForm({ ...form, requested_end_date: e.target.value })}
-                    required
-                    min={form.requested_start_date || new Date().toISOString().split('T')[0]}
-                    className="w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-muted">Return Time</label>
-                  <select
-                    value={form.return_time}
-                    onChange={(e) => setForm({ ...form, return_time: e.target.value })}
-                    required
-                    className="w-full rounded-xl border border-forest/15 bg-forest/5 px-3 py-2 text-sm"
-                  >
-                    <option value="">Select time</option>
-                    {TIME_SLOTS.map(slot => (
-                      <option key={slot} value={slot}>{slot}</option>
-                    ))}
-                  </select>
                 </div>
               </div>
+
+              <div className="mt-4">
+                <label className="text-xs text-muted">{tr("Pickup Time", language)}</label>
+                <div className="mt-1.5">
+                  <TimeSlotGrid
+                    value={form.pickup_time}
+                    onChange={(slot) => setForm((prev) => ({ ...prev, pickup_time: slot }))}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="text-xs text-muted">{tr("End Date", language)}</label>
+                <div className="mt-1.5">
+                  <DateStrip
+                    value={form.requested_end_date}
+                    minDate={form.requested_start_date || new Date().toISOString().split("T")[0]}
+                    bookedDates={listing.booked_dates}
+                    onChange={(date) => setForm((prev) => ({ ...prev, requested_end_date: date }))}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="text-xs text-muted">{tr("Return Time", language)}</label>
+                <div className="mt-1.5">
+                  <TimeSlotGrid
+                    value={form.return_time}
+                    onChange={(slot) => setForm((prev) => ({ ...prev, return_time: slot }))}
+                  />
+                </div>
+              </div>
+
+              {listing.booked_dates.length > 0 && (
+                <p className="mt-3 text-[11px] text-muted">
+                  {tr("Greyed-out dates are already booked by another farmer.", language)}
+                </p>
+              )}
             </div>
 
             {/* Cost Summary */}
@@ -424,7 +474,13 @@ export default function RentalRequestPage({ params }: { params: { id: string } }
 
             <button
               type="submit"
-              disabled={submitting || !form.requested_start_date || !form.requested_end_date}
+              disabled={
+                submitting ||
+                !form.requested_start_date ||
+                !form.requested_end_date ||
+                !form.pickup_time ||
+                !form.return_time
+              }
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf px-4 py-4 font-bold text-forest-deep disabled:opacity-50"
             >
               {submitting ? (
