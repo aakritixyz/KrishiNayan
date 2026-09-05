@@ -192,14 +192,6 @@ GROQ_MODEL = os.getenv(
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-# Sarvam AI (Indian LLM provider)
-SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
-
-SARVAM_MODEL = os.getenv(
-    "KRISHINAYAN_SARVAM_MODEL",
-    "sarvam-105b-conversations"
-)
-
 # Legacy Anthropic support (kept for backward compatibility)
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
